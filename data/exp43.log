@@ -1,0 +1,703 @@
+iperf3 servers listening on ports 5201, 5202, 5203, 5204, 5205, 5206
+guests reachable with iperf3: V1=tenant1, V2=tenant5, A=tenant2, B=tenant3, C=tenant4, D=tenant6; ping on tenant5
+VHOST THREADS (per-tenant CPU of lqr_orig, logged for every mode): A = tenant2 /proc/1187/task/1197/schedstat, B = tenant3 /proc/1246/task/1256/schedstat, C = tenant4 /proc/1304/task/1314/schedstat, D = tenant6 /proc/1421/task/1431/schedstat
+SCENARIO steady4: flooder A (tenant2) t=0-28 s (2 streams), flooder B (tenant3) t=6-34 s (2 streams), flooder C (tenant4) t=12-40 s (2 streams), flooder D (tenant6) t=18-40 s (2 streams), all active 18-28 s (Jain window), no bursts
+CONFIGS: lqr_orig T40_paperK, lqr_orig T60_paperK, lqr_orig T80_paperK, lqr_orig T60_zoh, vfrot 0.8_1_2_0.94, vfrot 0.8_1_2_0.94_B24000, vfrot 0.8_1_2_0.94_B32000, lqr 85_4
+PAIRED REFERENCES for the summary: vfrot 0.8_1_2_0.94, lqr_orig T60_paperK (vfrot = exp39/exp40 code path, only VF_BMAX_RANGE widened to 40000; lqr = exp39 code path)
+VFROT 0.8_1_2_0.94: beta 0.8, add 1 Gbit/s per s, rotation 2 s, thresh 0.94, budget ceiling (BMAX) 16000 Mbit/s, floor 800
+VFROT 0.8_1_2_0.94_B24000: beta 0.8, add 1 Gbit/s per s, rotation 2 s, thresh 0.94, budget ceiling (BMAX) 24000 Mbit/s, floor 800
+VFROT 0.8_1_2_0.94_B32000: beta 0.8, add 1 Gbit/s per s, rotation 2 s, thresh 0.94, budget ceiling (BMAX) 32000 Mbit/s, floor 800
+CALIBRATION calib42_result.json: verdict WARN, cpu_ref 41.10 % of one core (median unregulated per-flooder vhost CPU, all four active), tau 0.081 s, b 1018.667 (DC gain b x tau = 82.22 CPU points per unit drop fraction), written 2026-11-06 22:30:35
+CALIBRATION CHECK vhost_signal_steady: PASS -- cpu_ref 41.10 % of one core (FAIL < 2); max sd of 0.5 s samples at u = 0 0.41 vs smallest target 16.44 (PASS <= 0.1 x, WARN <= 0.2 x)
+CALIBRATION CHECK vhost_monotone_in_u: WARN -- CPU at u = 0/0.05/0.1/0.2/0.5 per flooder: A 41.2/15.4/14.5/1.7/0.1; B 41.0/16.2/13.7/1.6/0.1; C 41.0/13.9/16.5/1.7/0.1; D 41.2/16.8/16.5/1.7/0.1 (1 rise(s); FAIL if CPU(0.5) > 0.9 x CPU(0))
+CALIBRATION CHECK step_fit_r2: PASS -- min R^2 0.994 over 8 fits (PASS >= 0.8, WARN >= 0.5); gains G Au 82.5 Ad 83.1 Bu 82.5 Bd 81.8 Cu 81.9 Cd 81.8 Du 82.0 Dd 82.5
+CALIBRATION CHECK step_up_down_agreement: WARN -- A |dG|/G 0.01 tau ratio 2.55; B |dG|/G 0.01 tau ratio 2.23; C |dG|/G 0.00 tau ratio 3.33; D |dG|/G 0.01 tau ratio 3.48 (PASS |dG|/G <= 0.3 and tau ratio <= 2, FAIL |dG|/G > 0.5)
+CALIBRATION CHECK small_u_gain_ratio: WARN -- small-signal gain / 0 -> 0.5 gain = 6.17 (PASS < 1.5, else WARN; FAIL only if not computable); the ARE gain is stable only up to ~1.5 x the identified plant gain -- WARN MEANING: near u = 0 the plant is 6.2 x steeper than the 0 -> 0.5 step used to identify b, so lqr_orig's re-identified K is effectively too aggressive at small drop fractions; expect a limit cycle between 0 and the first levels (0.05-0.10) rather than smooth tracking, i.e. report its tracking error and victim SLO as properties of the faithful port in our TCP plant, not of a mis-tuned port (nothing is retuned)
+CALIBRATION CHECK targets_span: PASS -- predicted flooder totals at T40 (16.4 %) 1.65, T60 (24.7 %) 17.25, T80 (32.9 %) 32.85 Gbit/s vs exp39 lqr 79/85/90 8.8/11.5/14.7
+CALIBRATION CHECK xdp_bytes_per_packet: WARN -- 65226 bytes per XDP packet at u = 0 (PASS <= 1600: per-segment drop; WARN: GSO aggregates, one drop removes several segments)
+CALIBRATION CHECK xdp_drop_fraction: PASS -- max |realized - commanded| drop fraction at u = 0.05 and 0.5 = 0.0000 (PASS <= 0.01)
+CALIBRATION CHECK xdp_swap_in_out: PASS -- xdp_dropfrac on all 4 flooders: yes; xdp_limit back on all 4: yes
+CALIBRATION CHECK ssh_iperf3_at_u_0.5: PASS -- u = 0.5 held on all 4 flooders to the end: 0 flooder ssh/iperf3 still running after 60 s (FAIL if > 0), -J parsed A yes, B yes, C yes, D yes, wait 3.0 s
+LQR_ORIG T40_paperK: target 16.44 % of one core (40 % of cpu_ref 41.10), K = [-0.2562, -0.3031] (PAPER K, unchanged); identified tau 0.081 s, b 1018.667 (dt/tau 6.19); spectral radius on the ZOH plant at gain x0.5/1/1.5/2: 12.553/25.047/37.540/50.032; for the record, exp42's Euler ARE gain here would be [+0.0092, +0.0087]
+LQR_ORIG T60_paperK: target 24.66 % of one core (60 % of cpu_ref 41.10), K = [-0.2562, -0.3031] (PAPER K, unchanged); identified tau 0.081 s, b 1018.667 (dt/tau 6.19); spectral radius on the ZOH plant at gain x0.5/1/1.5/2: 12.553/25.047/37.540/50.032; for the record, exp42's Euler ARE gain here would be [+0.0092, +0.0087]
+LQR_ORIG T80_paperK: target 32.88 % of one core (80 % of cpu_ref 41.10), K = [-0.2562, -0.3031] (PAPER K, unchanged); identified tau 0.081 s, b 1018.667 (dt/tau 6.19); spectral radius on the ZOH plant at gain x0.5/1/1.5/2: 12.553/25.047/37.540/50.032; for the record, exp42's Euler ARE gain here would be [+0.0092, +0.0087]
+LQR_ORIG T60_zoh: target 24.66 % of one core (60 % of cpu_ref 41.10), K = [-0.0133, -0.0012] (ARE on the ZOH plant of calib42); identified tau 0.081 s, b 1018.667 (dt/tau 6.19); spectral radius on the ZOH plant at gain x0.5/1/1.5/2: 0.347/0.118/0.121/0.350; for the record, exp42's Euler ARE gain here would be [+0.0092, +0.0087]
+LQR_ORIG (faithful port of Bisevac et al. 2026, Algorithm 1): per flooder, dt 0.5 s = every 2nd 0.25 s tick, CPU = vhost thread % of one core over that 0.5 s window, median of last 5, CPU_eff = 0.7 smooth + 0.3 (smooth + trend), u = -K [e, edot], soft limit margin 0.5 (exp 0.5 inside, 0.7 above), clip [0, 0.95], nearest of 20 levels; actuator xdp_dropfrac.o (drop iff (total x drop_bp) % 10000 < drop_bp), swapped in on the 4 flooders for the slot and xdp_limit back after it; PPS feed-forward of the public v2 code LEFT OUT (not in Algorithm 1); management-port exemption NOT enabled; nothing tuned; exp43: re-identified K from the ARE on the ZOH discretisation of the authors' continuous model (exp42's Euler ARE on calib42 had the wrong sign), refused if K[0] >= 0
+DEVIATION (lqr_orig only, documented): when the victims' window ends drop_bp is set to 0 on all flooders BEFORE waiting for the flooder iperf3 clients (their -J report and control channel cross the dropping vnet), with a 60 s timeout + WARNING on that wait; release time = column u_release_s (s after flooder launch); eBPF counters unaffected
+LQR 85_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 85_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 85_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 85_4: plant gain x0.67: eig=[0.6546+0.1219j, 0.6546-0.1219j] |eig|max=0.6659 stable yes
+LQR 85_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 85_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+TOKEN BUCKET: vfrot and lqr use xdp_limit.o on every flooder interface (burst 5 ms); victim interfaces always xdp_limit, never limited (counter only)
+VICTIMS: V1 = tenant1 10.10.0.11 port 5201, V2 = tenant5 10.10.0.15 port 5205, each 9 Gbit/s, one stream, constant for [0,40) s (launched together 0.5 s after the flooders); slo_ok per victim = fraction of its 39 1 s windows >= 95% of its own per-repeat reference; slo_ok_worst = the smaller of the two
+LATENCY: tenant5 pings 10.10.0.1 every 0.2 s during each run (200 probes) and each reference run (2 x 100 probes; loss > 5% or < 10 replies refuses); per run: p50/p99 over received replies, loss %; slo_ok_v2_rtt = 1 iff p99 <= max(2 x reference p99, 2 ms) AND loss <= 1%; slo_ok_worst_with_rtt = slo_ok_worst x slo_ok_v2_rtt; no controller sees the RTT
+PING CMD V2: ssh alpine@10.10.0.15 'ping -c 200 -i 0.2 -W 1 -w 42 10.10.0.1' (reference: 'ping -c 100 -i 0.2 -W 1 -w 22 10.10.0.1')
+DIPS: window j = min over V1, V2 of (its j-th 1 s window / its reference), aligned to the later victim's first byte; dipXX_ovl = fraction of windows lying fully inside 18-28 s (flooder launch = 0) with a value < 0.XX, dipXX_all = the same over all 39 windows; XX = 95/90/80
+VICTIM CMD V1: ssh alpine@10.10.0.11 'iperf3 -c 10.10.0.1 -p 5201 -t 40 -b 9G -J'
+VICTIM CMD V2: ssh alpine@10.10.0.15 'iperf3 -c 10.10.0.1 -p 5205 -t 40 -b 9G -J'
+FLOODER CMD A: ssh alpine@10.10.0.12 'iperf3 -c 10.10.0.1 -p 5202 -t 28 -P 2 -J'
+FLOODER CMD B: ssh alpine@10.10.0.13 'sleep 6; iperf3 -c 10.10.0.1 -p 5203 -t 28 -P 2 -J'
+FLOODER CMD C: ssh alpine@10.10.0.14 'sleep 12; iperf3 -c 10.10.0.1 -p 5204 -t 28 -P 2 -J'
+FLOODER CMD D: ssh alpine@10.10.0.16 'sleep 18; iperf3 -c 10.10.0.1 -p 5206 -t 22 -P 2 -J'
+METRICS: as exp40, plus vhostX_cpu_mean (vhost thread % of one core over X's own window, all modes), track_errX = mean |e| over lqr_orig controller steps in X's own window (their metric), track_err_mean = mean over the 4, uX_mean = mean drop fraction there, target_cpu, u_release_s, flooder_wait_timeouts; exp43: offeredX_gbps (passed + dropped over X's window), dip metrics, V2 RTT columns
+EXPECTED DURATION: 17 slots/repeat, ~15.6 min/repeat (exp39 measured rate ~15.0), 6 repeats + 5 x 600 s rest ~ 2.40 h (measured rate ~2.34 h)
+vnet0: reusing already attached xdp_limit prog id 47, cfg map id 18, cnt map id 20
+vnet4: reusing already attached xdp_limit prog id 53, cfg map id 21, cnt map id 23
+vnet1: reusing already attached xdp_limit prog id 1284, cfg map id 627, cnt map id 629
+vnet2: reusing already attached xdp_limit prog id 1290, cfg map id 630, cnt map id 632
+vnet3: reusing already attached xdp_limit prog id 1296, cfg map id 633, cnt map id 635
+vnet5: reusing already attached xdp_limit prog id 1302, cfg map id 636, cnt map id 638
+INTERFACES: V1 = tenant1 vnet0, V2 = tenant5 vnet4, A = tenant2 vnet1, B = tenant3 vnet2, C = tenant4 vnet3, D = tenant6 vnet5
+6 repeats x (8 configs + 9 interleaved alone runs), writing /home/priyanka/testbed/results_dyn43.csv and /home/priyanka/testbed/ts_dyn43.csv; 600 s rest after every repeat except the last
+rep 1 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.5%, steal 0.0%, ping 100/100 replies
+rep 1 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 60.3%, steal 0.0%, ping 100/100 replies
+REFERENCE rep 1: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 20 s, both together, eBPF), base_cpu 59.9%; RTT V2 p50 0.145 ms, p99 0.440 ms (RTT SLO threshold 2.000 ms, loss <= 1%), loss 0.00% of 200 replies
+rep slot mode                   param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x  fl_tot min_own min_ovl rtt_p50 rtt_p99 loss% rtt_ok okw_rtt d95o d90o d80o d95a
+  1    0 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.9    68.0    0.00    0.00  0.250  0.252    0.00     nan     nan   0.166   0.413  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 0 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  1    1 vfrot     0.8_1_2_0.94_B32000    9.00  8.43  0.90    9.00  8.55  0.95     0.90    6.36   6.36    6.58   6.59    7.93   7.94    5.64   5.65 0.656     89.1    96.6    0.00    0.00  0.250  0.257   26.54    5.65    0.04   0.257   3.665  0.00      0    0.00 0.33 0.11 0.11 0.15
+VHOST rep 1 slot 1 vfrot 0.8_1_2_0.94_B32000: mean vhost CPU in own windows A 21.7 B 20.8 C 22.9 D 17.2 % of one core
+  1    2 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.4    64.3    0.00    0.00  0.250  0.251    0.00     nan     nan   0.178   0.467  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 2 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  1    3 lqr                      85_4    9.00  9.00  1.00    9.00  8.99  1.00     1.00    3.07   3.07    2.69   2.69    2.79   2.79    2.83   2.83 0.998     84.1    98.5    0.00    0.00  0.250  0.259   11.39    2.69    2.62   0.294   3.566  0.00      0    0.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 3 lqr 85_4: mean vhost CPU in own windows A 18.7 B 15.1 C 15.5 D 15.7 % of one core
+  1    4 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.3    64.3    0.00    0.00  0.250  0.256    0.00     nan     nan   0.152   0.568  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 4 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1310, cfg 639, cnt 641), B vnet2 (prog 1316, cfg 642, cnt 644), C vnet3 (prog 1322, cfg 645, cnt 647), D vnet5 (prog 1328, cfg 648, cnt 650)
+vnet1: replaced a left-over xdp_dropfrac (prog 1310) by xdp_limit prog id 1334, cfg map id 651, cnt map id 653
+vnet2: replaced a left-over xdp_dropfrac (prog 1316) by xdp_limit prog id 1340, cfg map id 654, cnt map id 656
+vnet3: replaced a left-over xdp_dropfrac (prog 1322) by xdp_limit prog id 1346, cfg map id 657, cnt map id 659
+vnet5: replaced a left-over xdp_dropfrac (prog 1328) by xdp_limit prog id 1352, cfg map id 660, cnt map id 662
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1334, B vnet2 prog 1340, C vnet3 prog 1346, D vnet5 prog 1352
+XDP: xdp_limit back on A vnet1 (prog 1334), B vnet2 (prog 1340), C vnet3 (prog 1346), D vnet5 (prog 1352)
+  1    5 lqr_orig           T80_paperK    9.00  8.80  0.95    9.00  8.29  0.92     0.92   11.00  11.01    8.97   8.98   11.03  11.04    8.77   8.78 0.962     85.5    99.4    0.00    0.00  0.250  0.259   39.82    8.78    5.93   0.262   3.948  0.00      0    0.00 0.11 0.11 0.00 0.10
+VHOST rep 1 slot 5 lqr_orig T80_paperK: mean vhost CPU in own windows A 22.0 B 20.7 C 26.4 D 21.3 % of one core
+LQR_ORIG rep 1 slot 5 T80_paperK: target 32.88, |e| A 26.21 B 23.05 C 17.24 D 19.03 (mean 21.38), mean u A 0.469 B 0.415 C 0.328 D 0.387, u released at 40.79 s
+  1    6 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.1    66.5    0.00    0.00  0.250  0.261    0.00     nan     nan   0.154   0.409  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 6 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  1    7 vfrot            0.8_1_2_0.94    9.00  8.76  0.95    9.00  8.92  0.95     0.95    4.64   4.65    7.90   7.91    2.45   2.45    3.89   3.90 0.716     88.4    95.0    0.00    0.00  0.250  0.256   18.91    2.45    0.05   0.245   3.769  0.00      0    0.00 0.00 0.00 0.00 0.10
+VHOST rep 1 slot 7 vfrot 0.8_1_2_0.94: mean vhost CPU in own windows A 18.2 B 29.4 C 9.3 D 15.5 % of one core
+  1    8 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.8    64.4    0.00    0.00  0.250  0.256    0.00     nan     nan   0.149   0.517  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 8 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1358, cfg 663, cnt 665), B vnet2 (prog 1364, cfg 666, cnt 668), C vnet3 (prog 1370, cfg 669, cnt 671), D vnet5 (prog 1376, cfg 672, cnt 674)
+vnet1: replaced a left-over xdp_dropfrac (prog 1358) by xdp_limit prog id 1382, cfg map id 675, cnt map id 677
+vnet2: replaced a left-over xdp_dropfrac (prog 1364) by xdp_limit prog id 1388, cfg map id 678, cnt map id 680
+vnet3: replaced a left-over xdp_dropfrac (prog 1370) by xdp_limit prog id 1394, cfg map id 681, cnt map id 683
+vnet5: replaced a left-over xdp_dropfrac (prog 1376) by xdp_limit prog id 1400, cfg map id 684, cnt map id 686
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1382, B vnet2 prog 1388, C vnet3 prog 1394, D vnet5 prog 1400
+XDP: xdp_limit back on A vnet1 (prog 1382), B vnet2 (prog 1388), C vnet3 (prog 1394), D vnet5 (prog 1400)
+  1    9 lqr_orig           T40_paperK    9.00  8.37  0.90    9.00  8.94  0.97     0.90    9.21   9.22    9.01   9.01    8.73   8.74    8.72   8.73 0.992     83.5    98.3    0.00    0.00  0.250  0.257   35.71    8.73    5.53   0.252   3.675  0.00      0    0.00 0.11 0.00 0.00 0.13
+VHOST rep 1 slot 9 lqr_orig T40_paperK: mean vhost CPU in own windows A 18.9 B 21.0 C 19.4 D 20.6 % of one core
+LQR_ORIG rep 1 slot 9 T40_paperK: target 16.44, |e| A 22.98 B 19.28 C 20.52 D 18.64 (mean 20.35), mean u A 0.482 B 0.405 C 0.402 D 0.401, u released at 40.79 s
+  1   10 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.2    66.5    0.00    0.00  0.250  0.251    0.00     nan     nan   0.161   0.574  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 10 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1406, cfg 687, cnt 689), B vnet2 (prog 1412, cfg 690, cnt 692), C vnet3 (prog 1418, cfg 693, cnt 695), D vnet5 (prog 1424, cfg 696, cnt 698)
+vnet1: replaced a left-over xdp_dropfrac (prog 1406) by xdp_limit prog id 1430, cfg map id 699, cnt map id 701
+vnet2: replaced a left-over xdp_dropfrac (prog 1412) by xdp_limit prog id 1436, cfg map id 702, cnt map id 704
+vnet3: replaced a left-over xdp_dropfrac (prog 1418) by xdp_limit prog id 1442, cfg map id 705, cnt map id 707
+vnet5: replaced a left-over xdp_dropfrac (prog 1424) by xdp_limit prog id 1448, cfg map id 708, cnt map id 710
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1430, B vnet2 prog 1436, C vnet3 prog 1442, D vnet5 prog 1448
+XDP: xdp_limit back on A vnet1 (prog 1430), B vnet2 (prog 1436), C vnet3 (prog 1442), D vnet5 (prog 1448)
+  1   11 lqr_orig              T60_zoh    9.00  7.04  0.87    9.00  8.62  0.95     0.87    9.61   9.62    8.77   8.78    9.46   9.47    8.16   8.17 0.985     85.9    99.4    0.00    0.00  0.250  0.260   36.04    8.17    5.76   0.296   4.203  0.00      0    0.00 0.33 0.11 0.11 0.18
+VHOST rep 1 slot 11 lqr_orig T60_zoh: mean vhost CPU in own windows A 21.8 B 24.6 C 24.6 D 21.2 % of one core
+LQR_ORIG rep 1 slot 11 T60_zoh: target 24.66, |e| A 19.11 B 16.68 C 19.07 D 19.56 (mean 18.60), mean u A 0.193 B 0.171 C 0.187 D 0.188, u released at 40.79 s
+  1   12 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.2    67.9    0.00    0.00  0.250  0.261    0.00     nan     nan   0.155   0.528  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 12 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1454, cfg 711, cnt 713), B vnet2 (prog 1460, cfg 714, cnt 716), C vnet3 (prog 1466, cfg 717, cnt 719), D vnet5 (prog 1472, cfg 720, cnt 722)
+vnet1: replaced a left-over xdp_dropfrac (prog 1454) by xdp_limit prog id 1478, cfg map id 723, cnt map id 725
+vnet2: replaced a left-over xdp_dropfrac (prog 1460) by xdp_limit prog id 1484, cfg map id 726, cnt map id 728
+vnet3: replaced a left-over xdp_dropfrac (prog 1466) by xdp_limit prog id 1490, cfg map id 729, cnt map id 731
+vnet5: replaced a left-over xdp_dropfrac (prog 1472) by xdp_limit prog id 1496, cfg map id 732, cnt map id 734
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1478, B vnet2 prog 1484, C vnet3 prog 1490, D vnet5 prog 1496
+XDP: xdp_limit back on A vnet1 (prog 1478), B vnet2 (prog 1484), C vnet3 (prog 1490), D vnet5 (prog 1496)
+  1   13 lqr_orig           T60_paperK    9.00  8.58  0.95    9.00  8.98  1.00     0.95   10.25  10.26    9.46   9.47    7.20   7.21    7.33   7.34 0.991     83.2    98.8    0.00    0.00  0.250  0.262   34.28    7.21    6.14   0.278   3.906  0.00      0    0.00 0.00 0.00 0.00 0.05
+VHOST rep 1 slot 13 lqr_orig T60_paperK: mean vhost CPU in own windows A 20.8 B 21.3 C 19.3 D 19.5 % of one core
+LQR_ORIG rep 1 slot 13 T60_paperK: target 24.66, |e| A 24.66 B 22.29 C 20.80 D 19.72 (mean 21.87), mean u A 0.473 B 0.414 C 0.409 D 0.395, u released at 40.78 s
+  1   14 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.0    69.7    0.00    0.00  0.250  0.254    0.00     nan     nan   0.186   0.484  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 14 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  1   15 vfrot     0.8_1_2_0.94_B24000    9.00  8.40  0.92    9.00  8.57  0.95     0.92    8.00   8.01    4.75   4.75    8.88   8.89    1.80   1.80 0.795     89.0    97.1    0.00    0.00  0.250  0.258   23.46    1.80    2.00   0.300   3.643  0.00      0    0.00 0.11 0.00 0.00 0.13
+VHOST rep 1 slot 15 vfrot 0.8_1_2_0.94_B24000: mean vhost CPU in own windows A 29.4 B 15.8 C 27.0 D 8.3 % of one core
+  1   16 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.9    64.8    0.00    0.00  0.250  0.251    0.00     nan     nan   0.180   0.581  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 1 slot 16 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+session rest 600 s
+rep 2 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.3%, steal 0.0%, ping 100/100 replies
+rep 2 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 60.0%, steal 0.0%, ping 100/100 replies
+REFERENCE rep 2: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 20 s, both together, eBPF), base_cpu 59.6%; RTT V2 p50 0.149 ms, p99 0.410 ms (RTT SLO threshold 2.000 ms, loss <= 1%), loss 0.00% of 200 replies
+rep slot mode                   param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x  fl_tot min_own min_ovl rtt_p50 rtt_p99 loss% rtt_ok okw_rtt d95o d90o d80o d95a
+  2    0 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.0    66.9    0.00    0.00  0.250  0.251    0.00     nan     nan   0.147   0.486  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 0 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1502, cfg 735, cnt 737), B vnet2 (prog 1508, cfg 738, cnt 740), C vnet3 (prog 1514, cfg 741, cnt 743), D vnet5 (prog 1520, cfg 744, cnt 746)
+vnet1: replaced a left-over xdp_dropfrac (prog 1502) by xdp_limit prog id 1526, cfg map id 747, cnt map id 749
+vnet2: replaced a left-over xdp_dropfrac (prog 1508) by xdp_limit prog id 1532, cfg map id 750, cnt map id 752
+vnet3: replaced a left-over xdp_dropfrac (prog 1514) by xdp_limit prog id 1538, cfg map id 753, cnt map id 755
+vnet5: replaced a left-over xdp_dropfrac (prog 1520) by xdp_limit prog id 1544, cfg map id 756, cnt map id 758
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1526, B vnet2 prog 1532, C vnet3 prog 1538, D vnet5 prog 1544
+XDP: xdp_limit back on A vnet1 (prog 1526), B vnet2 (prog 1532), C vnet3 (prog 1538), D vnet5 (prog 1544)
+  2    1 lqr_orig              T60_zoh    9.00  7.70  0.82    9.00  8.31  0.87     0.82   10.70  10.71    8.69   8.70    8.33   8.34    9.38   9.39 0.997     84.8    98.3    0.00    0.00  0.250  0.258   37.15    8.34    6.18   0.249   4.036  0.00      0    0.00 0.22 0.00 0.00 0.21
+VHOST rep 2 slot 1 lqr_orig T60_zoh: mean vhost CPU in own windows A 24.1 B 24.7 C 21.9 D 23.8 % of one core
+LQR_ORIG rep 2 slot 1 T60_zoh: target 24.66, |e| A 20.03 B 13.76 C 20.95 D 16.67 (mean 17.85), mean u A 0.196 B 0.131 C 0.196 D 0.139, u released at 40.78 s
+  2    2 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.3    65.0    0.00    0.00  0.250  0.256    0.00     nan     nan   0.170   0.521  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 2 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1550, cfg 759, cnt 761), B vnet2 (prog 1556, cfg 762, cnt 764), C vnet3 (prog 1562, cfg 765, cnt 767), D vnet5 (prog 1568, cfg 768, cnt 770)
+vnet1: replaced a left-over xdp_dropfrac (prog 1550) by xdp_limit prog id 1574, cfg map id 771, cnt map id 773
+vnet2: replaced a left-over xdp_dropfrac (prog 1556) by xdp_limit prog id 1580, cfg map id 774, cnt map id 776
+vnet3: replaced a left-over xdp_dropfrac (prog 1562) by xdp_limit prog id 1586, cfg map id 777, cnt map id 779
+vnet5: replaced a left-over xdp_dropfrac (prog 1568) by xdp_limit prog id 1592, cfg map id 780, cnt map id 782
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1574, B vnet2 prog 1580, C vnet3 prog 1586, D vnet5 prog 1592
+XDP: xdp_limit back on A vnet1 (prog 1574), B vnet2 (prog 1580), C vnet3 (prog 1586), D vnet5 (prog 1592)
+  2    3 lqr_orig           T80_paperK    9.00  8.45  0.92    9.00  8.42  0.92     0.92    9.57   9.58    7.28   7.29    9.25   9.26    9.90   9.91 0.914     84.8    98.8    0.00    0.00  0.250  0.258   36.04    7.29    4.35   0.278   4.118  0.00      0    0.00 0.33 0.22 0.00 0.13
+VHOST rep 2 slot 3 lqr_orig T80_paperK: mean vhost CPU in own windows A 19.2 B 18.6 C 21.2 D 24.6 % of one core
+LQR_ORIG rep 2 slot 3 T80_paperK: target 32.88, |e| A 25.21 B 22.68 C 23.10 D 17.00 (mean 22.00), mean u A 0.475 B 0.387 C 0.366 D 0.301, u released at 40.78 s
+  2    4 alone                      na    9.00  9.01  1.00    9.00  9.00  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.5    64.5    0.00    0.00  0.250  0.252    0.00     nan     nan   0.151   0.477  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 4 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  2    5 lqr                      85_4    9.00  8.69  0.95    9.00  8.63  0.97     0.95    3.14   3.15    2.91   2.91    2.84   2.84    3.00   3.01 0.999     84.0    97.7    0.00    0.00  0.250  0.257   11.91    2.84    2.54   0.273   3.089  0.00      0    0.00 0.11 0.00 0.00 0.08
+VHOST rep 2 slot 5 lqr 85_4: mean vhost CPU in own windows A 17.6 B 16.3 C 14.9 D 16.7 % of one core
+  2    6 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    66.1    0.00    0.00  0.250  0.253    0.00     nan     nan   0.179   0.445  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 6 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1598, cfg 783, cnt 785), B vnet2 (prog 1604, cfg 786, cnt 788), C vnet3 (prog 1610, cfg 789, cnt 791), D vnet5 (prog 1616, cfg 792, cnt 794)
+vnet1: replaced a left-over xdp_dropfrac (prog 1598) by xdp_limit prog id 1622, cfg map id 795, cnt map id 797
+vnet2: replaced a left-over xdp_dropfrac (prog 1604) by xdp_limit prog id 1628, cfg map id 798, cnt map id 800
+vnet3: replaced a left-over xdp_dropfrac (prog 1610) by xdp_limit prog id 1634, cfg map id 801, cnt map id 803
+vnet5: replaced a left-over xdp_dropfrac (prog 1616) by xdp_limit prog id 1640, cfg map id 804, cnt map id 806
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1622, B vnet2 prog 1628, C vnet3 prog 1634, D vnet5 prog 1640
+XDP: xdp_limit back on A vnet1 (prog 1622), B vnet2 (prog 1628), C vnet3 (prog 1634), D vnet5 (prog 1640)
+  2    7 lqr_orig           T60_paperK    9.00  8.48  0.92    9.00  8.85  0.95     0.92    9.26   9.27    9.31   9.32    6.29   6.30    6.37   6.38 0.956     82.0    99.4    0.00    0.00  0.250  0.262   31.26    6.30    4.13   0.266   2.605  0.00      0    0.00 0.22 0.22 0.00 0.10
+VHOST rep 2 slot 7 lqr_orig T60_paperK: mean vhost CPU in own windows A 19.7 B 22.1 C 16.9 D 17.8 % of one core
+LQR_ORIG rep 2 slot 7 T60_paperK: target 24.66, |e| A 22.41 B 13.97 C 19.36 D 16.60 (mean 18.08), mean u A 0.476 B 0.309 C 0.412 D 0.441, u released at 40.78 s
+  2    8 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.4    67.3    0.00    0.00  0.250  0.253    0.00     nan     nan   0.150   0.563  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 8 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  2    9 vfrot     0.8_1_2_0.94_B32000    9.00  8.74  0.95    9.00  8.92  0.97     0.95    4.68   4.68    5.06   5.07    4.39   4.40    5.19   5.20 0.703     87.0    94.7    0.00    0.00  0.250  0.255   19.35    4.40    0.04   0.277   3.847  0.00      0    0.00 0.00 0.00 0.00 0.08
+VHOST rep 2 slot 9 vfrot 0.8_1_2_0.94_B32000: mean vhost CPU in own windows A 20.4 B 18.1 C 17.5 D 18.0 % of one core
+  2   10 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.9    66.2    0.00    0.00  0.250  0.252    0.00     nan     nan   0.172   0.503  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 10 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1646, cfg 807, cnt 809), B vnet2 (prog 1652, cfg 810, cnt 812), C vnet3 (prog 1658, cfg 813, cnt 815), D vnet5 (prog 1664, cfg 816, cnt 818)
+vnet1: replaced a left-over xdp_dropfrac (prog 1646) by xdp_limit prog id 1670, cfg map id 819, cnt map id 821
+vnet2: replaced a left-over xdp_dropfrac (prog 1652) by xdp_limit prog id 1676, cfg map id 822, cnt map id 824
+vnet3: replaced a left-over xdp_dropfrac (prog 1658) by xdp_limit prog id 1682, cfg map id 825, cnt map id 827
+vnet5: replaced a left-over xdp_dropfrac (prog 1664) by xdp_limit prog id 1688, cfg map id 828, cnt map id 830
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1670, B vnet2 prog 1676, C vnet3 prog 1682, D vnet5 prog 1688
+XDP: xdp_limit back on A vnet1 (prog 1670), B vnet2 (prog 1676), C vnet3 (prog 1682), D vnet5 (prog 1688)
+  2   11 lqr_orig           T40_paperK    9.00  8.86  0.97    9.00  8.80  0.97     0.97    9.75   9.76    6.69   6.70    7.76   7.77    8.97   8.98 0.998     83.9    98.8    0.00    0.00  0.250  0.258   33.21    6.70    6.43   0.209   4.096  0.00      0    0.00 0.00 0.00 0.00 0.05
+VHOST rep 2 slot 11 lqr_orig T40_paperK: mean vhost CPU in own windows A 20.5 B 17.5 C 19.0 D 20.7 % of one core
+LQR_ORIG rep 2 slot 11 T40_paperK: target 16.44, |e| A 24.79 B 19.11 C 18.56 D 20.38 (mean 20.71), mean u A 0.483 B 0.406 C 0.446 D 0.428, u released at 40.78 s
+  2   12 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.7    66.0    0.00    0.00  0.250  0.251    0.00     nan     nan   0.170   0.471  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 12 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  2   13 vfrot            0.8_1_2_0.94    9.00  8.22  0.92    9.00  8.94  1.00     0.92    2.82   2.83    3.33   3.33    7.71   7.72    3.67   3.67 0.447     88.0    97.6    0.00    0.00  0.250  0.254   17.55    2.83    0.05   0.286   3.181  0.00      0    0.00 0.22 0.22 0.11 0.08
+VHOST rep 2 slot 13 vfrot 0.8_1_2_0.94: mean vhost CPU in own windows A 13.5 B 15.7 C 27.7 D 14.9 % of one core
+  2   14 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.7    66.0    0.00    0.00  0.250  0.253    0.00     nan     nan   0.164   0.489  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 14 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  2   15 vfrot     0.8_1_2_0.94_B24000    9.00  8.92  0.95    9.00  8.71  0.95     0.95    5.84   5.85    9.69   9.71    3.60   3.61    0.81   0.81 0.496     88.7    96.4    0.00    0.00  0.250  0.254   19.97    0.81    0.04   0.292   4.121  0.00      0    0.00 0.00 0.00 0.00 0.10
+VHOST rep 2 slot 15 vfrot 0.8_1_2_0.94_B24000: mean vhost CPU in own windows A 22.0 B 35.6 C 14.2 D 5.2 % of one core
+  2   16 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.5    66.9    0.00    0.00  0.250  0.256    0.00     nan     nan   0.184   0.454  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 2 slot 16 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+session rest 600 s
+rep 3 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.4%, steal 0.0%, ping 100/100 replies
+rep 3 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.9%, steal 0.0%, ping 100/100 replies
+REFERENCE rep 3: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 20 s, both together, eBPF), base_cpu 59.2%; RTT V2 p50 0.143 ms, p99 0.385 ms (RTT SLO threshold 2.000 ms, loss <= 1%), loss 0.00% of 200 replies
+rep slot mode                   param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x  fl_tot min_own min_ovl rtt_p50 rtt_p99 loss% rtt_ok okw_rtt d95o d90o d80o d95a
+  3    0 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.7    63.3    0.00    0.00  0.250  0.252    0.00     nan     nan   0.169   0.505  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 0 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  3    1 lqr                      85_4    9.00  8.95  0.97    9.00  8.93  1.00     0.97    3.18   3.19    2.98   2.99    2.99   2.99    2.82   2.82 0.994     84.1    98.0    0.00    0.00  0.250  0.258   11.99    2.82    2.22   0.311   2.449  0.00      0    0.00 0.11 0.00 0.00 0.03
+VHOST rep 3 slot 1 lqr 85_4: mean vhost CPU in own windows A 17.8 B 16.3 C 17.9 D 15.5 % of one core
+  3    2 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.2    65.0    0.00    0.00  0.250  0.252    0.00     nan     nan   0.153   0.462  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 2 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  3    3 vfrot            0.8_1_2_0.94    9.00  8.54  0.92    9.00  8.95  1.00     0.92    3.98   3.98    5.39   5.39    3.59   3.59    6.30   6.30 0.703     87.9    95.3    0.00    0.00  0.250  0.255   19.27    3.59    0.05   0.256   2.912  0.00      0    0.00 0.11 0.00 0.00 0.08
+VHOST rep 3 slot 3 vfrot 0.8_1_2_0.94: mean vhost CPU in own windows A 18.4 B 19.1 C 13.2 D 24.4 % of one core
+  3    4 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    73.1    0.00    0.00  0.250  0.256    0.00     nan     nan   0.184   0.534  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 4 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1694, cfg 831, cnt 833), B vnet2 (prog 1700, cfg 834, cnt 836), C vnet3 (prog 1706, cfg 837, cnt 839), D vnet5 (prog 1712, cfg 840, cnt 842)
+vnet1: replaced a left-over xdp_dropfrac (prog 1694) by xdp_limit prog id 1718, cfg map id 843, cnt map id 845
+vnet2: replaced a left-over xdp_dropfrac (prog 1700) by xdp_limit prog id 1724, cfg map id 846, cnt map id 848
+vnet3: replaced a left-over xdp_dropfrac (prog 1706) by xdp_limit prog id 1730, cfg map id 849, cnt map id 851
+vnet5: replaced a left-over xdp_dropfrac (prog 1712) by xdp_limit prog id 1736, cfg map id 852, cnt map id 854
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1718, B vnet2 prog 1724, C vnet3 prog 1730, D vnet5 prog 1736
+XDP: xdp_limit back on A vnet1 (prog 1718), B vnet2 (prog 1724), C vnet3 (prog 1730), D vnet5 (prog 1736)
+  3    5 lqr_orig           T80_paperK    9.00  8.92  0.95    9.00  8.08  0.92     0.92    9.47   9.48   10.11  10.12   10.36  10.37    8.07   8.08 0.969     85.8    98.3    0.00    0.00  0.250  0.261   38.05    8.08    6.73   0.331   2.716  0.00      0    0.00 0.33 0.33 0.00 0.10
+VHOST rep 3 slot 5 lqr_orig T80_paperK: mean vhost CPU in own windows A 18.8 B 25.3 C 24.6 D 20.9 % of one core
+LQR_ORIG rep 3 slot 5 T80_paperK: target 32.88, |e| A 23.95 B 11.88 C 21.35 D 21.84 (mean 19.76), mean u A 0.475 B 0.293 C 0.412 D 0.375, u released at 40.78 s
+  3    6 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.3    65.0    0.00    0.00  0.250  0.251    0.00     nan     nan   0.183   0.549  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 6 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  3    7 vfrot     0.8_1_2_0.94_B24000    9.00  8.92  0.97    9.00  8.91  0.97     0.97    4.11   4.12    4.72   4.72    7.67   7.68    7.35   7.36 0.855     88.6    94.8    0.00    0.00  0.250  0.255   23.87    4.12    2.27   0.329   3.772  0.00      0    0.00 0.00 0.00 0.00 0.05
+VHOST rep 3 slot 7 vfrot 0.8_1_2_0.94_B24000: mean vhost CPU in own windows A 17.3 B 17.2 C 24.9 D 24.2 % of one core
+  3    8 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.0    67.3    0.00    0.00  0.250  0.255    0.00     nan     nan   0.184   0.602  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 8 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1742, cfg 855, cnt 857), B vnet2 (prog 1748, cfg 858, cnt 860), C vnet3 (prog 1754, cfg 861, cnt 863), D vnet5 (prog 1760, cfg 864, cnt 866)
+vnet1: replaced a left-over xdp_dropfrac (prog 1742) by xdp_limit prog id 1766, cfg map id 867, cnt map id 869
+vnet2: replaced a left-over xdp_dropfrac (prog 1748) by xdp_limit prog id 1772, cfg map id 870, cnt map id 872
+vnet3: replaced a left-over xdp_dropfrac (prog 1754) by xdp_limit prog id 1778, cfg map id 873, cnt map id 875
+vnet5: replaced a left-over xdp_dropfrac (prog 1760) by xdp_limit prog id 1784, cfg map id 876, cnt map id 878
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1766, B vnet2 prog 1772, C vnet3 prog 1778, D vnet5 prog 1784
+XDP: xdp_limit back on A vnet1 (prog 1766), B vnet2 (prog 1772), C vnet3 (prog 1778), D vnet5 (prog 1784)
+  3    9 lqr_orig           T60_paperK    9.00  8.40  0.92    9.00  8.84  0.97     0.92    9.23   9.24    9.02   9.03    8.56   8.57    7.80   7.81 0.968     84.9    98.9    0.00    0.00  0.250  0.259   34.64    7.81    4.90   0.298   3.316  0.00      0    0.00 0.00 0.00 0.00 0.10
+VHOST rep 3 slot 9 lqr_orig T60_paperK: mean vhost CPU in own windows A 19.2 B 22.3 C 23.5 D 22.7 % of one core
+LQR_ORIG rep 3 slot 9 T60_paperK: target 24.66, |e| A 23.22 B 18.71 C 16.20 D 13.89 (mean 18.01), mean u A 0.469 B 0.354 C 0.323 D 0.305, u released at 40.78 s
+  3   10 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.1    69.0    0.00    0.00  0.250  0.256    0.00     nan     nan   0.173   0.488  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 10 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1790, cfg 879, cnt 881), B vnet2 (prog 1796, cfg 882, cnt 884), C vnet3 (prog 1802, cfg 885, cnt 887), D vnet5 (prog 1808, cfg 888, cnt 890)
+vnet1: replaced a left-over xdp_dropfrac (prog 1790) by xdp_limit prog id 1814, cfg map id 891, cnt map id 893
+vnet2: replaced a left-over xdp_dropfrac (prog 1796) by xdp_limit prog id 1820, cfg map id 894, cnt map id 896
+vnet3: replaced a left-over xdp_dropfrac (prog 1802) by xdp_limit prog id 1826, cfg map id 897, cnt map id 899
+vnet5: replaced a left-over xdp_dropfrac (prog 1808) by xdp_limit prog id 1832, cfg map id 900, cnt map id 902
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1814, B vnet2 prog 1820, C vnet3 prog 1826, D vnet5 prog 1832
+XDP: xdp_limit back on A vnet1 (prog 1814), B vnet2 (prog 1820), C vnet3 (prog 1826), D vnet5 (prog 1832)
+  3   11 lqr_orig           T40_paperK    9.00  7.71  0.90    9.00  8.42  0.92     0.90    8.92   8.93    7.15   7.16    5.97   5.97    7.61   7.62 0.968     82.8    98.2    0.00    0.00  0.250  0.278   29.68    5.97    5.10   0.280   4.637  0.00      0    0.00 0.22 0.11 0.11 0.18
+VHOST rep 3 slot 11 lqr_orig T40_paperK: mean vhost CPU in own windows A 19.4 B 19.1 C 18.3 D 20.8 % of one core
+LQR_ORIG rep 3 slot 11 T40_paperK: target 16.44, |e| A 22.96 B 20.76 C 15.83 D 18.53 (mean 19.52), mean u A 0.485 B 0.442 C 0.379 D 0.372, u released at 40.78 s
+  3   12 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.3    69.6    0.00    0.00  0.250  0.254    0.00     nan     nan   0.187   0.683  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 12 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1838, cfg 903, cnt 905), B vnet2 (prog 1844, cfg 906, cnt 908), C vnet3 (prog 1850, cfg 909, cnt 911), D vnet5 (prog 1856, cfg 912, cnt 914)
+vnet1: replaced a left-over xdp_dropfrac (prog 1838) by xdp_limit prog id 1862, cfg map id 915, cnt map id 917
+vnet2: replaced a left-over xdp_dropfrac (prog 1844) by xdp_limit prog id 1868, cfg map id 918, cnt map id 920
+vnet3: replaced a left-over xdp_dropfrac (prog 1850) by xdp_limit prog id 1874, cfg map id 921, cnt map id 923
+vnet5: replaced a left-over xdp_dropfrac (prog 1856) by xdp_limit prog id 1880, cfg map id 924, cnt map id 926
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1862, B vnet2 prog 1868, C vnet3 prog 1874, D vnet5 prog 1880
+XDP: xdp_limit back on A vnet1 (prog 1862), B vnet2 (prog 1868), C vnet3 (prog 1874), D vnet5 (prog 1880)
+  3   13 lqr_orig              T60_zoh    9.00  6.93  0.79    9.00  8.05  0.82     0.79    8.95   8.96    7.83   7.84    6.78   6.78    7.04   7.05 0.993     85.5    98.8    0.00    0.00  0.250  0.256   30.63    6.78    5.67   0.292   6.353  0.00      0    0.00 0.44 0.33 0.33 0.28
+VHOST rep 3 slot 13 lqr_orig T60_zoh: mean vhost CPU in own windows A 22.4 B 22.3 C 23.7 D 23.6 % of one core
+LQR_ORIG rep 3 slot 13 T60_zoh: target 24.66, |e| A 19.15 B 17.76 C 10.43 D 14.47 (mean 15.45), mean u A 0.199 B 0.162 C 0.108 D 0.143, u released at 40.78 s
+  3   14 alone                      na    9.00  8.95  1.00    9.00  8.97  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.7    70.2    0.00    0.00  0.250  0.323    0.00     nan     nan   0.246   2.792  0.00      0    0.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 14 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  3   15 vfrot     0.8_1_2_0.94_B32000    9.00  8.46  0.90    9.00  8.39  0.92     0.90    4.14   4.15    5.32   5.32    4.74   4.75    3.47   3.47 0.720     79.1    94.9    0.00    0.00  0.250  0.320   17.69    3.47    0.06   0.430  13.733  0.00      0    0.00 0.33 0.11 0.00 0.18
+VHOST rep 3 slot 15 vfrot 0.8_1_2_0.94_B32000: mean vhost CPU in own windows A 18.2 B 21.4 C 18.3 D 13.6 % of one core
+  3   16 alone                      na    9.00  9.01  1.00    9.00  9.00  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.2    70.3    0.00    0.00  0.250  0.285    0.00     nan     nan   0.218   2.961  0.00      0    0.00 0.00 0.00 0.00 0.00
+VHOST rep 3 slot 16 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+session rest 600 s
+rep 4 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.3%, steal 0.0%, ping 100/100 replies
+rep 4 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.5%, steal 0.0%, ping 100/100 replies
+REFERENCE rep 4: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 20 s, both together, eBPF), base_cpu 58.9%; RTT V2 p50 0.144 ms, p99 0.447 ms (RTT SLO threshold 2.000 ms, loss <= 1%), loss 0.00% of 200 replies
+rep slot mode                   param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x  fl_tot min_own min_ovl rtt_p50 rtt_p99 loss% rtt_ok okw_rtt d95o d90o d80o d95a
+  4    0 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    69.5    0.00    0.00  0.250  0.256    0.00     nan     nan   0.150   0.542  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 0 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1886, cfg 927, cnt 929), B vnet2 (prog 1892, cfg 930, cnt 932), C vnet3 (prog 1898, cfg 933, cnt 935), D vnet5 (prog 1904, cfg 936, cnt 938)
+vnet1: replaced a left-over xdp_dropfrac (prog 1886) by xdp_limit prog id 1910, cfg map id 939, cnt map id 941
+vnet2: replaced a left-over xdp_dropfrac (prog 1892) by xdp_limit prog id 1916, cfg map id 942, cnt map id 944
+vnet3: replaced a left-over xdp_dropfrac (prog 1898) by xdp_limit prog id 1922, cfg map id 945, cnt map id 947
+vnet5: replaced a left-over xdp_dropfrac (prog 1904) by xdp_limit prog id 1928, cfg map id 948, cnt map id 950
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1910, B vnet2 prog 1916, C vnet3 prog 1922, D vnet5 prog 1928
+XDP: xdp_limit back on A vnet1 (prog 1910), B vnet2 (prog 1916), C vnet3 (prog 1922), D vnet5 (prog 1928)
+  4    1 lqr_orig              T60_zoh    9.00  7.78  0.87    9.00  7.48  0.85     0.85   13.60  13.61    7.95   7.96    9.78   9.79    9.94   9.95 0.956     85.2    99.5    0.00    0.00  0.250  0.259   41.31    7.96    6.27   0.242   3.994  0.00      0    0.00 0.44 0.44 0.22 0.23
+VHOST rep 4 slot 1 lqr_orig T60_zoh: mean vhost CPU in own windows A 26.0 B 22.9 C 23.6 D 25.0 % of one core
+LQR_ORIG rep 4 slot 1 T60_zoh: target 24.66, |e| A 24.36 B 14.15 C 18.68 D 18.81 (mean 19.00), mean u A 0.243 B 0.138 C 0.189 D 0.183, u released at 40.78 s
+  4    2 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    65.6    0.00    0.00  0.250  0.252    0.00     nan     nan   0.152   0.511  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 2 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  4    3 vfrot     0.8_1_2_0.94_B24000    9.00  8.88  0.97    9.00  7.43  0.87     0.87    7.13   7.14    3.46   3.47    4.65   4.65    5.40   5.41 0.707     87.5    94.4    0.00    0.00  0.250  0.257   20.67    3.47    0.05   0.271   4.266  0.00      0    0.00 0.00 0.00 0.00 0.13
+VHOST rep 4 slot 3 vfrot 0.8_1_2_0.94_B24000: mean vhost CPU in own windows A 24.9 B 13.2 C 17.5 D 21.0 % of one core
+  4    4 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.7    65.4    0.00    0.00  0.250  0.252    0.00     nan     nan   0.162   0.391  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 4 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1934, cfg 951, cnt 953), B vnet2 (prog 1940, cfg 954, cnt 956), C vnet3 (prog 1946, cfg 957, cnt 959), D vnet5 (prog 1952, cfg 960, cnt 962)
+vnet1: replaced a left-over xdp_dropfrac (prog 1934) by xdp_limit prog id 1958, cfg map id 963, cnt map id 965
+vnet2: replaced a left-over xdp_dropfrac (prog 1940) by xdp_limit prog id 1964, cfg map id 966, cnt map id 968
+vnet3: replaced a left-over xdp_dropfrac (prog 1946) by xdp_limit prog id 1970, cfg map id 969, cnt map id 971
+vnet5: replaced a left-over xdp_dropfrac (prog 1952) by xdp_limit prog id 1976, cfg map id 972, cnt map id 974
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 1958, B vnet2 prog 1964, C vnet3 prog 1970, D vnet5 prog 1976
+XDP: xdp_limit back on A vnet1 (prog 1958), B vnet2 (prog 1964), C vnet3 (prog 1970), D vnet5 (prog 1976)
+  4    5 lqr_orig           T80_paperK    9.00  8.33  0.92    9.00  8.69  0.95     0.92   10.23  10.24   10.48  10.49    7.87   7.88    8.68   8.69 0.992     83.9    98.8    0.00    0.00  0.250  0.257   37.30    7.88    6.53   0.290   3.622  0.00      0    0.00 0.22 0.11 0.00 0.13
+VHOST rep 4 slot 5 lqr_orig T80_paperK: mean vhost CPU in own windows A 20.7 B 25.3 C 20.1 D 22.6 % of one core
+LQR_ORIG rep 4 slot 5 T80_paperK: target 32.88, |e| A 25.01 B 15.16 C 18.95 D 16.43 (mean 18.89), mean u A 0.475 B 0.316 C 0.393 D 0.278, u released at 40.78 s
+  4    6 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.7    67.9    0.00    0.00  0.250  0.252    0.00     nan     nan   0.191   0.457  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 6 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 1982, cfg 975, cnt 977), B vnet2 (prog 1988, cfg 978, cnt 980), C vnet3 (prog 1994, cfg 981, cnt 983), D vnet5 (prog 2000, cfg 984, cnt 986)
+vnet1: replaced a left-over xdp_dropfrac (prog 1982) by xdp_limit prog id 2006, cfg map id 987, cnt map id 989
+vnet2: replaced a left-over xdp_dropfrac (prog 1988) by xdp_limit prog id 2012, cfg map id 990, cnt map id 992
+vnet3: replaced a left-over xdp_dropfrac (prog 1994) by xdp_limit prog id 2018, cfg map id 993, cnt map id 995
+vnet5: replaced a left-over xdp_dropfrac (prog 2000) by xdp_limit prog id 2024, cfg map id 996, cnt map id 998
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2006, B vnet2 prog 2012, C vnet3 prog 2018, D vnet5 prog 2024
+XDP: xdp_limit back on A vnet1 (prog 2006), B vnet2 (prog 2012), C vnet3 (prog 2018), D vnet5 (prog 2024)
+  4    7 lqr_orig           T60_paperK    9.00  8.54  0.95    9.00  8.40  0.92     0.92    8.68   8.69    9.39   9.40    8.33   8.34    6.73   6.74 0.989     84.7    99.4    0.00    0.00  0.250  0.257   33.17    6.74    5.91   0.248   5.249  0.00      0    0.00 0.00 0.00 0.00 0.10
+VHOST rep 4 slot 7 lqr_orig T60_paperK: mean vhost CPU in own windows A 18.9 B 21.8 C 20.6 D 17.8 % of one core
+LQR_ORIG rep 4 slot 7 T60_paperK: target 24.66, |e| A 21.99 B 20.76 C 20.37 D 17.37 (mean 20.12), mean u A 0.477 B 0.422 C 0.389 D 0.397, u released at 40.78 s
+  4    8 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.2    65.6    0.00    0.00  0.250  0.252    0.00     nan     nan   0.172   0.514  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 8 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  4    9 lqr                      85_4    9.00  8.99  0.97    9.00  8.92  0.95     0.95    2.72   2.72    2.59   2.60    2.71   2.72    2.60   2.61 0.999     84.1    98.5    0.00    0.00  0.250  0.256   10.64    2.60    2.00   0.270   4.509  0.00      0    0.00 0.00 0.00 0.00 0.08
+VHOST rep 4 slot 9 lqr 85_4: mean vhost CPU in own windows A 17.5 B 15.0 C 16.1 D 15.1 % of one core
+  4   10 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.9    65.5    0.00    0.00  0.250  0.261    0.00     nan     nan   0.176   0.474  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 10 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  4   11 vfrot            0.8_1_2_0.94    9.00  8.77  1.00    9.00  8.64  0.95     0.95    5.90   5.91    2.92   2.93    5.30   5.31    3.79   3.79 0.613     88.0    94.1    0.00    0.00  0.250  0.255   17.94    2.93    0.05   0.275   4.152  0.00      0    0.00 0.11 0.00 0.00 0.05
+VHOST rep 4 slot 11 vfrot 0.8_1_2_0.94: mean vhost CPU in own windows A 25.4 B 12.2 C 20.2 D 16.2 % of one core
+  4   12 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.5    65.4    0.00    0.00  0.250  0.256    0.00     nan     nan   0.179   0.530  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 12 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  4   13 vfrot     0.8_1_2_0.94_B32000    9.00  8.30  0.92    9.00  8.89  0.95     0.92    2.79   2.80    7.19   7.20    7.78   7.79    5.86   5.87 0.495     89.2    97.6    0.00    0.00  0.250  0.262   23.66    2.80    0.05   0.314   4.026  0.00      0    0.00 0.00 0.00 0.00 0.13
+VHOST rep 4 slot 13 vfrot 0.8_1_2_0.94_B32000: mean vhost CPU in own windows A 13.3 B 23.5 C 26.5 D 20.5 % of one core
+  4   14 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.1    73.4    0.00    0.00  0.250  0.320    0.00     nan     nan   0.158   0.507  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 14 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2030, cfg 999, cnt 1001), B vnet2 (prog 2036, cfg 1002, cnt 1004), C vnet3 (prog 2042, cfg 1005, cnt 1007), D vnet5 (prog 2048, cfg 1008, cnt 1010)
+vnet1: replaced a left-over xdp_dropfrac (prog 2030) by xdp_limit prog id 2054, cfg map id 1011, cnt map id 1013
+vnet2: replaced a left-over xdp_dropfrac (prog 2036) by xdp_limit prog id 2060, cfg map id 1014, cnt map id 1016
+vnet3: replaced a left-over xdp_dropfrac (prog 2042) by xdp_limit prog id 2066, cfg map id 1017, cnt map id 1019
+vnet5: replaced a left-over xdp_dropfrac (prog 2048) by xdp_limit prog id 2072, cfg map id 1020, cnt map id 1022
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2054, B vnet2 prog 2060, C vnet3 prog 2066, D vnet5 prog 2072
+XDP: xdp_limit back on A vnet1 (prog 2054), B vnet2 (prog 2060), C vnet3 (prog 2066), D vnet5 (prog 2072)
+  4   15 lqr_orig           T40_paperK    9.00  8.70  0.97    9.00  8.58  0.97     0.97    8.86   8.87    8.27   8.27    8.56   8.57    6.05   6.06 0.969     83.1    98.8    0.00    0.00  0.250  0.257   31.77    6.06    4.90   0.257   4.395  0.00      0    0.00 0.00 0.00 0.00 0.05
+VHOST rep 4 slot 15 lqr_orig T40_paperK: mean vhost CPU in own windows A 19.2 B 20.6 C 21.2 D 17.7 % of one core
+LQR_ORIG rep 4 slot 15 T40_paperK: target 16.44, |e| A 20.86 B 19.51 C 18.35 D 15.48 (mean 18.55), mean u A 0.469 B 0.406 C 0.387 D 0.416, u released at 40.78 s
+  4   16 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    70.1    0.00    0.00  0.250  0.256    0.00     nan     nan   0.169   0.518  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 4 slot 16 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+session rest 600 s
+rep 5 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.9%, steal 0.0%, ping 100/100 replies
+rep 5 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.1%, steal 0.0%, ping 100/100 replies
+REFERENCE rep 5: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 20 s, both together, eBPF), base_cpu 59.0%; RTT V2 p50 0.139 ms, p99 0.400 ms (RTT SLO threshold 2.000 ms, loss <= 1%), loss 0.00% of 200 replies
+rep slot mode                   param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x  fl_tot min_own min_ovl rtt_p50 rtt_p99 loss% rtt_ok okw_rtt d95o d90o d80o d95a
+  5    0 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.2    63.7    0.00    0.00  0.250  0.251    0.00     nan     nan   0.177   0.484  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 0 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  5    1 vfrot            0.8_1_2_0.94    9.00  8.97  0.97    9.00  8.93  0.97     0.97    4.65   4.66    6.21   6.22    3.79   3.79    3.13   3.13 0.882     87.1    94.3    0.00    0.00  0.250  0.257   17.80    3.13    2.25   0.265   2.376  0.00      0    0.00 0.00 0.00 0.00 0.05
+VHOST rep 5 slot 1 vfrot 0.8_1_2_0.94: mean vhost CPU in own windows A 18.3 B 21.6 C 15.7 D 11.8 % of one core
+  5    2 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.8    71.3    0.00    0.00  0.250  0.253    0.00     nan     nan   0.156   0.398  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 2 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2078, cfg 1023, cnt 1025), B vnet2 (prog 2084, cfg 1026, cnt 1028), C vnet3 (prog 2090, cfg 1029, cnt 1031), D vnet5 (prog 2096, cfg 1032, cnt 1034)
+vnet1: replaced a left-over xdp_dropfrac (prog 2078) by xdp_limit prog id 2102, cfg map id 1035, cnt map id 1037
+vnet2: replaced a left-over xdp_dropfrac (prog 2084) by xdp_limit prog id 2108, cfg map id 1038, cnt map id 1040
+vnet3: replaced a left-over xdp_dropfrac (prog 2090) by xdp_limit prog id 2114, cfg map id 1041, cnt map id 1043
+vnet5: replaced a left-over xdp_dropfrac (prog 2096) by xdp_limit prog id 2120, cfg map id 1044, cnt map id 1046
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2102, B vnet2 prog 2108, C vnet3 prog 2114, D vnet5 prog 2120
+XDP: xdp_limit back on A vnet1 (prog 2102), B vnet2 (prog 2108), C vnet3 (prog 2114), D vnet5 (prog 2120)
+  5    3 lqr_orig           T80_paperK    9.00  7.66  0.85    9.00  7.48  0.87     0.85    8.28   8.29    8.36   8.37    9.10   9.11    9.90   9.91 0.973     85.6    99.3    0.00    0.00  0.250  0.261   35.68    8.29    5.43   0.256   5.142  0.00      0    0.00 0.44 0.33 0.22 0.26
+VHOST rep 5 slot 3 lqr_orig T80_paperK: mean vhost CPU in own windows A 18.3 B 22.6 C 24.1 D 25.1 % of one core
+LQR_ORIG rep 5 slot 3 T80_paperK: target 32.88, |e| A 23.53 B 18.38 C 19.38 D 10.70 (mean 18.00), mean u A 0.475 B 0.309 C 0.307 D 0.274, u released at 40.79 s
+  5    4 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.4    71.2    0.00    0.00  0.250  0.259    0.00     nan     nan   0.184   0.466  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 4 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2126, cfg 1047, cnt 1049), B vnet2 (prog 2132, cfg 1050, cnt 1052), C vnet3 (prog 2138, cfg 1053, cnt 1055), D vnet5 (prog 2144, cfg 1056, cnt 1058)
+vnet1: replaced a left-over xdp_dropfrac (prog 2126) by xdp_limit prog id 2150, cfg map id 1059, cnt map id 1061
+vnet2: replaced a left-over xdp_dropfrac (prog 2132) by xdp_limit prog id 2156, cfg map id 1062, cnt map id 1064
+vnet3: replaced a left-over xdp_dropfrac (prog 2138) by xdp_limit prog id 2162, cfg map id 1065, cnt map id 1067
+vnet5: replaced a left-over xdp_dropfrac (prog 2144) by xdp_limit prog id 2168, cfg map id 1068, cnt map id 1070
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2150, B vnet2 prog 2156, C vnet3 prog 2162, D vnet5 prog 2168
+XDP: xdp_limit back on A vnet1 (prog 2150), B vnet2 (prog 2156), C vnet3 (prog 2162), D vnet5 (prog 2168)
+  5    5 lqr_orig              T60_zoh    9.00  7.94  0.92    9.00  8.39  0.92     0.92   10.33  10.34    7.21   7.22    6.64   6.65    6.76   6.77 0.978     84.2    98.8    0.00    0.00  0.250  0.262   30.98    6.65    5.04   0.318   4.909  0.00      0    0.00 0.33 0.22 0.00 0.15
+VHOST rep 5 slot 5 lqr_orig T60_zoh: mean vhost CPU in own windows A 25.0 B 21.5 C 21.7 D 20.9 % of one core
+LQR_ORIG rep 5 slot 5 T60_zoh: target 24.66, |e| A 19.10 B 18.62 C 15.12 D 14.68 (mean 16.88), mean u A 0.200 B 0.154 C 0.147 D 0.135, u released at 40.78 s
+  5    6 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.0    69.3    0.00    0.00  0.250  0.254    0.00     nan     nan   0.173   0.508  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 6 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  5    7 vfrot     0.8_1_2_0.94_B24000    9.00  8.66  0.95    9.00  8.86  0.97     0.95    4.13   4.14    8.99   9.00    3.79   3.79    5.49   5.50 0.479     88.0    95.3    0.00    0.00  0.250  0.254   22.43    3.79    0.06   0.270   1.942  0.00      1    0.95 0.00 0.00 0.00 0.08
+VHOST rep 5 slot 7 vfrot 0.8_1_2_0.94_B24000: mean vhost CPU in own windows A 16.7 B 29.3 C 13.7 D 17.9 % of one core
+  5    8 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.3    69.5    0.00    0.00  0.250  0.257    0.00     nan     nan   0.184   0.606  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 8 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  5    9 lqr                      85_4    9.00  8.96  1.00    9.00  8.95  0.97     0.97    2.87   2.87    2.54   2.54    2.56   2.57    2.45   2.45 0.998     84.2    98.4    0.00    0.00  0.250  0.257   10.43    2.45    1.88   0.273   3.783  0.00      0    0.00 0.00 0.00 0.00 0.03
+VHOST rep 5 slot 9 lqr 85_4: mean vhost CPU in own windows A 17.4 B 14.6 C 15.6 D 14.1 % of one core
+  5   10 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.8    65.4    0.00    0.00  0.250  0.251    0.00     nan     nan   0.195   0.626  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 10 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2174, cfg 1071, cnt 1073), B vnet2 (prog 2180, cfg 1074, cnt 1076), C vnet3 (prog 2186, cfg 1077, cnt 1079), D vnet5 (prog 2192, cfg 1080, cnt 1082)
+vnet1: replaced a left-over xdp_dropfrac (prog 2174) by xdp_limit prog id 2198, cfg map id 1083, cnt map id 1085
+vnet2: replaced a left-over xdp_dropfrac (prog 2180) by xdp_limit prog id 2204, cfg map id 1086, cnt map id 1088
+vnet3: replaced a left-over xdp_dropfrac (prog 2186) by xdp_limit prog id 2210, cfg map id 1089, cnt map id 1091
+vnet5: replaced a left-over xdp_dropfrac (prog 2192) by xdp_limit prog id 2216, cfg map id 1092, cnt map id 1094
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2198, B vnet2 prog 2204, C vnet3 prog 2210, D vnet5 prog 2216
+XDP: xdp_limit back on A vnet1 (prog 2198), B vnet2 (prog 2204), C vnet3 (prog 2210), D vnet5 (prog 2216)
+  5   11 lqr_orig           T60_paperK    9.00  8.93  0.97    9.00  8.94  1.00     0.97    9.08   9.08    8.81   8.82    8.26   8.27    8.28   8.28 0.993     83.7    98.7    0.00    0.00  0.250  0.259   34.46    8.27    6.43   0.297   3.953  0.00      0    0.00 0.00 0.00 0.00 0.03
+VHOST rep 5 slot 11 lqr_orig T60_paperK: mean vhost CPU in own windows A 19.6 B 22.2 C 21.1 D 21.2 % of one core
+LQR_ORIG rep 5 slot 11 T60_paperK: target 24.66, |e| A 24.01 B 21.49 C 20.98 D 17.91 (mean 21.10), mean u A 0.480 B 0.378 C 0.387 D 0.370, u released at 40.78 s
+  5   12 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.4    66.1    0.00    0.00  0.250  0.252    0.00     nan     nan   0.164   0.473  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 12 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2222, cfg 1095, cnt 1097), B vnet2 (prog 2228, cfg 1098, cnt 1100), C vnet3 (prog 2234, cfg 1101, cnt 1103), D vnet5 (prog 2240, cfg 1104, cnt 1106)
+vnet1: replaced a left-over xdp_dropfrac (prog 2222) by xdp_limit prog id 2246, cfg map id 1107, cnt map id 1109
+vnet2: replaced a left-over xdp_dropfrac (prog 2228) by xdp_limit prog id 2252, cfg map id 1110, cnt map id 1112
+vnet3: replaced a left-over xdp_dropfrac (prog 2234) by xdp_limit prog id 2258, cfg map id 1113, cnt map id 1115
+vnet5: replaced a left-over xdp_dropfrac (prog 2240) by xdp_limit prog id 2264, cfg map id 1116, cnt map id 1118
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2246, B vnet2 prog 2252, C vnet3 prog 2258, D vnet5 prog 2264
+XDP: xdp_limit back on A vnet1 (prog 2246), B vnet2 (prog 2252), C vnet3 (prog 2258), D vnet5 (prog 2264)
+  5   13 lqr_orig           T40_paperK    9.00  8.74  0.95    9.00  8.82  1.00     0.95   10.19  10.20    7.28   7.29    7.58   7.59    8.08   8.09 0.998     82.9    98.8    0.00    0.00  0.250  0.259   33.17    7.29    6.35   0.285   3.689  0.00      0    0.00 0.11 0.11 0.00 0.05
+VHOST rep 5 slot 13 lqr_orig T40_paperK: mean vhost CPU in own windows A 20.9 B 18.0 C 17.9 D 19.0 % of one core
+LQR_ORIG rep 5 slot 13 T40_paperK: target 16.44, |e| A 25.92 B 18.64 C 17.83 D 17.77 (mean 20.04), mean u A 0.487 B 0.399 C 0.362 D 0.411, u released at 40.78 s
+  5   14 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.2    64.4    0.00    0.00  0.250  0.254    0.00     nan     nan   0.161   0.561  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 14 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  5   15 vfrot     0.8_1_2_0.94_B32000    9.00  8.07  0.92    9.00  8.95  0.97     0.92    4.05   4.06    6.32   6.32    5.86   5.87    8.81   8.82 0.566     89.3    95.8    0.00    0.00  0.250  0.255   25.07    4.06    0.04   0.286   2.318  0.00      0    0.00 0.11 0.00 0.00 0.10
+VHOST rep 5 slot 15 vfrot 0.8_1_2_0.94_B32000: mean vhost CPU in own windows A 17.4 B 21.4 C 19.2 D 27.5 % of one core
+  5   16 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.0    66.2    0.00    0.00  0.250  0.251    0.00     nan     nan   0.170   0.512  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 5 slot 16 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+session rest 600 s
+rep 6 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.5%, steal 0.0%, ping 100/100 replies
+rep 6 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 60.3%, steal 0.0%, ping 100/100 replies
+REFERENCE rep 6: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 20 s, both together, eBPF), base_cpu 59.9%; RTT V2 p50 0.129 ms, p99 0.464 ms (RTT SLO threshold 2.000 ms, loss <= 1%), loss 0.00% of 200 replies
+rep slot mode                   param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x  fl_tot min_own min_ovl rtt_p50 rtt_p99 loss% rtt_ok okw_rtt d95o d90o d80o d95a
+  6    0 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.4    64.5    0.00    0.00  0.250  0.255    0.00     nan     nan   0.155   0.500  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 0 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2270, cfg 1119, cnt 1121), B vnet2 (prog 2276, cfg 1122, cnt 1124), C vnet3 (prog 2282, cfg 1125, cnt 1127), D vnet5 (prog 2288, cfg 1128, cnt 1130)
+vnet1: replaced a left-over xdp_dropfrac (prog 2270) by xdp_limit prog id 2294, cfg map id 1131, cnt map id 1133
+vnet2: replaced a left-over xdp_dropfrac (prog 2276) by xdp_limit prog id 2300, cfg map id 1134, cnt map id 1136
+vnet3: replaced a left-over xdp_dropfrac (prog 2282) by xdp_limit prog id 2306, cfg map id 1137, cnt map id 1139
+vnet5: replaced a left-over xdp_dropfrac (prog 2288) by xdp_limit prog id 2312, cfg map id 1140, cnt map id 1142
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2294, B vnet2 prog 2300, C vnet3 prog 2306, D vnet5 prog 2312
+XDP: xdp_limit back on A vnet1 (prog 2294), B vnet2 (prog 2300), C vnet3 (prog 2306), D vnet5 (prog 2312)
+  6    1 lqr_orig           T60_paperK    9.00  7.75  0.90    9.00  8.90  0.95     0.90   10.41  10.42    9.75   9.76    9.62   9.63    8.70   8.71 0.960     83.5    98.4    0.00    0.00  0.250  0.256   38.52    8.71    5.58   0.284   4.124  0.00      0    0.00 0.11 0.00 0.00 0.13
+VHOST rep 6 slot 1 lqr_orig T60_paperK: mean vhost CPU in own windows A 21.6 B 21.5 C 21.5 D 20.2 % of one core
+LQR_ORIG rep 6 slot 1 T60_paperK: target 24.66, |e| A 24.42 B 21.79 C 21.34 D 20.77 (mean 22.08), mean u A 0.473 B 0.379 C 0.319 D 0.411, u released at 40.78 s
+  6    2 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.2    64.2    0.00    0.00  0.250  0.256    0.00     nan     nan   0.174   0.399  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 2 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  6    3 vfrot     0.8_1_2_0.94_B24000    9.00  8.47  0.92    9.00  8.60  0.95     0.92    4.50   4.51    6.42   6.43    8.74   8.75    4.40   4.41 0.393     89.0    96.4    0.00    0.00  0.250  0.256   24.10    4.41    0.05   0.268   3.932  0.00      0    0.00 0.33 0.11 0.00 0.13
+VHOST rep 6 slot 3 vfrot 0.8_1_2_0.94_B24000: mean vhost CPU in own windows A 16.8 B 20.9 C 28.9 D 13.9 % of one core
+  6    4 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.1    65.0    0.00    0.00  0.250  0.261    0.00     nan     nan   0.161   0.552  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 4 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2318, cfg 1143, cnt 1145), B vnet2 (prog 2324, cfg 1146, cnt 1148), C vnet3 (prog 2330, cfg 1149, cnt 1151), D vnet5 (prog 2336, cfg 1152, cnt 1154)
+vnet1: replaced a left-over xdp_dropfrac (prog 2318) by xdp_limit prog id 2342, cfg map id 1155, cnt map id 1157
+vnet2: replaced a left-over xdp_dropfrac (prog 2324) by xdp_limit prog id 2348, cfg map id 1158, cnt map id 1160
+vnet3: replaced a left-over xdp_dropfrac (prog 2330) by xdp_limit prog id 2354, cfg map id 1161, cnt map id 1163
+vnet5: replaced a left-over xdp_dropfrac (prog 2336) by xdp_limit prog id 2360, cfg map id 1164, cnt map id 1166
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2342, B vnet2 prog 2348, C vnet3 prog 2354, D vnet5 prog 2360
+XDP: xdp_limit back on A vnet1 (prog 2342), B vnet2 (prog 2348), C vnet3 (prog 2354), D vnet5 (prog 2360)
+  6    5 lqr_orig              T60_zoh    9.00  6.69  0.82    9.00  6.92  0.82     0.82   12.63  12.64    9.33   9.34    8.22   8.23    6.80   6.81 0.987     85.8    98.9    0.00    0.00  0.250  0.258   37.03    6.81    6.11   0.284   5.004  0.00      0    0.00 0.44 0.44 0.33 0.26
+VHOST rep 6 slot 5 lqr_orig T60_zoh: mean vhost CPU in own windows A 28.3 B 25.9 C 23.6 D 21.9 % of one core
+LQR_ORIG rep 6 slot 5 T60_zoh: target 24.66, |e| A 18.78 B 13.55 C 19.94 D 14.27 (mean 16.63), mean u A 0.199 B 0.130 C 0.187 D 0.136, u released at 40.78 s
+  6    6 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    64.8    0.00    0.00  0.250  0.252    0.00     nan     nan   0.164   0.471  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 6 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  6    7 lqr                      85_4    9.00  8.99  1.00    9.00  8.97  0.97     0.97    3.03   3.03    2.65   2.66    2.52   2.53    2.47   2.48 0.997     83.9    98.4    0.00    0.00  0.250  0.262   10.69    2.48    2.18   0.282   2.489  0.00      0    0.00 0.11 0.00 0.00 0.03
+VHOST rep 6 slot 7 lqr 85_4: mean vhost CPU in own windows A 17.7 B 15.5 C 15.0 D 15.2 % of one core
+  6    8 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.8    65.7    0.00    0.00  0.250  0.261    0.00     nan     nan   0.165   0.482  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 8 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  6    9 vfrot     0.8_1_2_0.94_B32000    9.00  8.92  0.95    9.00  8.90  0.97     0.95    4.62   4.63    5.55   5.56    7.05   7.05    4.28   4.28 0.695     88.8    97.1    0.00    0.00  0.250  0.257   21.52    4.28    0.05   0.276   3.700  0.00      0    0.00 0.11 0.11 0.00 0.08
+VHOST rep 6 slot 9 vfrot 0.8_1_2_0.94_B32000: mean vhost CPU in own windows A 20.3 B 20.2 C 25.1 D 13.7 % of one core
+  6   10 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.5    65.2    0.00    0.00  0.250  0.252    0.00     nan     nan   0.154   0.458  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 10 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2366, cfg 1167, cnt 1169), B vnet2 (prog 2372, cfg 1170, cnt 1172), C vnet3 (prog 2378, cfg 1173, cnt 1175), D vnet5 (prog 2384, cfg 1176, cnt 1178)
+vnet1: replaced a left-over xdp_dropfrac (prog 2366) by xdp_limit prog id 2390, cfg map id 1179, cnt map id 1181
+vnet2: replaced a left-over xdp_dropfrac (prog 2372) by xdp_limit prog id 2396, cfg map id 1182, cnt map id 1184
+vnet3: replaced a left-over xdp_dropfrac (prog 2378) by xdp_limit prog id 2402, cfg map id 1185, cnt map id 1187
+vnet5: replaced a left-over xdp_dropfrac (prog 2384) by xdp_limit prog id 2408, cfg map id 1188, cnt map id 1190
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2390, B vnet2 prog 2396, C vnet3 prog 2402, D vnet5 prog 2408
+XDP: xdp_limit back on A vnet1 (prog 2390), B vnet2 (prog 2396), C vnet3 (prog 2402), D vnet5 (prog 2408)
+  6   11 lqr_orig           T40_paperK    9.00  8.53  0.95    9.00  8.88  0.95     0.95   10.42  10.43    7.60   7.60    7.91   7.92    8.92   8.93 0.983     83.2    99.0    0.00    0.00  0.250  0.259   34.89    7.60    5.69   0.275   7.907  0.00      0    0.00 0.22 0.11 0.11 0.08
+VHOST rep 6 slot 11 lqr_orig T40_paperK: mean vhost CPU in own windows A 21.3 B 19.4 C 19.8 D 20.2 % of one core
+LQR_ORIG rep 6 slot 11 T40_paperK: target 16.44, |e| A 26.39 B 19.44 C 15.43 D 16.44 (mean 19.42), mean u A 0.486 B 0.428 C 0.370 D 0.356, u released at 40.78 s
+  6   12 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.4    65.0    0.00    0.00  0.250  0.252    0.00     nan     nan   0.171   0.483  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 12 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+  6   13 vfrot            0.8_1_2_0.94    9.00  8.50  0.90    9.00  8.74  0.97     0.90    3.82   3.82    4.13   4.13    4.90   4.91    4.97   4.97 0.672     87.2    95.0    0.00    0.00  0.250  0.254   17.83    3.82    0.05   0.257   1.882  0.00      1    0.90 0.11 0.11 0.00 0.13
+VHOST rep 6 slot 13 vfrot 0.8_1_2_0.94: mean vhost CPU in own windows A 16.9 B 16.3 C 19.7 D 18.8 % of one core
+  6   14 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.8    64.8    0.00    0.00  0.250  0.257    0.00     nan     nan   0.190   0.458  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 14 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+XDP: xdp_dropfrac on A vnet1 (prog 2414, cfg 1191, cnt 1193), B vnet2 (prog 2420, cfg 1194, cnt 1196), C vnet3 (prog 2426, cfg 1197, cnt 1199), D vnet5 (prog 2432, cfg 1200, cnt 1202)
+vnet1: replaced a left-over xdp_dropfrac (prog 2414) by xdp_limit prog id 2438, cfg map id 1203, cnt map id 1205
+vnet2: replaced a left-over xdp_dropfrac (prog 2420) by xdp_limit prog id 2444, cfg map id 1206, cnt map id 1208
+vnet3: replaced a left-over xdp_dropfrac (prog 2426) by xdp_limit prog id 2450, cfg map id 1209, cnt map id 1211
+vnet5: replaced a left-over xdp_dropfrac (prog 2432) by xdp_limit prog id 2456, cfg map id 1212, cnt map id 1214
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2438, B vnet2 prog 2444, C vnet3 prog 2450, D vnet5 prog 2456
+XDP: xdp_limit back on A vnet1 (prog 2438), B vnet2 (prog 2444), C vnet3 (prog 2450), D vnet5 (prog 2456)
+  6   15 lqr_orig           T80_paperK    9.00  8.19  0.92    9.00  8.03  0.92     0.92    9.36   9.37    9.43   9.44    6.90   6.90   10.33  10.34 0.979     84.9    99.4    0.00    0.00  0.250  0.260   36.05    6.90    5.89   0.273   6.029  0.00      0    0.00 0.33 0.22 0.11 0.15
+VHOST rep 6 slot 15 lqr_orig T80_paperK: mean vhost CPU in own windows A 19.4 B 25.0 C 19.3 D 26.4 % of one core
+LQR_ORIG rep 6 slot 15 T80_paperK: target 32.88, |e| A 24.03 B 17.02 C 20.76 D 14.48 (mean 19.07), mean u A 0.475 B 0.322 C 0.398 D 0.295, u released at 40.78 s
+  6   16 alone                      na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.1    64.8    0.00    0.00  0.250  0.251    0.00     nan     nan   0.176   0.513  0.00      1    1.00 0.00 0.00 0.00 0.00
+VHOST rep 6 slot 16 alone na: mean vhost CPU in own windows A 0.0 B 0.0 C 0.0 D 0.0 % of one core
+vnet1: reusing already attached xdp_limit prog id 2438, cfg map id 1203, cnt map id 1205
+vnet2: reusing already attached xdp_limit prog id 2444, cfg map id 1206, cnt map id 1208
+vnet3: reusing already attached xdp_limit prog id 2450, cfg map id 1209, cnt map id 1211
+vnet5: reusing already attached xdp_limit prog id 2456, cfg map id 1212, cnt map id 1214
+XDP RESTORE: xdp_limit (cap 0) on all flooders: A vnet1 prog 2438, B vnet2 prog 2444, C vnet3 prog 2450, D vnet5 prog 2456
+
+REFERENCES per repeat (Gbit/s): rep 1 = V1 9.012/V2 9.012, RTT p50/p99 0.145/0.440 ms (base_cpu 59.9%), rep 2 = V1 9.012/V2 9.012, RTT p50/p99 0.149/0.410 ms (base_cpu 59.6%), rep 3 = V1 9.012/V2 9.012, RTT p50/p99 0.143/0.385 ms (base_cpu 59.2%), rep 4 = V1 9.012/V2 9.012, RTT p50/p99 0.144/0.447 ms (base_cpu 58.9%), rep 5 = V1 9.012/V2 9.012, RTT p50/p99 0.139/0.400 ms (base_cpu 59.0%), rep 6 = V1 9.012/V2 9.012, RTT p50/p99 0.129/0.464 ms (base_cpu 59.9%)
+WARNINGS (mean tick > 0.3 s, steal mean > 1% or max > 5%, missing flooder iperf3 report, flooder wait timeout): 0
+
+ALL COLUMNS (mean +- sd over 6 repeats; alone pooled over all 9 slots per repeat)
+lqr_orig           T40_paperK    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.485+-0.418 slo_ok_v1=0.940+-0.035 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.742+-0.200 slo_ok_v2=0.966+-0.026 slo_ok_worst=0.940+-0.035 flooderA_iperf_gbps=9.560+-0.662 flooderA_ebpf_gbps=9.570+-0.663 flooderB_iperf_gbps=7.665+-0.839 flooderB_ebpf_gbps=7.673+-0.840 flooderC_iperf_gbps=7.752+-0.984 flooderC_ebpf_gbps=7.760+-0.985 flooderD_iperf_gbps=8.060+-1.119 flooderD_ebpf_gbps=8.068+-1.120 jain_fairness=0.985+-0.013 cpu_mean=83.241+-0.412 cpu_max=98.648+-0.297 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.261+-0.008 flooder_total_gbps=33.072+-2.167 min_flooder_own_gbps=7.058+-1.043 min_flooder_ovl_gbps=5.669+-0.628 budget_ceiling_share=nan+-nan budget_floor_share=nan+-nan highcapA_share=nan+-nan highcapB_share=nan+-nan highcapC_share=nan+-nan highcapD_share=nan+-nan vhostA_cpu_mean=20.027+-0.989 vhostB_cpu_mean=19.261+-1.384 vhostC_cpu_mean=19.255+-1.171 vhostD_cpu_mean=19.848+-1.250 track_errA=23.982+-2.096 track_errB=19.456+-0.712 track_errC=17.754+-1.883 track_errD=17.876+-1.738 track_err_mean=19.767+-0.769 uA_mean=0.482+-0.007 uB_mean=0.414+-0.017 uC_mean=0.391+-0.030 uD_mean=0.397+-0.028 target_cpu=16.439+-0.000 u_release_s=40.783+-0.002 flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=9.597+-0.664 offeredB_gbps=7.689+-0.841 offeredC_gbps=7.776+-0.987 offeredD_gbps=8.085+-1.118 dip95_ovl=0.111+-0.099 dip90_ovl=0.056+-0.061 dip80_ovl=0.037+-0.057 dip95_all=0.090+-0.053 dip90_all=0.047+-0.034 dip80_all=0.017+-0.026 v2_rtt_p50_ms=0.260+-0.028 v2_rtt_p99_ms=4.733+-1.601 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.000+-0.000 slo_ok_worst_with_rtt=0.000+-0.000
+lqr_orig           T60_paperK    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.446+-0.387 slo_ok_v1=0.936+-0.027 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.819+-0.211 slo_ok_v2=0.966+-0.031 slo_ok_worst=0.932+-0.026 flooderA_iperf_gbps=9.482+-0.688 flooderA_ebpf_gbps=9.492+-0.689 flooderB_iperf_gbps=9.290+-0.334 flooderB_ebpf_gbps=9.300+-0.334 flooderC_iperf_gbps=8.043+-1.155 flooderC_ebpf_gbps=8.052+-1.156 flooderD_iperf_gbps=7.536+-0.896 flooderD_ebpf_gbps=7.544+-0.897 jain_fairness=0.976+-0.017 cpu_mean=83.660+-1.070 cpu_max=98.937+-0.391 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.259+-0.002 flooder_total_gbps=34.388+-2.383 min_flooder_own_gbps=7.506+-0.923 min_flooder_ovl_gbps=5.515+-0.859 budget_ceiling_share=nan+-nan budget_floor_share=nan+-nan highcapA_share=nan+-nan highcapB_share=nan+-nan highcapC_share=nan+-nan highcapD_share=nan+-nan vhostA_cpu_mean=19.957+-1.016 vhostB_cpu_mean=21.870+-0.405 vhostC_cpu_mean=20.487+-2.215 vhostD_cpu_mean=19.875+-1.915 track_errA=23.450+-1.095 track_errB=19.835+-3.136 track_errC=19.843+-1.908 track_errD=17.712+-2.423 track_err_mean=20.210+-1.813 uA_mean=0.475+-0.004 uB_mean=0.376+-0.041 uC_mean=0.373+-0.042 uD_mean=0.387+-0.046 target_cpu=24.659+-0.000 u_release_s=40.781+-0.003 flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=9.519+-0.689 offeredB_gbps=9.318+-0.334 offeredC_gbps=8.071+-1.154 offeredD_gbps=7.565+-0.894 dip95_ovl=0.056+-0.093 dip90_ovl=0.037+-0.091 dip80_ovl=0.000+-0.000 dip95_all=0.085+-0.039 dip90_all=0.047+-0.030 dip80_all=0.013+-0.014 v2_rtt_p50_ms=0.278+-0.019 v2_rtt_p99_ms=3.859+-0.881 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.000+-0.000 slo_ok_worst_with_rtt=0.000+-0.000
+lqr_orig           T80_paperK    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.390+-0.451 slo_ok_v1=0.919+-0.038 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.166+-0.411 slo_ok_v2=0.919+-0.025 slo_ok_worst=0.910+-0.031 flooderA_iperf_gbps=9.653+-0.912 flooderA_ebpf_gbps=9.663+-0.913 flooderB_iperf_gbps=9.103+-1.175 flooderB_ebpf_gbps=9.113+-1.177 flooderC_iperf_gbps=9.085+-1.530 flooderC_ebpf_gbps=9.095+-1.531 flooderD_iperf_gbps=9.274+-0.889 flooderD_ebpf_gbps=9.284+-0.890 jain_fairness=0.965+-0.027 cpu_mean=85.088+-0.697 cpu_max=98.986+-0.455 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.259+-0.002 flooder_total_gbps=37.154+-1.585 min_flooder_own_gbps=7.870+-0.683 min_flooder_ovl_gbps=5.812+-0.856 budget_ceiling_share=nan+-nan budget_floor_share=nan+-nan highcapA_share=nan+-nan highcapB_share=nan+-nan highcapC_share=nan+-nan highcapD_share=nan+-nan vhostA_cpu_mean=19.757+-1.378 vhostB_cpu_mean=22.929+-2.819 vhostC_cpu_mean=22.614+-2.825 vhostD_cpu_mean=23.467+-2.216 track_errA=24.657+-1.000 track_errB=18.030+-4.335 track_errC=20.132+-2.051 track_errD=16.581+-3.817 track_err_mean=19.850+-1.544 uA_mean=0.474+-0.002 uB_mean=0.340+-0.049 uC_mean=0.367+-0.042 uD_mean=0.319+-0.050 target_cpu=32.878+-0.000 u_release_s=40.784+-0.003 flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=9.691+-0.913 offeredB_gbps=9.130+-1.174 offeredC_gbps=9.114+-1.530 offeredD_gbps=9.302+-0.888 dip95_ovl=0.296+-0.115 dip90_ovl=0.222+-0.099 dip80_ovl=0.056+-0.093 dip95_all=0.145+-0.058 dip90_all=0.103+-0.051 dip80_all=0.030+-0.030 v2_rtt_p50_ms=0.282+-0.027 v2_rtt_p99_ms=4.262+-1.167 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.000+-0.000 slo_ok_worst_with_rtt=0.000+-0.000
+lqr_orig              T60_zoh    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=7.348+-0.522 slo_ok_v1=0.850+-0.047 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=7.962+-0.642 slo_ok_v2=0.872+-0.054 slo_ok_worst=0.846+-0.046 flooderA_iperf_gbps=10.968+-1.794 flooderA_ebpf_gbps=10.980+-1.795 flooderB_iperf_gbps=8.297+-0.769 flooderB_ebpf_gbps=8.307+-0.770 flooderC_iperf_gbps=8.201+-1.308 flooderC_ebpf_gbps=8.210+-1.309 flooderD_iperf_gbps=8.015+-1.385 flooderD_ebpf_gbps=8.024+-1.386 jain_fairness=0.983+-0.015 cpu_mean=85.232+-0.637 cpu_max=98.955+-0.433 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.259+-0.002 flooder_total_gbps=35.521+-4.081 min_flooder_own_gbps=7.452+-0.784 min_flooder_ovl_gbps=5.837+-0.458 budget_ceiling_share=nan+-nan budget_floor_share=nan+-nan highcapA_share=nan+-nan highcapB_share=nan+-nan highcapC_share=nan+-nan highcapD_share=nan+-nan vhostA_cpu_mean=24.617+-2.389 vhostB_cpu_mean=23.642+-1.686 vhostC_cpu_mean=23.185+-1.135 vhostD_cpu_mean=22.729+-1.659 track_errA=20.089+-2.132 track_errB=15.755+-2.214 track_errC=17.363+-3.932 track_errD=16.408+-2.325 track_err_mean=17.404+-1.331 uA_mean=0.205+-0.019 uB_mean=0.148+-0.017 uC_mean=0.169+-0.035 uD_mean=0.154+-0.024 target_cpu=24.659+-0.000 u_release_s=40.783+-0.004 flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=10.998+-1.795 offeredB_gbps=8.318+-0.771 offeredC_gbps=8.222+-1.308 offeredD_gbps=8.035+-1.386 dip95_ovl=0.370+-0.091 dip90_ovl=0.259+-0.181 dip80_ovl=0.167+-0.153 dip95_all=0.218+-0.048 dip90_all=0.145+-0.048 dip80_all=0.060+-0.050 v2_rtt_p50_ms=0.280+-0.029 v2_rtt_p99_ms=4.750+-0.899 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.000+-0.000 slo_ok_worst_with_rtt=0.000+-0.000
+vfrot            0.8_1_2_0.94    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.627+-0.262 slo_ok_v1=0.944+-0.038 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.853+-0.129 slo_ok_v2=0.974+-0.023 slo_ok_worst=0.936+-0.027 flooderA_iperf_gbps=4.303+-1.032 flooderA_ebpf_gbps=4.308+-1.033 flooderB_iperf_gbps=4.979+-1.892 flooderB_ebpf_gbps=4.985+-1.894 flooderC_iperf_gbps=4.623+-1.820 flooderC_ebpf_gbps=4.628+-1.822 flooderD_iperf_gbps=4.290+-1.151 flooderD_ebpf_gbps=4.296+-1.153 jain_fairness=0.672+-0.142 cpu_mean=87.769+-0.507 cpu_max=95.222+-1.245 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.255+-0.001 flooder_total_gbps=18.218+-0.698 min_flooder_own_gbps=3.126+-0.507 min_flooder_ovl_gbps=0.417+-0.897 budget_ceiling_share=0.568+-0.053 budget_floor_share=0.000+-0.000 highcapA_share=0.125+-0.153 highcapB_share=0.204+-0.180 highcapC_share=0.421+-0.227 highcapD_share=0.250+-0.069 vhostA_cpu_mean=18.442+-3.903 vhostB_cpu_mean=19.050+-5.998 vhostC_cpu_mean=17.642+-6.410 vhostD_cpu_mean=16.941+-4.311 track_errA=nan+-nan track_errB=nan+-nan track_errC=nan+-nan track_errD=nan+-nan track_err_mean=nan+-nan uA_mean=nan+-nan uB_mean=nan+-nan uC_mean=nan+-nan uD_mean=nan+-nan target_cpu=nan+-nan u_release_s=nan+-nan flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=4.361+-1.040 offeredB_gbps=5.019+-1.905 offeredC_gbps=4.658+-1.830 offeredD_gbps=4.323+-1.159 dip95_ovl=0.093+-0.084 dip90_ovl=0.056+-0.093 dip80_ovl=0.019+-0.045 dip95_all=0.081+-0.030 dip90_all=0.030+-0.019 dip80_all=0.013+-0.014 v2_rtt_p50_ms=0.264+-0.015 v2_rtt_p99_ms=3.046+-0.847 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.167+-0.408 slo_ok_worst_with_rtt=0.150+-0.366
+vfrot     0.8_1_2_0.94_B24000    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.707+-0.234 slo_ok_v1=0.949+-0.023 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.512+-0.548 slo_ok_v2=0.944+-0.038 slo_ok_worst=0.932+-0.035 flooderA_iperf_gbps=5.621+-1.659 flooderA_ebpf_gbps=5.628+-1.661 flooderB_iperf_gbps=6.338+-2.519 flooderB_ebpf_gbps=6.346+-2.521 flooderC_iperf_gbps=6.221+-2.481 flooderC_ebpf_gbps=6.228+-2.484 flooderD_iperf_gbps=4.208+-2.463 flooderD_ebpf_gbps=4.214+-2.465 jain_fairness=0.621+-0.190 cpu_mean=88.485+-0.586 cpu_max=95.742+-1.057 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.256+-0.001 flooder_total_gbps=22.415+-1.736 min_flooder_own_gbps=3.066+-1.434 min_flooder_ovl_gbps=0.748+-1.080 budget_ceiling_share=0.184+-0.125 budget_floor_share=0.000+-0.000 highcapA_share=0.233+-0.162 highcapB_share=0.317+-0.246 highcapC_share=0.338+-0.296 highcapD_share=0.113+-0.096 vhostA_cpu_mean=21.182+-5.217 vhostB_cpu_mean=21.993+-8.717 vhostC_cpu_mean=21.041+-6.698 vhostD_cpu_mean=15.083+-7.349 track_errA=nan+-nan track_errB=nan+-nan track_errC=nan+-nan track_errD=nan+-nan track_err_mean=nan+-nan uA_mean=nan+-nan uB_mean=nan+-nan uC_mean=nan+-nan uD_mean=nan+-nan target_cpu=nan+-nan u_release_s=nan+-nan flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=5.677+-1.665 offeredB_gbps=6.371+-2.531 offeredC_gbps=6.254+-2.490 offeredD_gbps=4.232+-2.473 dip95_ovl=0.074+-0.135 dip90_ovl=0.019+-0.045 dip80_ovl=0.000+-0.000 dip95_all=0.103+-0.032 dip90_all=0.051+-0.040 dip80_all=0.017+-0.021 v2_rtt_p50_ms=0.288+-0.024 v2_rtt_p99_ms=3.613+-0.849 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.167+-0.408 slo_ok_worst_with_rtt=0.158+-0.387
+vfrot     0.8_1_2_0.94_B32000    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.485+-0.304 slo_ok_v1=0.923+-0.023 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.767+-0.237 slo_ok_v2=0.957+-0.021 slo_ok_worst=0.923+-0.023 flooderA_iperf_gbps=4.440+-1.158 flooderA_ebpf_gbps=4.446+-1.159 flooderB_iperf_gbps=6.004+-0.826 flooderB_ebpf_gbps=6.011+-0.826 flooderC_iperf_gbps=6.292+-1.527 flooderC_ebpf_gbps=6.300+-1.528 flooderD_iperf_gbps=5.542+-1.833 flooderD_ebpf_gbps=5.548+-1.834 jain_fairness=0.639+-0.090 cpu_mean=87.080+-4.009 cpu_max=96.130+-1.169 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.268+-0.026 flooder_total_gbps=22.305+-3.406 min_flooder_own_gbps=4.110+-0.960 min_flooder_ovl_gbps=0.047+-0.009 budget_ceiling_share=0.001+-0.003 budget_floor_share=0.000+-0.000 highcapA_share=0.321+-0.178 highcapB_share=0.196+-0.215 highcapC_share=0.267+-0.156 highcapD_share=0.217+-0.256 vhostA_cpu_mean=18.531+-3.026 vhostB_cpu_mean=20.896+-1.759 vhostC_cpu_mean=21.598+-3.777 vhostD_cpu_mean=18.421+-5.193 track_errA=nan+-nan track_errB=nan+-nan track_errC=nan+-nan track_errD=nan+-nan track_err_mean=nan+-nan uA_mean=nan+-nan uB_mean=nan+-nan uC_mean=nan+-nan uD_mean=nan+-nan target_cpu=nan+-nan u_release_s=nan+-nan flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=4.485+-1.161 offeredB_gbps=6.035+-0.826 offeredC_gbps=6.322+-1.532 offeredD_gbps=5.567+-1.839 dip95_ovl=0.148+-0.152 dip90_ovl=0.056+-0.061 dip80_ovl=0.019+-0.045 dip95_all=0.120+-0.042 dip90_all=0.051+-0.023 dip80_all=0.017+-0.021 v2_rtt_p50_ms=0.306+-0.064 v2_rtt_p99_ms=5.215+-4.217 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.000+-0.000 slo_ok_worst_with_rtt=0.000+-0.000
+lqr                      85_4    6 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=8.931+-0.122 slo_ok_v1=0.983+-0.021 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=8.899+-0.135 slo_ok_v2=0.979+-0.019 slo_ok_worst=0.970+-0.019 flooderA_iperf_gbps=3.002+-0.176 flooderA_ebpf_gbps=3.006+-0.176 flooderB_iperf_gbps=2.727+-0.178 flooderB_ebpf_gbps=2.731+-0.178 flooderC_iperf_gbps=2.737+-0.175 flooderC_ebpf_gbps=2.741+-0.175 flooderD_iperf_gbps=2.695+-0.223 flooderD_ebpf_gbps=2.699+-0.223 jain_fairness=0.997+-0.002 cpu_mean=84.070+-0.071 cpu_max=98.255+-0.319 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.258+-0.002 flooder_total_gbps=11.177+-0.681 min_flooder_own_gbps=2.647+-0.169 min_flooder_ovl_gbps=2.240+-0.291 budget_ceiling_share=nan+-nan budget_floor_share=nan+-nan highcapA_share=nan+-nan highcapB_share=nan+-nan highcapC_share=nan+-nan highcapD_share=nan+-nan vhostA_cpu_mean=17.792+-0.461 vhostB_cpu_mean=15.480+-0.716 vhostC_cpu_mean=15.838+-1.069 vhostD_cpu_mean=15.401+-0.845 track_errA=nan+-nan track_errB=nan+-nan track_errC=nan+-nan track_errD=nan+-nan track_err_mean=nan+-nan uA_mean=nan+-nan uB_mean=nan+-nan uC_mean=nan+-nan uD_mean=nan+-nan target_cpu=nan+-nan u_release_s=nan+-nan flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=3.063+-0.178 offeredB_gbps=2.780+-0.180 offeredC_gbps=2.789+-0.178 offeredD_gbps=2.748+-0.226 dip95_ovl=0.056+-0.061 dip90_ovl=0.000+-0.000 dip80_ovl=0.000+-0.000 dip95_all=0.038+-0.031 dip90_all=0.000+-0.000 dip80_all=0.000+-0.000 v2_rtt_p50_ms=0.284+-0.016 v2_rtt_p99_ms=3.314+-0.799 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.000+-0.000 slo_ok_worst_with_rtt=0.000+-0.000
+alone                      na   54 victim1_mean_gbps=9.000+-0.000 victim1_p5_gbps=9.008+-0.008 slo_ok_v1=1.000+-0.000 victim2_mean_gbps=9.000+-0.000 victim2_p5_gbps=9.008+-0.006 slo_ok_v2=1.000+-0.000 slo_ok_worst=1.000+-0.000 flooderA_iperf_gbps=0.000+-0.000 flooderA_ebpf_gbps=0.000+-0.000 flooderB_iperf_gbps=0.000+-0.000 flooderB_ebpf_gbps=0.000+-0.000 flooderC_iperf_gbps=0.000+-0.000 flooderC_ebpf_gbps=0.000+-0.000 flooderD_iperf_gbps=0.000+-0.000 flooderD_ebpf_gbps=0.000+-0.000 jain_fairness=nan+-nan cpu_mean=61.860+-0.489 cpu_max=66.735+-2.449 steal_mean=0.000+-0.000 steal_max=0.000+-0.000 tick_mean_s=0.250+-0.000 tick_max_s=0.257+-0.014 flooder_total_gbps=0.000+-0.000 min_flooder_own_gbps=nan+-nan min_flooder_ovl_gbps=nan+-nan budget_ceiling_share=nan+-nan budget_floor_share=nan+-nan highcapA_share=nan+-nan highcapB_share=nan+-nan highcapC_share=nan+-nan highcapD_share=nan+-nan vhostA_cpu_mean=0.000+-0.000 vhostB_cpu_mean=0.000+-0.000 vhostC_cpu_mean=0.000+-0.000 vhostD_cpu_mean=0.000+-0.000 track_errA=nan+-nan track_errB=nan+-nan track_errC=nan+-nan track_errD=nan+-nan track_err_mean=nan+-nan uA_mean=nan+-nan uB_mean=nan+-nan uC_mean=nan+-nan uD_mean=nan+-nan target_cpu=nan+-nan u_release_s=nan+-nan flooder_wait_timeouts=0.000+-0.000 offeredA_gbps=0.000+-0.000 offeredB_gbps=0.000+-0.000 offeredC_gbps=0.000+-0.000 offeredD_gbps=0.000+-0.000 dip95_ovl=0.000+-0.000 dip90_ovl=0.000+-0.000 dip80_ovl=0.000+-0.000 dip95_all=0.000+-0.000 dip90_all=0.000+-0.000 dip80_all=0.000+-0.000 v2_rtt_p50_ms=0.171+-0.018 v2_rtt_p99_ms=0.591+-0.456 v2_loss_pct=0.000+-0.000 slo_ok_v2_rtt=0.963+-0.191 slo_ok_worst_with_rtt=0.963+-0.191
+
+SUMMARY43 from results_dyn43.csv (mean +- sd over repeats; alone excluded; ok_w_rtt = slo_ok_worst x slo_ok_v2_rtt; rtt_p99 ms over received replies; dipXX_ovl / dipXX_all = fraction of 1 s windows with min(V1, V2) / ref < 0.XX inside 18-28 s / over the whole run; trk_err = mean |e| of lqr_orig, nan for other modes)
+mode                    param   n        ok_worst        ok_w_rtt         rtt_p99        fl_total         min_own            jain       dip95_ovl       dip90_ovl       dip80_ovl       dip95_all       dip90_all       dip80_all         trk_err
+lqr_orig           T40_paperK   6  0.940 +- 0.035  0.000 +- 0.000  4.733 +- 1.601 33.072 +- 2.167  7.058 +- 1.044  0.985 +- 0.013  0.111 +- 0.099  0.056 +- 0.061  0.037 +- 0.057  0.090 +- 0.053  0.047 +- 0.034  0.017 +- 0.026 19.767 +- 0.769
+lqr_orig           T60_paperK   6  0.931 +- 0.027  0.000 +- 0.000  3.859 +- 0.881 34.388 +- 2.383  7.506 +- 0.923  0.976 +- 0.017  0.056 +- 0.093  0.037 +- 0.091  0.000 +- 0.000  0.085 +- 0.039  0.047 +- 0.030  0.013 +- 0.014 20.210 +- 1.813
+lqr_orig           T80_paperK   6  0.910 +- 0.031  0.000 +- 0.000  4.263 +- 1.168 37.154 +- 1.585  7.870 +- 0.683  0.965 +- 0.027  0.296 +- 0.115  0.222 +- 0.099  0.056 +- 0.093  0.145 +- 0.058  0.103 +- 0.051  0.030 +- 0.030 19.850 +- 1.544
+lqr_orig              T60_zoh   6  0.846 +- 0.046  0.000 +- 0.000  4.750 +- 0.899 35.521 +- 4.081  7.452 +- 0.784  0.983 +- 0.015  0.370 +- 0.091  0.259 +- 0.181  0.167 +- 0.153  0.218 +- 0.048  0.145 +- 0.048  0.060 +- 0.050 17.404 +- 1.331
+vfrot            0.8_1_2_0.94   6  0.936 +- 0.027  0.149 +- 0.366  3.045 +- 0.847 18.218 +- 0.698  3.126 +- 0.507  0.672 +- 0.142  0.093 +- 0.084  0.056 +- 0.093  0.019 +- 0.045  0.081 +- 0.030  0.030 +- 0.019  0.013 +- 0.014    nan +-   nan
+vfrot     0.8_1_2_0.94_B24000   6  0.932 +- 0.035  0.158 +- 0.387  3.613 +- 0.849 22.415 +- 1.736  3.066 +- 1.434  0.621 +- 0.190  0.074 +- 0.135  0.019 +- 0.045  0.000 +- 0.000  0.103 +- 0.032  0.051 +- 0.040  0.017 +- 0.021    nan +-   nan
+vfrot     0.8_1_2_0.94_B32000   6  0.923 +- 0.023  0.000 +- 0.000  5.215 +- 4.217 22.305 +- 3.406  4.110 +- 0.960  0.639 +- 0.090  0.148 +- 0.152  0.056 +- 0.061  0.019 +- 0.045  0.120 +- 0.042  0.051 +- 0.023  0.017 +- 0.021    nan +-   nan
+lqr                      85_4   6  0.970 +- 0.019  0.000 +- 0.000  3.314 +- 0.799 11.178 +- 0.682  2.647 +- 0.169  0.997 +- 0.002  0.056 +- 0.061  0.000 +- 0.000  0.000 +- 0.000  0.038 +- 0.031  0.000 +- 0.000  0.000 +- 0.000    nan +-   nan
+PAIRED vs vfrot 0.8_1_2_0.94 (per repeat: config - reference, mean +- sd, W/T/L = better/equal/worse than the reference in the same repeat (rtt_p99, dips and trk_err: lower is better, all others higher), p = two-sided paired t-test; nan where a value is missing)
+   ok_worst lqr_orig           T40_paperK n=6   +0.004 +-  0.044 W/T/L 3/0/3 p=0.827
+   ok_worst lqr_orig           T60_paperK n=6   -0.004 +-  0.011 W/T/L 0/5/1 p=0.363
+   ok_worst lqr_orig           T80_paperK n=6   -0.026 +-  0.054 W/T/L 1/2/3 p=0.295
+   ok_worst lqr_orig              T60_zoh n=6   -0.090 +-  0.027 W/T/L 0/0/6 p=0.000
+   ok_worst vfrot     0.8_1_2_0.94_B24000 n=6   -0.004 +-  0.047 W/T/L 3/0/3 p=0.837
+   ok_worst vfrot     0.8_1_2_0.94_B32000 n=6   -0.013 +-  0.043 W/T/L 2/0/4 p=0.493
+   ok_worst lqr                      85_4 n=6   +0.034 +-  0.031 W/T/L 4/2/0 p=0.043
+   ok_w_rtt lqr_orig           T40_paperK n=6   -0.149 +-  0.366 W/T/L 0/5/1 p=0.363
+   ok_w_rtt lqr_orig           T60_paperK n=6   -0.149 +-  0.366 W/T/L 0/5/1 p=0.363
+   ok_w_rtt lqr_orig           T80_paperK n=6   -0.149 +-  0.366 W/T/L 0/5/1 p=0.363
+   ok_w_rtt lqr_orig              T60_zoh n=6   -0.149 +-  0.366 W/T/L 0/5/1 p=0.363
+   ok_w_rtt vfrot     0.8_1_2_0.94_B24000 n=6   +0.009 +-  0.584 W/T/L 1/4/1 p=0.972
+   ok_w_rtt vfrot     0.8_1_2_0.94_B32000 n=6   -0.149 +-  0.366 W/T/L 0/5/1 p=0.363
+   ok_w_rtt lqr                      85_4 n=6   -0.149 +-  0.366 W/T/L 0/5/1 p=0.363
+    rtt_p99 lqr_orig           T40_paperK n=6   +1.688 +-  2.228 W/T/L 1/0/5 p=0.123
+    rtt_p99 lqr_orig           T60_paperK n=6   +0.813 +-  1.026 W/T/L 1/0/5 p=0.110
+    rtt_p99 lqr_orig           T80_paperK n=6   +1.217 +-  1.854 W/T/L 2/0/4 p=0.169
+    rtt_p99 lqr_orig              T60_zoh n=6   +1.704 +-  1.518 W/T/L 1/0/5 p=0.040
+    rtt_p99 vfrot     0.8_1_2_0.94_B24000 n=6   +0.567 +-  0.907 W/T/L 2/0/4 p=0.186
+    rtt_p99 vfrot     0.8_1_2_0.94_B32000 n=6   +2.170 +-  4.304 W/T/L 3/0/3 p=0.272
+    rtt_p99 lqr                      85_4 n=6   +0.269 +-  0.679 W/T/L 3/0/3 p=0.377
+   fl_total lqr_orig           T40_paperK n=6  +14.854 +-  2.463 W/T/L 6/0/0 p=0.000
+   fl_total lqr_orig           T60_paperK n=6  +16.170 +-  2.402 W/T/L 6/0/0 p=0.000
+   fl_total lqr_orig           T80_paperK n=6  +18.936 +-  1.088 W/T/L 6/0/0 p=0.000
+   fl_total lqr_orig              T60_zoh n=6  +17.303 +-  4.429 W/T/L 6/0/0 p=0.000
+   fl_total vfrot     0.8_1_2_0.94_B24000 n=6   +4.197 +-  1.418 W/T/L 6/0/0 p=0.001
+   fl_total vfrot     0.8_1_2_0.94_B32000 n=6   +4.087 +-  3.543 W/T/L 5/0/1 p=0.037
+   fl_total lqr                      85_4 n=6   -7.040 +-  0.697 W/T/L 0/0/6 p=0.000
+    min_own lqr_orig           T40_paperK n=6   +3.932 +-  1.313 W/T/L 6/0/0 p=0.001
+    min_own lqr_orig           T60_paperK n=6   +4.380 +-  0.655 W/T/L 6/0/0 p=0.000
+    min_own lqr_orig           T80_paperK n=6   +4.744 +-  1.062 W/T/L 6/0/0 p=0.000
+    min_own lqr_orig              T60_zoh n=6   +4.327 +-  1.233 W/T/L 6/0/0 p=0.000
+    min_own vfrot     0.8_1_2_0.94_B24000 n=6   -0.060 +-  1.079 W/T/L 4/0/2 p=0.897
+    min_own vfrot     0.8_1_2_0.94_B32000 n=6   +0.984 +-  1.262 W/T/L 4/0/2 p=0.114
+    min_own lqr                      85_4 n=6   -0.478 +-  0.577 W/T/L 2/0/4 p=0.098
+       jain lqr_orig           T40_paperK n=6   +0.313 +-  0.142 W/T/L 6/0/0 p=0.003
+       jain lqr_orig           T60_paperK n=6   +0.304 +-  0.132 W/T/L 6/0/0 p=0.002
+       jain lqr_orig           T80_paperK n=6   +0.293 +-  0.128 W/T/L 6/0/0 p=0.003
+       jain lqr_orig              T60_zoh n=6   +0.310 +-  0.146 W/T/L 6/0/0 p=0.003
+       jain vfrot     0.8_1_2_0.94_B24000 n=6   -0.051 +-  0.230 W/T/L 4/0/2 p=0.608
+       jain vfrot     0.8_1_2_0.94_B32000 n=6   -0.033 +-  0.188 W/T/L 3/0/3 p=0.686
+       jain lqr                      85_4 n=6   +0.325 +-  0.143 W/T/L 6/0/0 p=0.003
+  dip95_ovl lqr_orig           T40_paperK n=6   +0.019 +-  0.148 W/T/L 2/0/4 p=0.771
+  dip95_ovl lqr_orig           T60_paperK n=6   -0.037 +-  0.057 W/T/L 2/4/0 p=0.175
+  dip95_ovl lqr_orig           T80_paperK n=6   +0.204 +-  0.130 W/T/L 0/0/6 p=0.012
+  dip95_ovl lqr_orig              T60_zoh n=6   +0.278 +-  0.136 W/T/L 0/1/5 p=0.004
+  dip95_ovl vfrot     0.8_1_2_0.94_B24000 n=6   -0.019 +-  0.164 W/T/L 3/1/2 p=0.793
+  dip95_ovl vfrot     0.8_1_2_0.94_B32000 n=6   +0.056 +-  0.208 W/T/L 2/1/3 p=0.542
+  dip95_ovl lqr                      85_4 n=6   -0.037 +-  0.057 W/T/L 2/4/0 p=0.175
+  dip90_ovl lqr_orig           T40_paperK n=6   +0.000 +-  0.122 W/T/L 1/3/2 p=1.000
+  dip90_ovl lqr_orig           T60_paperK n=6   -0.019 +-  0.045 W/T/L 1/5/0 p=0.363
+  dip90_ovl lqr_orig           T80_paperK n=6   +0.167 +-  0.136 W/T/L 0/1/5 p=0.030
+  dip90_ovl lqr_orig              T60_zoh n=6   +0.204 +-  0.237 W/T/L 1/0/5 p=0.090
+  dip90_ovl vfrot     0.8_1_2_0.94_B24000 n=6   -0.037 +-  0.091 W/T/L 1/5/0 p=0.363
+  dip90_ovl vfrot     0.8_1_2_0.94_B32000 n=6   +0.000 +-  0.122 W/T/L 1/3/2 p=1.000
+  dip90_ovl lqr                      85_4 n=6   -0.056 +-  0.093 W/T/L 2/4/0 p=0.203
+  dip80_ovl lqr_orig           T40_paperK n=6   +0.019 +-  0.084 W/T/L 1/3/2 p=0.611
+  dip80_ovl lqr_orig           T60_paperK n=6   -0.019 +-  0.045 W/T/L 1/5/0 p=0.363
+  dip80_ovl lqr_orig           T80_paperK n=6   +0.037 +-  0.115 W/T/L 1/3/2 p=0.465
+  dip80_ovl lqr_orig              T60_zoh n=6   +0.148 +-  0.181 W/T/L 1/1/4 p=0.102
+  dip80_ovl vfrot     0.8_1_2_0.94_B24000 n=6   -0.019 +-  0.045 W/T/L 1/5/0 p=0.363
+  dip80_ovl vfrot     0.8_1_2_0.94_B32000 n=6   +0.000 +-  0.070 W/T/L 1/4/1 p=1.000
+  dip80_ovl lqr                      85_4 n=6   -0.019 +-  0.045 W/T/L 1/5/0 p=0.363
+  dip95_all lqr_orig           T40_paperK n=6   +0.009 +-  0.053 W/T/L 2/2/2 p=0.709
+  dip95_all lqr_orig           T60_paperK n=6   +0.004 +-  0.038 W/T/L 2/1/3 p=0.792
+  dip95_all lqr_orig           T80_paperK n=6   +0.064 +-  0.074 W/T/L 0/1/5 p=0.087
+  dip95_all lqr_orig              T60_zoh n=6   +0.137 +-  0.048 W/T/L 0/0/6 p=0.001
+  dip95_all vfrot     0.8_1_2_0.94_B24000 n=6   +0.021 +-  0.034 W/T/L 1/1/4 p=0.185
+  dip95_all vfrot     0.8_1_2_0.94_B32000 n=6   +0.038 +-  0.056 W/T/L 1/1/4 p=0.151
+  dip95_all lqr                      85_4 n=6   -0.043 +-  0.053 W/T/L 4/1/1 p=0.105
+  dip90_all lqr_orig           T40_paperK n=6   +0.017 +-  0.035 W/T/L 1/2/3 p=0.285
+  dip90_all lqr_orig           T60_paperK n=6   +0.017 +-  0.013 W/T/L 0/2/4 p=0.025
+  dip90_all lqr_orig           T80_paperK n=6   +0.073 +-  0.057 W/T/L 0/0/6 p=0.026
+  dip90_all lqr_orig              T60_zoh n=6   +0.115 +-  0.045 W/T/L 0/0/6 p=0.002
+  dip90_all vfrot     0.8_1_2_0.94_B24000 n=6   +0.021 +-  0.047 W/T/L 1/3/2 p=0.317
+  dip90_all vfrot     0.8_1_2_0.94_B32000 n=6   +0.021 +-  0.038 W/T/L 2/0/4 p=0.225
+  dip90_all lqr                      85_4 n=6   -0.030 +-  0.019 W/T/L 5/1/0 p=0.013
+  dip80_all lqr_orig           T40_paperK n=6   +0.004 +-  0.030 W/T/L 2/2/2 p=0.740
+  dip80_all lqr_orig           T60_paperK n=6   +0.000 +-  0.023 W/T/L 2/2/2 p=1.000
+  dip80_all lqr_orig           T80_paperK n=6   +0.017 +-  0.031 W/T/L 1/2/3 p=0.235
+  dip80_all lqr_orig              T60_zoh n=6   +0.047 +-  0.062 W/T/L 2/0/4 p=0.120
+  dip80_all vfrot     0.8_1_2_0.94_B24000 n=6   +0.004 +-  0.030 W/T/L 2/2/2 p=0.740
+  dip80_all vfrot     0.8_1_2_0.94_B32000 n=6   +0.004 +-  0.030 W/T/L 2/2/2 p=0.740
+  dip80_all lqr                      85_4 n=6   -0.013 +-  0.014 W/T/L 3/3/0 p=0.076
+    trk_err lqr_orig           T40_paperK n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err lqr_orig           T60_paperK n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err lqr_orig           T80_paperK n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err lqr_orig              T60_zoh n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err vfrot     0.8_1_2_0.94_B24000 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err vfrot     0.8_1_2_0.94_B32000 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err lqr                      85_4 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+PAIRED vs lqr_orig T60_paperK (per repeat: config - reference, mean +- sd, W/T/L = better/equal/worse than the reference in the same repeat (rtt_p99, dips and trk_err: lower is better, all others higher), p = two-sided paired t-test; nan where a value is missing)
+   ok_worst lqr_orig           T40_paperK n=6   +0.008 +-  0.048 W/T/L 3/0/3 p=0.682
+   ok_worst lqr_orig           T80_paperK n=6   -0.021 +-  0.055 W/T/L 1/3/2 p=0.384
+   ok_worst lqr_orig              T60_zoh n=6   -0.085 +-  0.026 W/T/L 0/0/6 p=0.001
+   ok_worst vfrot            0.8_1_2_0.94 n=6   +0.004 +-  0.011 W/T/L 1/5/0 p=0.363
+   ok_worst vfrot     0.8_1_2_0.94_B24000 n=6   +0.000 +-  0.040 W/T/L 3/0/3 p=0.992
+   ok_worst vfrot     0.8_1_2_0.94_B32000 n=6   -0.009 +-  0.042 W/T/L 2/1/3 p=0.643
+   ok_worst lqr                      85_4 n=6   +0.038 +-  0.027 W/T/L 5/1/0 p=0.017
+   ok_w_rtt lqr_orig           T40_paperK n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+   ok_w_rtt lqr_orig           T80_paperK n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+   ok_w_rtt lqr_orig              T60_zoh n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+   ok_w_rtt vfrot            0.8_1_2_0.94 n=6   +0.149 +-  0.366 W/T/L 1/5/0 p=0.363
+   ok_w_rtt vfrot     0.8_1_2_0.94_B24000 n=6   +0.158 +-  0.387 W/T/L 1/5/0 p=0.363
+   ok_w_rtt vfrot     0.8_1_2_0.94_B32000 n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+   ok_w_rtt lqr                      85_4 n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+    rtt_p99 lqr_orig           T40_paperK n=6   +0.874 +-  1.706 W/T/L 3/0/3 p=0.265
+    rtt_p99 lqr_orig           T80_paperK n=6   +0.404 +-  1.368 W/T/L 2/0/4 p=0.502
+    rtt_p99 lqr_orig              T60_zoh n=6   +0.891 +-  1.404 W/T/L 1/0/5 p=0.181
+    rtt_p99 vfrot            0.8_1_2_0.94 n=6   -0.813 +-  1.026 W/T/L 5/0/1 p=0.110
+    rtt_p99 vfrot     0.8_1_2_0.94_B24000 n=6   -0.246 +-  1.205 W/T/L 4/0/2 p=0.638
+    rtt_p99 vfrot     0.8_1_2_0.94_B32000 n=6   +1.356 +-  4.548 W/T/L 4/0/2 p=0.498
+    rtt_p99 lqr                      85_4 n=6   -0.545 +-  0.717 W/T/L 5/0/1 p=0.122
+   fl_total lqr_orig           T40_paperK n=6   -1.316 +-  2.714 W/T/L 2/0/4 p=0.288
+   fl_total lqr_orig           T80_paperK n=6   +2.766 +-  2.958 W/T/L 5/0/1 p=0.071
+   fl_total lqr_orig              T60_zoh n=6   +1.133 +-  5.034 W/T/L 3/0/3 p=0.605
+   fl_total vfrot            0.8_1_2_0.94 n=6  -16.170 +-  2.402 W/T/L 0/0/6 p=0.000
+   fl_total vfrot     0.8_1_2_0.94_B24000 n=6  -11.973 +-  1.379 W/T/L 0/0/6 p=0.000
+   fl_total vfrot     0.8_1_2_0.94_B32000 n=6  -12.083 +-  4.015 W/T/L 0/0/6 p=0.001
+   fl_total lqr                      85_4 n=6  -23.210 +-  2.747 W/T/L 0/0/6 p=0.000
+    min_own lqr_orig           T40_paperK n=6   -0.448 +-  1.209 W/T/L 2/0/4 p=0.406
+    min_own lqr_orig           T80_paperK n=6   +0.365 +-  1.208 W/T/L 5/0/1 p=0.493
+    min_own lqr_orig              T60_zoh n=6   -0.053 +-  1.666 W/T/L 3/0/3 p=0.941
+    min_own vfrot            0.8_1_2_0.94 n=6   -4.380 +-  0.655 W/T/L 0/0/6 p=0.000
+    min_own vfrot     0.8_1_2_0.94_B24000 n=6   -4.440 +-  0.891 W/T/L 0/0/6 p=0.000
+    min_own vfrot     0.8_1_2_0.94_B32000 n=6   -3.396 +-  1.306 W/T/L 0/0/6 p=0.001
+    min_own lqr                      85_4 n=6   -4.858 +-  1.043 W/T/L 0/0/6 p=0.000
+       jain lqr_orig           T40_paperK n=6   +0.009 +-  0.021 W/T/L 5/0/1 p=0.358
+       jain lqr_orig           T80_paperK n=6   -0.011 +-  0.023 W/T/L 3/0/3 p=0.279
+       jain lqr_orig              T60_zoh n=6   +0.006 +-  0.028 W/T/L 3/0/3 p=0.605
+       jain vfrot            0.8_1_2_0.94 n=6   -0.304 +-  0.132 W/T/L 0/0/6 p=0.002
+       jain vfrot     0.8_1_2_0.94_B24000 n=6   -0.355 +-  0.184 W/T/L 0/0/6 p=0.005
+       jain vfrot     0.8_1_2_0.94_B32000 n=6   -0.337 +-  0.103 W/T/L 0/0/6 p=0.000
+       jain lqr                      85_4 n=6   +0.021 +-  0.016 W/T/L 6/0/0 p=0.023
+  dip95_ovl lqr_orig           T40_paperK n=6   +0.056 +-  0.153 W/T/L 1/1/4 p=0.415
+  dip95_ovl lqr_orig           T80_paperK n=6   +0.241 +-  0.130 W/T/L 0/0/6 p=0.006
+  dip95_ovl lqr_orig              T60_zoh n=6   +0.315 +-  0.164 W/T/L 0/1/5 p=0.005
+  dip95_ovl vfrot            0.8_1_2_0.94 n=6   +0.037 +-  0.057 W/T/L 0/4/2 p=0.175
+  dip95_ovl vfrot     0.8_1_2_0.94_B24000 n=6   +0.019 +-  0.148 W/T/L 1/3/2 p=0.771
+  dip95_ovl vfrot     0.8_1_2_0.94_B32000 n=6   +0.093 +-  0.216 W/T/L 1/2/3 p=0.341
+  dip95_ovl lqr                      85_4 n=6   +0.000 +-  0.070 W/T/L 1/4/1 p=1.000
+  dip90_ovl lqr_orig           T40_paperK n=6   +0.019 +-  0.130 W/T/L 1/2/3 p=0.741
+  dip90_ovl lqr_orig           T80_paperK n=6   +0.185 +-  0.135 W/T/L 0/1/5 p=0.020
+  dip90_ovl lqr_orig              T60_zoh n=6   +0.222 +-  0.253 W/T/L 1/0/5 p=0.084
+  dip90_ovl vfrot            0.8_1_2_0.94 n=6   +0.019 +-  0.045 W/T/L 0/5/1 p=0.363
+  dip90_ovl vfrot     0.8_1_2_0.94_B24000 n=6   -0.019 +-  0.109 W/T/L 1/4/1 p=0.695
+  dip90_ovl vfrot     0.8_1_2_0.94_B32000 n=6   +0.019 +-  0.130 W/T/L 1/2/3 p=0.741
+  dip90_ovl lqr                      85_4 n=6   -0.037 +-  0.091 W/T/L 1/5/0 p=0.363
+  dip80_ovl lqr_orig           T40_paperK n=6   +0.037 +-  0.057 W/T/L 0/4/2 p=0.175
+  dip80_ovl lqr_orig           T80_paperK n=6   +0.056 +-  0.093 W/T/L 0/4/2 p=0.203
+  dip80_ovl lqr_orig              T60_zoh n=6   +0.167 +-  0.153 W/T/L 0/2/4 p=0.045
+  dip80_ovl vfrot            0.8_1_2_0.94 n=6   +0.019 +-  0.045 W/T/L 0/5/1 p=0.363
+  dip80_ovl vfrot     0.8_1_2_0.94_B24000 n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+  dip80_ovl vfrot     0.8_1_2_0.94_B32000 n=6   +0.019 +-  0.045 W/T/L 0/5/1 p=0.363
+  dip80_ovl lqr                      85_4 n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+  dip95_all lqr_orig           T40_paperK n=6   +0.004 +-  0.064 W/T/L 3/0/3 p=0.876
+  dip95_all lqr_orig           T80_paperK n=6   +0.060 +-  0.085 W/T/L 0/1/5 p=0.147
+  dip95_all lqr_orig              T60_zoh n=6   +0.132 +-  0.025 W/T/L 0/0/6 p=0.000
+  dip95_all vfrot            0.8_1_2_0.94 n=6   -0.004 +-  0.038 W/T/L 3/1/2 p=0.792
+  dip95_all vfrot     0.8_1_2_0.94_B24000 n=6   +0.017 +-  0.045 W/T/L 1/2/3 p=0.394
+  dip95_all vfrot     0.8_1_2_0.94_B32000 n=6   +0.034 +-  0.062 W/T/L 2/0/4 p=0.236
+  dip95_all lqr                      85_4 n=6   -0.047 +-  0.038 W/T/L 5/1/0 p=0.028
+  dip90_all lqr_orig           T40_paperK n=6   +0.000 +-  0.040 W/T/L 3/0/3 p=0.999
+  dip90_all lqr_orig           T80_paperK n=6   +0.056 +-  0.068 W/T/L 0/2/4 p=0.101
+  dip90_all lqr_orig              T60_zoh n=6   +0.098 +-  0.041 W/T/L 0/0/6 p=0.002
+  dip90_all vfrot            0.8_1_2_0.94 n=6   -0.017 +-  0.013 W/T/L 4/2/0 p=0.025
+  dip90_all vfrot     0.8_1_2_0.94_B24000 n=6   +0.004 +-  0.050 W/T/L 3/1/2 p=0.842
+  dip90_all vfrot     0.8_1_2_0.94_B32000 n=6   +0.004 +-  0.044 W/T/L 2/0/4 p=0.822
+  dip90_all lqr                      85_4 n=6   -0.047 +-  0.030 W/T/L 5/1/0 p=0.012
+  dip80_all lqr_orig           T40_paperK n=6   +0.004 +-  0.030 W/T/L 2/2/2 p=0.740
+  dip80_all lqr_orig           T80_paperK n=6   +0.017 +-  0.021 W/T/L 0/3/3 p=0.102
+  dip80_all lqr_orig              T60_zoh n=6   +0.047 +-  0.050 W/T/L 1/1/4 p=0.069
+  dip80_all vfrot            0.8_1_2_0.94 n=6   +0.000 +-  0.023 W/T/L 2/2/2 p=1.000
+  dip80_all vfrot     0.8_1_2_0.94_B24000 n=6   +0.004 +-  0.025 W/T/L 2/1/3 p=0.694
+  dip80_all vfrot     0.8_1_2_0.94_B32000 n=6   +0.004 +-  0.025 W/T/L 1/4/1 p=0.695
+  dip80_all lqr                      85_4 n=6   -0.013 +-  0.014 W/T/L 3/3/0 p=0.076
+    trk_err lqr_orig           T40_paperK n=6   -0.443 +-  2.046 W/T/L 4/0/2 p=0.619
+    trk_err lqr_orig           T80_paperK n=6   -0.360 +-  2.758 W/T/L 4/0/2 p=0.762
+    trk_err lqr_orig              T60_zoh n=6   -2.806 +-  1.934 W/T/L 6/0/0 p=0.016
+    trk_err vfrot            0.8_1_2_0.94 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err vfrot     0.8_1_2_0.94_B24000 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err vfrot     0.8_1_2_0.94_B32000 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+    trk_err lqr                      85_4 n=0     +nan +-    nan W/T/L 0/0/0 p=nan
+FRONTIER (sorted by mean flooder total, Gbit/s; SLO = ok_worst, SLO+RTT = ok_w_rtt; dips = fraction of 1 s windows below 0.95 / 0.90 / 0.80 of the reference)
+mode                    param fl_total min_own    SLO SLO+RTT rtt_p99  dip ovl 95/90/80  dip all 95/90/80
+lqr_orig           T80_paperK    37.15    7.87  0.910   0.000   4.263    0.30/0.22/0.06    0.15/0.10/0.03
+lqr_orig              T60_zoh    35.52    7.45  0.846   0.000   4.750    0.37/0.26/0.17    0.22/0.15/0.06
+lqr_orig           T60_paperK    34.39    7.51  0.931   0.000   3.859    0.06/0.04/0.00    0.09/0.05/0.01
+lqr_orig           T40_paperK    33.07    7.06  0.940   0.000   4.733    0.11/0.06/0.04    0.09/0.05/0.02
+vfrot     0.8_1_2_0.94_B24000    22.41    3.07  0.932   0.158   3.613    0.07/0.02/0.00    0.10/0.05/0.02
+vfrot     0.8_1_2_0.94_B32000    22.30    4.11  0.923   0.000   5.215    0.15/0.06/0.02    0.12/0.05/0.02
+vfrot            0.8_1_2_0.94    18.22    3.13  0.936   0.149   3.045    0.09/0.06/0.02    0.08/0.03/0.01
+lqr                      85_4    11.18    2.65  0.970   0.000   3.314    0.06/0.00/0.00    0.04/0.00/0.00
+ALONE controls: 54 slots, RTT SLO passed in 52/54 (false-alarm rate of the RTT SLO with no flooders 0.037), rtt_p50 0.171 +- 0.018 ms, rtt_p99 0.591 +- 0.456 ms, loss 0.00 +- 0.00 %

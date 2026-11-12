@@ -1,0 +1,261 @@
+{
+ "verdict": "WARN",
+ "checks": [
+  [
+   "vhost_signal_steady",
+   "PASS",
+   "cpu_ref 41.10 % of one core (FAIL < 2); max sd of 0.5 s samples at u = 0 0.41 vs smallest target 16.44 (PASS <= 0.1 x, WARN <= 0.2 x)"
+  ],
+  [
+   "vhost_monotone_in_u",
+   "WARN",
+   "CPU at u = 0/0.05/0.1/0.2/0.5 per flooder: A 41.2/15.4/14.5/1.7/0.1; B 41.0/16.2/13.7/1.6/0.1; C 41.0/13.9/16.5/1.7/0.1; D 41.2/16.8/16.5/1.7/0.1 (1 rise(s); FAIL if CPU(0.5) > 0.9 x CPU(0))"
+  ],
+  [
+   "step_fit_r2",
+   "PASS",
+   "min R^2 0.994 over 8 fits (PASS >= 0.8, WARN >= 0.5); gains G Au 82.5 Ad 83.1 Bu 82.5 Bd 81.8 Cu 81.9 Cd 81.8 Du 82.0 Dd 82.5"
+  ],
+  [
+   "step_up_down_agreement",
+   "WARN",
+   "A |dG|/G 0.01 tau ratio 2.55; B |dG|/G 0.01 tau ratio 2.23; C |dG|/G 0.00 tau ratio 3.33; D |dG|/G 0.01 tau ratio 3.48 (PASS |dG|/G <= 0.3 and tau ratio <= 2, FAIL |dG|/G > 0.5)"
+  ],
+  [
+   "small_u_gain_ratio",
+   "WARN",
+   "small-signal gain / 0 -> 0.5 gain = 6.17 (PASS < 1.5, else WARN; FAIL only if not computable); the ARE gain is stable only up to ~1.5 x the identified plant gain -- WARN MEANING: near u = 0 the plant is 6.2 x steeper than the 0 -> 0.5 step used to identify b, so lqr_orig's re-identified K is effectively too aggressive at small drop fractions; expect a limit cycle between 0 and the first levels (0.05-0.10) rather than smooth tracking, i.e. report its tracking error and victim SLO as properties of the faithful port in our TCP plant, not of a mis-tuned port (nothing is retuned)"
+  ],
+  [
+   "targets_span",
+   "PASS",
+   "predicted flooder totals at T40 (16.4 %) 1.65, T60 (24.7 %) 17.25, T80 (32.9 %) 32.85 Gbit/s vs exp39 lqr 79/85/90 8.8/11.5/14.7"
+  ],
+  [
+   "xdp_bytes_per_packet",
+   "WARN",
+   "65226 bytes per XDP packet at u = 0 (PASS <= 1600: per-segment drop; WARN: GSO aggregates, one drop removes several segments)"
+  ],
+  [
+   "xdp_drop_fraction",
+   "PASS",
+   "max |realized - commanded| drop fraction at u = 0.05 and 0.5 = 0.0000 (PASS <= 0.01)"
+  ],
+  [
+   "xdp_swap_in_out",
+   "PASS",
+   "xdp_dropfrac on all 4 flooders: yes; xdp_limit back on all 4: yes"
+  ],
+  [
+   "ssh_iperf3_at_u_0.5",
+   "PASS",
+   "u = 0.5 held on all 4 flooders to the end: 0 flooder ssh/iperf3 still running after 60 s (FAIL if > 0), -J parsed A yes, B yes, C yes, D yes, wait 3.0 s"
+  ]
+ ],
+ "cpu_ref": 41.097561266771294,
+ "tau": 0.08071792905096466,
+ "b": 1018.667034858605,
+ "G": 82.22469344627342,
+ "targets": {
+  "T40": 16.439024506708517,
+  "T60": 24.658536760062777,
+  "T80": 32.878049013417034
+ },
+ "pred_totals": {
+  "T40": 1.6499416242095006,
+  "T60": 17.250192429922684,
+  "T80": 32.85044323563586
+ },
+ "fits": [
+  {
+   "tau": 0.05,
+   "theta": 0.0,
+   "y0": 41.15678514836841,
+   "delta": -41.232231700061234,
+   "r2": 0.9939368620351737,
+   "n": 110,
+   "flooder": "A",
+   "dir": "up",
+   "t_step": 6.007890717010014,
+   "G": 82.46446340012247
+  },
+  {
+   "tau": 0.1273603140273643,
+   "theta": 0.1,
+   "y0": 0.10240823394604245,
+   "delta": 41.56970966597479,
+   "r2": 0.9976143290874601,
+   "n": 90,
+   "flooder": "A",
+   "dir": "down",
+   "t_step": 14.005336767993867,
+   "G": 83.13941933194958
+  },
+  {
+   "tau": 0.05,
+   "theta": 0.0,
+   "y0": 41.20692785084422,
+   "delta": -41.26677070066563,
+   "r2": 0.9946447651782355,
+   "n": 110,
+   "flooder": "B",
+   "dir": "up",
+   "t_step": 20.007699470035732,
+   "G": 82.53354140133126
+  },
+  {
+   "tau": 0.11143585810192931,
+   "theta": 0.1,
+   "y0": 0.08401403344483865,
+   "delta": 40.896067324152945,
+   "r2": 0.9993355378154245,
+   "n": 90,
+   "flooder": "B",
+   "dir": "down",
+   "t_step": 28.00924898701487,
+   "G": 81.79213464830589
+  },
+  {
+   "tau": 0.05,
+   "theta": 0.0,
+   "y0": 40.939466463726504,
+   "delta": -40.95046051556402,
+   "r2": 0.9950341717500757,
+   "n": 110,
+   "flooder": "C",
+   "dir": "up",
+   "t_step": 34.009211924043484,
+   "G": 81.90092103112804
+  },
+  {
+   "tau": 0.16636135167721397,
+   "theta": 0.0,
+   "y0": 0.2016052071359696,
+   "delta": 40.87721181550736,
+   "r2": 0.9981481188034295,
+   "n": 90,
+   "flooder": "C",
+   "dir": "down",
+   "t_step": 42.00718081899686,
+   "G": 81.75442363101472
+  },
+  {
+   "tau": 0.05,
+   "theta": 0.0,
+   "y0": 40.957835373637884,
+   "delta": -40.992461746212186,
+   "r2": 0.996482185366738,
+   "n": 110,
+   "flooder": "D",
+   "dir": "up",
+   "t_step": 48.0077073200373,
+   "G": 81.98492349242437
+  },
+  {
+   "tau": 0.17393573905140897,
+   "theta": 0.1,
+   "y0": 0.042279374377376715,
+   "delta": 41.23549873339891,
+   "r2": 0.9988699506381178,
+   "n": 90,
+   "flooder": "D",
+   "dir": "down",
+   "t_step": 56.00785913702566,
+   "G": 82.47099746679783
+  }
+ ],
+ "levels_bp": [
+  0,
+  500,
+  1000,
+  2000,
+  5000
+ ],
+ "levels_cpu": [
+  [
+   41.23190711633633,
+   15.445076964565192,
+   14.53745580107412,
+   1.6547650922448058,
+   0.1461039180214719
+  ],
+  [
+   40.983303592971225,
+   16.182057783284638,
+   13.734928439045904,
+   1.630408704822612,
+   0.13298071242236836
+  ],
+  [
+   40.99147811818947,
+   13.860181191986293,
+   16.546477872356,
+   1.6887814504238086,
+   0.13431775953155844
+  ],
+  [
+   41.203644415353125,
+   16.814215927853674,
+   16.481138235326217,
+   1.7019595537807215,
+   0.10255384804472477
+  ]
+ ],
+ "cpu_med": [
+  41.097561266771294,
+  15.813567373924915,
+  15.509297018200169,
+  1.6717732713343072,
+  0.1336492359769634
+ ],
+ "totals": [
+  48.45069404134904,
+  0.46285316459139647,
+  0.3044304355505738,
+  0.030814936272094872,
+  0.0012357741474558876
+ ],
+ "flooder_gbps": [
+  [
+   12.17571296188198,
+   12.348949157746205,
+   12.071223358804234,
+   11.85480856291662
+  ],
+  [
+   0.11889761948855,
+   0.11011964341701261,
+   0.10096824896017102,
+   0.13286765272566287
+  ],
+  [
+   0.08107706252349034,
+   0.06558966888252032,
+   0.07469762258226507,
+   0.08306608156229804
+  ],
+  [
+   0.00756974950184113,
+   0.007500107806424191,
+   0.007993655473944233,
+   0.007751423489885317
+  ],
+  [
+   0.0003271117448582253,
+   0.0003271117448582253,
+   0.00031802764086109853,
+   0.0002635230168783384
+  ]
+ ],
+ "bytes_per_packet": 65225.82438559459,
+ "gain_ratio": 6.172260567750295,
+ "sd_max": 0.4118476409647815,
+ "vhost": {
+  "A": "/proc/1187/task/1197/schedstat",
+  "B": "/proc/1246/task/1256/schedstat",
+  "C": "/proc/1304/task/1314/schedstat",
+  "D": "/proc/1421/task/1431/schedstat"
+ },
+ "duration_s": 106.21135026798584,
+ "written": "2026-11-06 22:30:35"
+}

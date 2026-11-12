@@ -1,0 +1,176 @@
+SCENARIO burst: seeded on/off bursts per repeat and flooder (on 3-6 s, off 2-5 s, first start 0-4 s; A 4 streams, B 2 streams; same schedule for all configs in a repeat; iperf columns nan, eBPF columns valid)
+CONFIGS: lqr 76_4, lqr 80_4, vfrot 0.8_1_3_0.94 (thresh 0.94), pidrotf 80_3, rot 10_3, pid 74, pid 78, pid 82
+LQR 76_4: target 76% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 76_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 76_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 76_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 76_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 76_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 80_4: target 80% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 80_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 80_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 80_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 80_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 80_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+EXPECTED DURATION: 17 slots/repeat, ~15.1 min/repeat, 6 repeats + 5 x 600 s rest ~ 2.34 h
+vnet0: reusing already attached xdp_limit prog id 44, cfg map id 15, cnt map id 17
+vnet1: reusing already attached xdp_limit prog id 50, cfg map id 18, cnt map id 20
+vnet2: reusing already attached xdp_limit prog id 56, cfg map id 21, cnt map id 23
+6 repeats x (8 configs + 9 interleaved alone runs), writing /home/priyanka/testbed/results_dyn29.csv and /home/priyanka/testbed/ts_dyn29.csv; reference re-measured at the start of every repeat, victim offered 25.0 Gbit/s, 600 s rest after every repeat except the last (the 45 s cool-down applies only to a repeat not preceded by a rest)
+rep 1 ref run 1: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.1%
+rep 1 ref run 2: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.6%
+REFERENCE rep 1: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 50.4% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim29.txt
+rep 1 burst schedule flooder A (4 streams, t rel. flooder launch): [3.11-8.12], [10.42-14.48], [17.88-22.48], [27.42-30.81], [34.82-38.92]
+rep 1 burst schedule flooder B (2 streams, t rel. flooder launch): [3.19-6.36], [10.64-16.23], [18.51-24.21], [28.57-32.79], [35.91-40.00]
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  1    0 alone             na  25.00 25.02   1.00    0.00   0.00    0.00   0.00   nan     51.7    57.7
+  1    1 pid               78  25.00  8.21   0.49     nan   7.48     nan   7.38 0.997     75.9    96.6
+  1    2 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.7    55.0
+  1    3 pid               82  25.00  7.27   0.54     nan  11.62     nan  11.72 0.985     77.5    99.1
+  1    4 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    57.3
+  1    5 vfrot   0.8_1_3_0.94  25.00 24.08   0.95     nan   7.05     nan   3.30 0.503     70.5    93.6
+  1    6 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.6    55.0
+  1    7 rot             10_3  25.00 23.12   0.92     nan   4.12     nan   3.44 0.985     70.6    91.6
+  1    8 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    55.0
+  1    9 lqr             76_4  25.00 15.44   0.85     nan   5.74     nan   4.86 0.981     68.6   100.0
+  1   10 alone             na  25.00 25.02   1.00    0.00   0.00    0.00   0.00   nan     51.7    55.5
+  1   11 pidrotf         80_3  25.00 24.34   0.97     nan   4.16     nan   1.43 0.634     68.1    91.3
+  1   12 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    55.5
+  1   13 lqr             80_4  25.00  9.90   0.77     nan   6.72     nan   5.96 0.996     71.1    99.1
+  1   14 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.3    55.0
+  1   15 pid               74  25.00  8.82   0.74     nan   4.92     nan   4.65 0.999     72.4    99.1
+  1   16 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.2    55.0
+session rest 600 s
+rep 2 ref run 1: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 51.3%
+rep 2 ref run 2: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.2%
+REFERENCE rep 2: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 50.8% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim29.txt
+rep 2 burst schedule flooder A (4 streams, t rel. flooder launch): [1.79-7.64], [11.06-16.36], [20.74-26.54], [29.30-34.69], [38.41-40.00]
+rep 2 burst schedule flooder B (2 streams, t rel. flooder launch): [2.35-6.43], [8.59-13.54], [18.40-23.18], [26.88-32.12], [36.00-40.00]
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  2    0 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    54.5
+  2    1 pidrotf         80_3  25.00 20.95   0.92     nan   4.06     nan   2.14 0.789     69.5    90.8
+  2    2 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.0    56.1
+  2    3 vfrot   0.8_1_3_0.94  25.00 22.67   0.90     nan   6.83     nan   4.31 0.875     72.5    94.3
+  2    4 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.2    56.9
+  2    5 pid               82  25.00  9.15   0.67     nan   5.89     nan   7.00 0.998     78.8    99.1
+  2    6 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    56.2
+  2    7 lqr             80_4  25.00 18.31   0.74     nan   5.78     nan   7.72 0.990     74.6    96.6
+  2    8 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.7    55.0
+  2    9 pid               78  25.00 14.16   0.77     nan   4.05     nan   4.71 0.989     75.1    96.6
+  2   10 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.5    56.9
+  2   11 lqr             76_4  25.00 23.52   0.95     nan   5.15     nan   6.04 1.000     72.0    99.0
+  2   12 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.7    54.7
+  2   13 rot             10_3  25.00 23.34   0.92     nan   5.39     nan   2.77 0.762     72.4    91.0
+  2   14 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.2    54.5
+  2   15 pid               74  25.00 24.09   0.95     nan   2.73     nan   3.40 0.980     71.7    95.8
+  2   16 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    56.1
+session rest 600 s
+rep 3 ref run 1: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.1%
+rep 3 ref run 2: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 49.6%
+REFERENCE rep 3: victim rate 25.032 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 49.9% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim29.txt
+rep 3 burst schedule flooder A (4 streams, t rel. flooder launch): [2.56-6.49], [9.33-14.28], [16.70-21.72], [25.05-28.71], [32.35-35.99], [38.63-40.00]
+rep 3 burst schedule flooder B (2 streams, t rel. flooder launch): [1.17-5.50], [8.55-12.28], [15.13-20.16], [24.94-29.37], [34.22-39.95]
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  3    0 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    55.5
+  3    1 pid               82  25.00  9.62   0.62     nan   9.52     nan  10.03 1.000     78.0    97.3
+  3    2 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.1    55.8
+  3    3 rot             10_3  25.00 22.10   0.92     nan   3.50     nan   3.60 0.824     70.1    94.2
+  3    4 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.9    56.9
+  3    5 vfrot   0.8_1_3_0.94  25.00 22.00   0.87     nan   4.06     nan   5.09 0.989     71.3    96.0
+  3    6 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    54.6
+  3    7 pid               74  25.00 16.33   0.87     nan   3.68     nan   3.55 1.000     72.0    97.5
+  3    8 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.7    54.8
+  3    9 lqr             80_4  25.00 17.63   0.85     nan   6.38     nan   6.05 0.999     72.7   100.0
+  3   10 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.5    57.0
+  3   11 lqr             76_4  25.00 17.80   0.79     nan   4.59     nan   4.90 0.998     70.0    97.2
+  3   12 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.0    57.0
+  3   13 pidrotf         80_3  25.00 22.34   0.90     nan   2.36     nan   3.60 0.997     69.3    92.9
+  3   14 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.1    56.4
+  3   15 pid               78  25.00 15.43   0.67     nan   5.35     nan   5.30 1.000     75.9    98.3
+  3   16 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    55.4
+session rest 600 s
+rep 4 ref run 1: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 52.5%
+rep 4 ref run 2: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 52.3%
+REFERENCE rep 4: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 52.4% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim29.txt
+rep 4 burst schedule flooder A (4 streams, t rel. flooder launch): [1.64-5.89], [9.29-15.12], [18.65-23.62], [26.57-31.56], [34.65-38.67]
+rep 4 burst schedule flooder B (2 streams, t rel. flooder launch): [1.66-5.07], [7.65-12.96], [17.06-22.29], [26.84-31.24], [35.22-40.00]
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  4    0 alone             na  25.00 25.02   1.00    0.00   0.00    0.00   0.00   nan     53.8    56.6
+  4    1 pidrotf         80_3  25.00 22.03   0.92     nan   4.30     nan   2.60 0.856     71.4    93.5
+  4    2 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.8    55.8
+  4    3 pid               74  25.00 19.24   0.90     nan   3.54     nan   3.15 0.984     72.0    97.2
+  4    4 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     48.9    52.4
+  4    5 vfrot   0.8_1_3_0.94  25.00 21.84   0.90     nan   6.97     nan   4.97 1.000     72.9    96.3
+  4    6 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     53.5    56.9
+  4    7 lqr             80_4  25.00 14.18   0.82     nan   6.45     nan   6.44 0.974     73.4    99.1
+  4    8 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    54.7
+  4    9 pid               82  25.00 11.27   0.54     nan   8.42     nan   8.25 0.983     78.6    99.1
+  4   10 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.5    54.5
+  4   11 rot             10_3  25.00 23.74   0.92     nan   4.23     nan   3.81 0.580     71.7    92.5
+  4   12 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    54.6
+  4   13 pid               78  25.00 19.14   0.79     nan   5.64     nan   5.38 0.991     75.8    99.1
+  4   14 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    55.0
+  4   15 lqr             76_4  25.00 14.95   0.85     nan   6.18     nan   5.08 0.950     71.2    99.1
+  4   16 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.6    54.6
+session rest 600 s
+rep 5 ref run 1: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.4%
+rep 5 ref run 2: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 52.4%
+REFERENCE rep 5: victim rate 25.032 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 51.4% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim29.txt
+rep 5 burst schedule flooder A (4 streams, t rel. flooder launch): [0.93-6.28], [9.65-14.15], [18.67-23.19], [26.22-30.78], [34.55-37.74]
+rep 5 burst schedule flooder B (2 streams, t rel. flooder launch): [2.28-7.17], [11.38-16.08], [18.44-21.82], [25.54-30.16], [33.55-38.64]
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  5    0 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    56.5
+  5    1 rot             10_3  25.00 23.67   0.95     nan   4.82     nan   2.95 0.824     71.1    93.3
+  5    2 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    55.0
+  5    3 vfrot   0.8_1_3_0.94  25.00 22.74   0.90     nan   6.42     nan   2.82 0.936     69.4    93.9
+  5    4 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.8    55.0
+  5    5 pidrotf         80_3  25.00 24.01   0.95     nan   3.91     nan   2.09 0.998     69.4    92.0
+  5    6 alone             na  25.00 25.02   1.00    0.00   0.00    0.00   0.00   nan     52.2    55.9
+  5    7 pid               74  25.00 22.71   0.92     nan   3.54     nan   3.83 0.953     71.4   100.0
+  5    8 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.2    55.0
+  5    9 pid               82  25.00 12.42   0.67     nan   8.81     nan   8.96 0.985     77.3    99.1
+  5   10 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.6    56.2
+  5   11 lqr             80_4  25.00 22.68   0.92     nan   5.45     nan   6.37 0.933     72.5    99.2
+  5   12 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     54.3    58.1
+  5   13 lqr             76_4  25.00 22.74   0.87     nan   4.79     nan   4.86 0.939     70.9    98.3
+  5   14 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     53.3    58.9
+  5   15 pid               78  25.00 12.85   0.82     nan   5.03     nan   4.99 0.975     75.0    96.6
+  5   16 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     54.3    58.0
+session rest 600 s
+rep 6 ref run 1: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.4%
+rep 6 ref run 2: victim alone 25.03 Gbit/s (eBPF), 25.00 Gbit/s (iperf3), host CPU 50.1%
+REFERENCE rep 6: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 50.2% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim29.txt
+rep 6 burst schedule flooder A (4 streams, t rel. flooder launch): [0.70-4.21], [6.74-11.96], [14.12-20.08], [25.06-30.07], [32.87-38.07]
+rep 6 burst schedule flooder B (2 streams, t rel. flooder launch): [3.66-8.89], [13.60-17.12], [21.06-26.05], [30.05-35.98], [38.52-40.00]
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  6    0 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.7    54.5
+  6    1 lqr             80_4  25.00 20.76   0.85     nan   6.61     nan   5.46 0.996     74.7    97.3
+  6    2 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.7    55.0
+  6    3 pid               74  25.00 21.72   0.92     nan   3.03     nan   3.03 0.983     71.8    95.9
+  6    4 alone             na  25.00 25.02   1.00    0.00   0.00    0.00   0.00   nan     51.6    55.0
+  6    5 pidrotf         80_3  25.00 23.92   0.95     nan   4.73     nan   2.62 0.969     73.0    90.2
+  6    6 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.5    55.0
+  6    7 pid               82  25.00 17.86   0.74     nan   7.26     nan   6.22 0.998     78.8    97.4
+  6    8 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.4    56.5
+  6    9 pid               78  25.00 19.61   0.90     nan   4.00     nan   3.56 0.995     75.4    96.6
+  6   10 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     52.0    55.8
+  6   11 lqr             76_4  25.00 20.79   0.87     nan   5.62     nan   5.28 0.988     72.0    98.2
+  6   12 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.9    56.1
+  6   13 rot             10_3  25.00 23.00   0.92     nan   7.43     nan   2.40 0.789     76.2    95.6
+  6   14 alone             na  25.00 25.02   1.00    0.00   0.00    0.00   0.00   nan     51.0    55.4
+  6   15 vfrot   0.8_1_3_0.94  25.00 21.15   0.87     nan   8.67     nan   4.14 0.892     76.8    94.6
+  6   16 alone             na  25.00 25.03   1.00    0.00   0.00    0.00   0.00   nan     51.4    54.3
+
+REFERENCES per repeat (Gbit/s): rep 1 = 25.033 (base_cpu 50.4%), rep 2 = 25.033 (base_cpu 50.8%), rep 3 = 25.032 (base_cpu 49.9%), rep 4 = 25.033 (base_cpu 52.4%), rep 5 = 25.032 (base_cpu 51.4%), rep 6 = 25.033 (base_cpu 50.2%)
+
+SUMMARY (mean +- sd over 6 repeats; alone pooled over all 9 slots per repeat)
+mode           param    n          v_mean            v_p5          slo_ok         A_iperf          A_ebpf         B_iperf          B_ebpf            jain        cpu_mean         cpu_max
+lqr             76_4    6  25.00 +-  0.00  19.21 +-  3.68   0.86 +-  0.05    nan +-   nan   5.34 +-  0.61    nan +-   nan   5.17 +-  0.46   0.98 +-  0.03  70.79 +-  1.31  98.65 +-  0.94
+lqr             80_4    6  25.00 +-  0.00  17.24 +-  4.62   0.82 +-  0.06    nan +-   nan   6.23 +-  0.50    nan +-   nan   6.33 +-  0.77   0.98 +-  0.03  73.18 +-  1.37  98.54 +-  1.29
+vfrot   0.8_1_3_0.94    6  25.00 +-  0.00  22.41 +-  1.00   0.90 +-  0.03    nan +-   nan   6.67 +-  1.49    nan +-   nan   4.10 +-  0.90   0.87 +-  0.18  72.20 +-  2.59  94.79 +-  1.13
+pidrotf         80_3    6  25.00 +-  0.00  22.93 +-  1.36   0.94 +-  0.03    nan +-   nan   3.92 +-  0.82    nan +-   nan   2.41 +-  0.73   0.87 +-  0.14  70.12 +-  1.79  91.79 +-  1.27
+rot             10_3    6  25.00 +-  0.00  23.16 +-  0.60   0.93 +-  0.01    nan +-   nan   4.92 +-  1.39    nan +-   nan   3.16 +-  0.54   0.79 +-  0.13  72.01 +-  2.20  93.04 +-  1.71
+pid               74    6  25.00 +-  0.00  18.82 +-  5.61   0.88 +-  0.07    nan +-   nan   3.57 +-  0.75    nan +-   nan   3.60 +-  0.59   0.98 +-  0.02  71.89 +-  0.35  97.57 +-  1.70
+pid               78    6  25.00 +-  0.00  14.90 +-  4.24   0.74 +-  0.14    nan +-   nan   5.26 +-  1.28    nan +-   nan   5.22 +-  1.24   0.99 +-  0.01  75.51 +-  0.41  97.29 +-  1.11
+pid               82    6  25.00 +-  0.00  11.27 +-  3.69   0.63 +-  0.08    nan +-   nan   8.59 +-  1.96    nan +-   nan   8.70 +-  2.01   0.99 +-  0.01  78.16 +-  0.67  98.53 +-  0.90
+alone             na   54  25.00 +-  0.00  25.03 +-  0.00   1.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00    nan +-   nan  52.01 +-  0.80  55.68 +-  1.16

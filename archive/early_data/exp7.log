@@ -1,0 +1,27 @@
+vnet0: reusing already attached xdp_limit prog id 78, cfg map id 18, cnt map id 20
+vnet1: reusing already attached xdp_limit prog id 69, cfg map id 14, cnt map id 16
+vnet2: reusing already attached xdp_limit prog id 84, cfg map id 21, cnt map id 23
+ref run 1: victim alone 63.75 Gbit/s (eBPF), 68.97 Gbit/s (iperf3)
+ref run 2: victim alone 63.84 Gbit/s (eBPF), 69.08 Gbit/s (iperf3)
+ref run 3: victim alone 63.47 Gbit/s (eBPF), 68.68 Gbit/s (iperf3)
+REFERENCE victim rate 63.746 Gbit/s (median of 3 x 10 s, eBPF), slo_ok threshold 60.559 Gbit/s, slo floors 95% = 60.559, 90% = 57.372 Gbit/s, saved to /home/priyanka/testbed/ref_victim7.txt
+5 repeats x 8 configs, writing /home/priyanka/testbed/results_dyn7.csv and /home/priyanka/testbed/ts_dyn7.csv
+rep mode   param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  1 slo       90  58.43 42.80   0.31    1.76   1.77    0.03   0.04 0.530     79.5    94.1
+  1 alone     na  64.46 46.88   0.90    0.00   0.00    0.00   0.00   nan     73.7    76.3
+  1 static     5  43.00 16.99   0.00    3.83   3.84    3.43   3.44 1.000     87.4    97.6
+  1 ff        65  60.72 43.46   0.59    0.08   0.09    0.02   0.02 0.961     76.1    86.2
+  1 none      na  21.43  6.75   0.00   22.86  22.88   23.39  23.41 0.982     92.1   100.0
+  1 pid       65  59.54 44.13   0.28    0.05   0.05    0.02   0.02 0.986     75.9    86.2
+  1 static     2  53.75 38.40   0.03    0.79   0.79    0.47   0.47 0.959     78.6    94.2
+  1 slo       95  57.04 39.89   0.03    0.18   0.18    0.03   0.03 0.927     76.3    85.0
+  2 pid       65  57.15 41.47   0.05    0.05   0.05    0.02   0.02 0.947     75.8    83.1
+  2 static     5  37.55  6.98   0.00    3.86   3.86    3.87   3.88 0.995     88.7    98.2
+  2 alone     na  58.14 41.88   0.05    0.00   0.00    0.00   0.00   nan     73.5    76.1
+  2 static     2  51.06 37.26   0.03    0.83   0.83    0.46   0.46 0.964     79.2    94.0
+  2 slo       90  53.78 40.28   0.03    0.34   0.34    0.03   0.03 0.957     76.9    92.4
+  2 none      na  18.24  5.73   0.00   19.57  19.59   20.75  20.77 0.988     92.4   100.0
+  2 ff        65  53.72 38.73   0.03    0.09   0.09    0.02   0.02 0.974     76.5    88.8
+  2 slo       95  52.34 38.34   0.03    0.28   0.28    0.03   0.04 0.964     76.8    88.6
+  3 alone     na  54.33 38.93   0.03    0.00   0.00    0.00   0.00   nan     73.6    76.1
+  3 ff        65  53.40 38.25   0.03    0.08   0.08    0.02   0.02 0.919     76.0    85.0

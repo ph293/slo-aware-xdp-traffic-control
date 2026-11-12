@@ -1,0 +1,2 @@
+# rep, time, ref_gbps (median eBPF), base_cpu (mean host %), eBPF runs, iperf3 runs; victim alone, 2 x 10 s at VICTIM_RATE_GBIT=25.0 Gbit/s at the start of each repeat
+1, 2026-10-16 21:24:29, 25.033, 52.9, 25.033 25.033, 27.082 27.082

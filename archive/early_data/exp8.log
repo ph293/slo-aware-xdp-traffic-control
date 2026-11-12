@@ -1,0 +1,81 @@
+vnet0: reusing already attached xdp_limit prog id 78, cfg map id 18, cnt map id 20
+vnet1: reusing already attached xdp_limit prog id 69, cfg map id 14, cnt map id 16
+vnet2: reusing already attached xdp_limit prog id 84, cfg map id 21, cnt map id 23
+5 repeats x 8 configs, writing /home/priyanka/testbed/results_dyn8.csv and /home/priyanka/testbed/ts_dyn8.csv; reference re-measured at the start of every repeat, 45 s cool-down between repeats
+rep 1 ref run 1: victim alone 63.62 Gbit/s (eBPF), 68.84 Gbit/s (iperf3)
+rep 1 ref run 2: victim alone 63.90 Gbit/s (eBPF), 69.15 Gbit/s (iperf3)
+REFERENCE rep 1: victim rate 63.761 Gbit/s (median of 2 x 10 s, eBPF), slo_ok threshold 60.573 Gbit/s, slo floors 95% = 60.573, 90% = 57.385 Gbit/s, saved to /home/priyanka/testbed/ref_victim8.txt
+rep mode   param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  1 slo       90  58.94 46.08   0.33    1.39   1.40    0.04   0.04 0.554     79.2    93.3
+  1 alone     na  65.39 46.83   0.92    0.00   0.00    0.00   0.00   nan     73.4    75.9
+  1 static     5  44.37 17.04   0.00    3.38   3.39    3.11   3.11 0.999     85.9    98.2
+  1 ff        65  60.55 45.00   0.56    0.05   0.06    0.02   0.02 0.981     76.1    85.8
+  1 none      na  17.34  6.06   0.00   24.78  24.81   23.14  23.17 0.977     91.9   100.0
+  1 pid       65  54.96 41.24   0.05    0.06   0.06    0.02   0.02 0.951     76.0    86.5
+  1 static     2  50.61 32.62   0.03    0.86   0.86    0.46   0.46 0.950     79.5    91.5
+  1 slo       95  53.22 37.25   0.00    0.17   0.18    0.03   0.04 0.945     76.4    90.5
+cool-down 45 s before repeat 2
+rep 2 ref run 1: victim alone 63.29 Gbit/s (eBPF), 68.48 Gbit/s (iperf3)
+rep 2 ref run 2: victim alone 62.17 Gbit/s (eBPF), 67.27 Gbit/s (iperf3)
+REFERENCE rep 2: victim rate 62.728 Gbit/s (median of 2 x 10 s, eBPF), slo_ok threshold 59.591 Gbit/s, slo floors 95% = 59.591, 90% = 56.455 Gbit/s, saved to /home/priyanka/testbed/ref_victim8.txt
+rep mode   param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  2 pid       65  60.94 43.36   0.72    0.06   0.06    0.02   0.02 0.936     75.9    86.6
+  2 static     5  38.65 14.09   0.00    3.96   3.97    3.81   3.82 0.997     88.9   100.0
+  2 alone     na  52.61 37.10   0.05    0.00   0.00    0.00   0.00   nan     73.4    76.1
+  2 static     2  42.15 29.59   0.03    0.95   0.95    0.53   0.53 0.968     80.5    93.6
+  2 slo       90  44.19 31.79   0.00    0.20   0.20    0.04   0.04 0.943     77.7    92.7
+  2 none      na  11.79  4.52   0.00   16.94  16.96   17.29  17.31 0.972     91.8   100.0
+  2 ff        65  43.65 32.36   0.03    0.06   0.06    0.02   0.02 0.944     76.3    81.4
+  2 slo       95  42.68 31.31   0.00    0.18   0.18    0.04   0.04 0.952     77.8    89.7
+cool-down 45 s before repeat 3
+rep 3 ref run 1: victim alone 57.79 Gbit/s (eBPF), 62.52 Gbit/s (iperf3)
+rep 3 ref run 2: victim alone 58.65 Gbit/s (eBPF), 63.46 Gbit/s (iperf3)
+REFERENCE rep 3: victim rate 58.215 Gbit/s (median of 2 x 10 s, eBPF), slo_ok threshold 55.305 Gbit/s, slo floors 95% = 55.305, 90% = 52.394 Gbit/s, saved to /home/priyanka/testbed/ref_victim8.txt
+rep mode   param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  3 alone     na  58.83 39.66   0.85    0.00   0.00    0.00   0.00   nan     73.4    80.2
+  3 ff        65  45.73 30.50   0.03    0.09   0.09    0.02   0.02 0.983     76.0    83.2
+  3 static     5  21.52  4.91   0.00    4.21   4.22    4.28   4.29 0.993     89.8    99.1
+  3 slo       95  41.80 28.16   0.03    0.18   0.18    0.04   0.04 0.974     77.3    88.9
+  3 static     2  38.52 27.17   0.00    1.01   1.01    0.55   0.56 0.939     81.0    93.8
+  3 none      na  13.06  4.45   0.00   18.12  18.15   17.08  17.10 0.989     92.3   100.0
+  3 pid       65  44.00 31.37   0.03    0.07   0.07    0.03   0.03 0.985     76.2    87.0
+  3 slo       90  44.52 31.14   0.03    0.25   0.25    0.04   0.04 0.970     77.1    88.3
+cool-down 45 s before repeat 4
+rep 4 ref run 1: victim alone 60.21 Gbit/s (eBPF), 65.15 Gbit/s (iperf3)
+rep 4 ref run 2: victim alone 59.21 Gbit/s (eBPF), 64.07 Gbit/s (iperf3)
+REFERENCE rep 4: victim rate 59.712 Gbit/s (median of 2 x 10 s, eBPF), slo_ok threshold 56.726 Gbit/s, slo floors 95% = 56.726, 90% = 53.741 Gbit/s, saved to /home/priyanka/testbed/ref_victim8.txt
+rep mode   param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  4 pid       65  59.35 40.62   0.87    0.05   0.05    0.02   0.02 0.968     75.9    80.3
+  4 slo       95  50.14 32.44   0.03    0.33   0.33    0.03   0.03 0.963     77.4    92.2
+  4 static     5  24.27  4.33   0.00    4.16   4.16    4.32   4.33 0.993     89.7    98.2
+  4 static     2  40.46 27.03   0.03    0.93   0.93    0.55   0.56 0.973     80.4    97.3
+  4 alone     na  48.46 34.95   0.03    0.00   0.00    0.00   0.00   nan     73.4    76.1
+  4 ff        65  44.52 31.41   0.03    0.07   0.07    0.02   0.02 0.966     76.5    84.3
+  4 slo       90  43.02 28.25   0.03    0.29   0.29    0.04   0.04 0.961     77.2    91.9
+  4 none      na  12.13  4.33   0.00   17.18  17.20   16.71  16.73 0.995     92.7   100.0
+cool-down 45 s before repeat 5
+rep 5 ref run 1: victim alone 57.19 Gbit/s (eBPF), 61.89 Gbit/s (iperf3)
+rep 5 ref run 2: victim alone 57.71 Gbit/s (eBPF), 62.44 Gbit/s (iperf3)
+REFERENCE rep 5: victim rate 57.449 Gbit/s (median of 2 x 10 s, eBPF), slo_ok threshold 54.577 Gbit/s, slo floors 95% = 54.577, 90% = 51.704 Gbit/s, saved to /home/priyanka/testbed/ref_victim8.txt
+rep mode   param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf  jain cpu_mean cpu_max
+  5 ff        65  51.60 33.33   0.28    0.07   0.07    0.02   0.02 0.937     76.0    86.0
+  5 static     5  25.12  4.79   0.00    4.15   4.16    4.24   4.25 0.994     89.9    99.1
+  5 pid       65  36.49 23.64   0.03    0.06   0.06    0.03   0.03 0.949     77.4    89.7
+  5 slo       95  33.25 12.01   0.05    0.70   0.70    0.05   0.05 0.962     80.2    93.7
+  5 alone     na  35.40 12.60   0.08    0.00   0.00    0.00   0.00   nan     73.2    78.2
+  5 static     2  24.84  6.55   0.05    1.28   1.28    1.09   1.10 1.000     84.7    96.6
+  5 none      na   8.88  3.08   0.00   11.35  11.36   11.67  11.68 0.982     91.2   100.0
+  5 slo       90  28.02  6.31   0.05    0.62   0.63    0.04   0.04 0.969     79.1    94.8
+
+REFERENCES per repeat (Gbit/s): rep 1 = 63.761, rep 2 = 62.728, rep 3 = 58.215, rep 4 = 59.712, rep 5 = 57.449
+
+SUMMARY (mean +- sd over 5 repeats)
+mode   param          v_mean            v_p5          slo_ok         A_iperf          A_ebpf         B_iperf          B_ebpf            jain        cpu_mean         cpu_max
+none      na  12.64 +-  3.06   4.49 +-  1.06   0.00 +-  0.00  17.67 +-  4.78  17.69 +-  4.79  17.18 +-  4.07  17.20 +-  4.07   0.98 +-  0.01  91.99 +-  0.56 100.00 +-  0.00
+static     2  39.32 +-  9.32  24.59 +- 10.34   0.03 +-  0.02   1.00 +-  0.16   1.01 +-  0.16   0.64 +-  0.26   0.64 +-  0.26   0.97 +-  0.02  81.24 +-  2.00  94.57 +-  2.41
+static     5  30.79 +- 10.09   9.03 +-  6.06   0.00 +-  0.00   3.97 +-  0.35   3.98 +-  0.35   3.95 +-  0.52   3.96 +-  0.52   1.00 +-  0.00  88.84 +-  1.71  98.94 +-  0.75
+pid       65  51.15 +- 10.53  36.05 +-  8.32   0.34 +-  0.42   0.06 +-  0.01   0.06 +-  0.01   0.02 +-  0.00   0.02 +-  0.00   0.96 +-  0.02  76.29 +-  0.65  86.02 +-  3.45
+ff        65  49.21 +-  7.06  34.52 +-  5.95   0.18 +-  0.24   0.07 +-  0.01   0.07 +-  0.01   0.02 +-  0.00   0.02 +-  0.00   0.96 +-  0.02  76.18 +-  0.23  84.15 +-  1.91
+slo       95  44.22 +-  7.82  28.24 +-  9.64   0.02 +-  0.02   0.31 +-  0.22   0.31 +-  0.23   0.04 +-  0.01   0.04 +-  0.01   0.96 +-  0.01  77.82 +-  1.42  91.00 +-  1.93
+slo       90  43.74 +- 10.95  28.71 +- 14.31   0.09 +-  0.14   0.55 +-  0.50   0.55 +-  0.50   0.04 +-  0.00   0.04 +-  0.00   0.88 +-  0.18  78.07 +-  1.00  92.20 +-  2.40
+alone     na  52.14 +- 11.34  34.23 +- 12.89   0.38 +-  0.46   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00    nan +-   nan  73.35 +-  0.10  77.28 +-  1.89

@@ -1,0 +1,188 @@
+iperf3 servers listening on ports 5201, 5202, 5203, 5204, 5205, 5206
+guests reachable with iperf3: V1=tenant1, V2=tenant5, A=tenant2, B=tenant3, C=tenant4, D=tenant6
+SCENARIO steady4: flooder A (tenant2) t=0-28 s (2 streams), flooder B (tenant3) t=6-34 s (2 streams), flooder C (tenant4) t=12-40 s (2 streams), flooder D (tenant6) t=18-40 s (2 streams), all active 18-28 s (Jain window), no bursts
+CONFIGS: static 2500 (Mbit/s per flooder, 10 Gbit/s total), static 3500 (Mbit/s per flooder, 14 Gbit/s total), lqr 79_4, lqr 85_4, lqr 90_4, vfrot 0.8_1_2_0.94 (thresh 0.94)
+TOKEN BUCKET: all modes use the same xdp_limit.o on every flooder interface, burst 5 ms at the cap rate; victim interfaces never limited (counter only)
+VICTIMS: V1 = tenant1 10.10.0.11 port 5201, V2 = tenant5 10.10.0.15 port 5205, each 9 Gbit/s, one stream, constant for [0,40) s (launched together 0.5 s after the flooders); slo_ok per victim = fraction of its 39 1 s windows >= 95% of its own per-repeat reference; slo_ok_worst = the smaller of the two
+VICTIM CMD V1: ssh alpine@10.10.0.11 'iperf3 -c 10.10.0.1 -p 5201 -t 40 -b 9G -J'
+VICTIM CMD V2: ssh alpine@10.10.0.15 'iperf3 -c 10.10.0.1 -p 5205 -t 40 -b 9G -J'
+FLOODER CMD A: ssh alpine@10.10.0.12 'iperf3 -c 10.10.0.1 -p 5202 -t 28 -P 2 -J'
+FLOODER CMD B: ssh alpine@10.10.0.13 'sleep 6; iperf3 -c 10.10.0.1 -p 5203 -t 28 -P 2 -J'
+FLOODER CMD C: ssh alpine@10.10.0.14 'sleep 12; iperf3 -c 10.10.0.1 -p 5204 -t 28 -P 2 -J'
+FLOODER CMD D: ssh alpine@10.10.0.16 'sleep 18; iperf3 -c 10.10.0.1 -p 5206 -t 22 -P 2 -J'
+REF CMD V1: ssh alpine@10.10.0.11 'iperf3 -c 10.10.0.1 -p 5201 -t 10 -b 9G -J' (both together, 2 runs)
+REF CMD V2: ssh alpine@10.10.0.15 'iperf3 -c 10.10.0.1 -p 5205 -t 10 -b 9G -J' (both together, 2 runs)
+vfrot: feedback = WORST victim, min over V1/V2 of EMA(1 s rate)/own reference < thresh; budget start 10000, clamp [800, 16000] Mbit/s, rotation over 4 holders (holder gets B - (n_active - 1) x 200); static/lqr never see the victims
+vfrot NOTE: budget start 10000 and ceiling 16000 Mbit/s kept from exp38 (4 vCPU) for comparability; with more CPU room on 6 vCPU the 16000 Mbit/s ceiling could become binding (check budget_mbit in the ts file)
+LQR 79_4: target 79% host CPU on 6 CPUs (nproc), RWT 4, budget clamp [200, 70000] Mbit/s, start 2000 Mbit/s (equal split over 4 flooders); model a, b, K unchanged from exp38 (K_CPU 0.93 %/Gbit/s measured on 4 CPUs)
+LQR 79_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 79_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 79_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 79_4: plant gain x0.67: eig=[0.6546+0.1219j, 0.6546-0.1219j] |eig|max=0.6659 stable yes
+LQR 79_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 79_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 85_4: target 85% host CPU on 6 CPUs (nproc), RWT 4, budget clamp [200, 70000] Mbit/s, start 2000 Mbit/s (equal split over 4 flooders); model a, b, K unchanged from exp38 (K_CPU 0.93 %/Gbit/s measured on 4 CPUs)
+LQR 85_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 85_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 85_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 85_4: plant gain x0.67: eig=[0.6546+0.1219j, 0.6546-0.1219j] |eig|max=0.6659 stable yes
+LQR 85_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 85_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 90_4: target 90% host CPU on 6 CPUs (nproc), RWT 4, budget clamp [200, 70000] Mbit/s, start 2000 Mbit/s (equal split over 4 flooders); model a, b, K unchanged from exp38 (K_CPU 0.93 %/Gbit/s measured on 4 CPUs)
+LQR 90_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 90_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 90_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 90_4: plant gain x0.67: eig=[0.6546+0.1219j, 0.6546-0.1219j] |eig|max=0.6659 stable yes
+LQR 90_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 90_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+HOST CPU: /proc/stat aggregate line, busy % = 1 - (idle + iowait)/total as exp37 (total = sum of all fields); steal % = steal field / same total (reported by this kernel); host CPUs: nproc 6, os.cpu_count() 6; tick length = time between consecutive reads of tenant1's counter (nominal 0.25 s), WARNING if a slot's mean > 0.3 s (first tick, which spans the launch, excluded)
+EXPECTED DURATION: 13 slots/repeat, ~11.7 min/repeat, 6 repeats + 5 x 600 s rest ~ 2.00 h
+vnet0: attached xdp_limit prog id 47, cfg map id 18, cnt map id 20
+vnet4: attached xdp_limit prog id 53, cfg map id 21, cnt map id 23
+vnet1: attached xdp_limit prog id 59, cfg map id 24, cnt map id 26
+vnet2: attached xdp_limit prog id 65, cfg map id 27, cnt map id 29
+vnet3: attached xdp_limit prog id 71, cfg map id 30, cnt map id 32
+vnet5: attached xdp_limit prog id 77, cfg map id 33, cnt map id 35
+INTERFACES: V1 = tenant1 vnet0, V2 = tenant5 vnet4, A = tenant2 vnet1, B = tenant3 vnet2, C = tenant4 vnet3, D = tenant6 vnet5
+STATIC 2500: per-flooder cap 2500 Mbit/s (burst 1.56 MB), set once at the start of each slot on A = tenant2 vnet1 (cfg map id 24), B = tenant3 vnet2 (cfg map id 27), C = tenant4 vnet3 (cfg map id 30), D = tenant6 vnet5 (cfg map id 33); victims tenant1 vnet0, tenant5 vnet4 unlimited
+STATIC 3500: per-flooder cap 3500 Mbit/s (burst 2.19 MB), set once at the start of each slot on A = tenant2 vnet1 (cfg map id 24), B = tenant3 vnet2 (cfg map id 27), C = tenant4 vnet3 (cfg map id 30), D = tenant6 vnet5 (cfg map id 33); victims tenant1 vnet0, tenant5 vnet4 unlimited
+6 repeats x (6 configs + 7 interleaved alone runs), writing /home/priyanka/testbed/results_dyn39.csv and /home/priyanka/testbed/ts_dyn39.csv; references re-measured at the start of every repeat, 600 s rest after every repeat except the last (the 45 s cool-down applies only to a repeat not preceded by a rest)
+rep 1 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.3%, steal 0.0%
+rep 1 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.4%, steal 0.0%
+REFERENCE rep 1: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.562) (median of 2 x 10 s, both together, eBPF), base_cpu 58.9%, saved to /home/priyanka/testbed/ref_victim39.txt
+LQR TARGETS rep 1: base_cpu 58.9% on 6 CPUs; target -> headroom: lqr 79_4 79 -> +20.1, lqr 85_4 85 -> +26.1, lqr 90_4 90 -> +31.1
+LQR headroom over measured base CPU (rep 1, base_cpu 58.9%, 6 CPUs): lqr 79_4 79 -> +20.1, lqr 85_4 85 -> +26.1, lqr 90_4 90 -> +31.1 points; compare +29/+35 at base 50% (exp34-37)
+rep slot mode           param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x
+  1    0 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.0    69.3    0.00    0.00  0.250  0.254
+  1    1 lqr             90_4    9.00  8.32  0.87    9.00  7.34  0.85     0.85    4.76   4.77    3.61   3.62    3.44   3.45    3.39   3.40 1.000     88.9    98.4    0.00    0.00  0.250  0.258
+  1    2 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.9    64.1    0.00    0.00  0.250  0.252
+static 2500: cap set once for the whole run on A vnet1 (cfg map id 24) 2500 Mbit/s, B vnet2 (cfg map id 27) 2500 Mbit/s, C vnet3 (cfg map id 30) 2500 Mbit/s, D vnet5 (cfg map id 33) 2500 Mbit/s
+  1    3 static          2500    9.00  8.99  1.00    9.00  8.92  1.00     1.00    0.89   0.89    0.96   0.96    1.04   1.04    1.00   1.00 1.000     76.2    96.6    0.00    0.00  0.250  0.257
+  1    4 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    67.7    0.00    0.00  0.250  0.252
+  1    5 vfrot   0.8_1_2_0.94    9.00  8.06  0.92    9.00  8.59  0.97     0.92    3.36   3.36    6.70   6.71    3.65   3.65    5.01   5.01 0.696     87.8    95.6    0.00    0.00  0.250  0.256
+  1    6 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.7    64.8    0.00    0.00  0.250  0.255
+  1    7 lqr             85_4    9.00  8.46  0.92    9.00  8.71  0.95     0.92    3.30   3.30    2.74   2.74    2.88   2.89    2.91   2.91 0.999     84.1    98.5    0.00    0.00  0.250  0.256
+  1    8 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.8    65.3    0.00    0.00  0.250  0.253
+static 3500: cap set once for the whole run on A vnet1 (cfg map id 24) 3500 Mbit/s, B vnet2 (cfg map id 27) 3500 Mbit/s, C vnet3 (cfg map id 30) 3500 Mbit/s, D vnet5 (cfg map id 33) 3500 Mbit/s
+  1    9 static          3500    9.00  7.45  0.90    9.00  6.74  0.85     0.85    2.29   2.29    2.60   2.60    2.72   2.73    2.64   2.65 0.999     86.3    99.0    0.00    0.00  0.250  0.255
+  1   10 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    64.4    0.00    0.00  0.250  0.251
+  1   11 lqr             79_4    9.00  8.69  0.95    9.00  8.87  0.97     0.95    2.16   2.17    1.90   1.91    1.98   1.98    1.92   1.92 0.997     79.2    97.6    0.00    0.00  0.250  0.255
+  1   12 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.3    63.7    0.00    0.00  0.250  0.251
+session rest 600 s
+rep 2 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.8%, steal 0.0%
+rep 2 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.9%, steal 0.0%
+REFERENCE rep 2: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 10 s, both together, eBPF), base_cpu 58.8%, saved to /home/priyanka/testbed/ref_victim39.txt
+LQR TARGETS rep 2: base_cpu 58.8% on 6 CPUs; target -> headroom: lqr 79_4 79 -> +20.2, lqr 85_4 85 -> +26.2, lqr 90_4 90 -> +31.2
+rep slot mode           param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x
+  2    0 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.3    64.2    0.00    0.00  0.250  0.254
+  2    1 lqr             79_4    9.00  8.84  0.97    9.00  8.85  1.00     0.97    2.37   2.38    2.36   2.36    2.14   2.14    2.20   2.20 0.991     78.9    98.4    0.00    0.00  0.250  0.263
+  2    2 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.0    64.4    0.00    0.00  0.250  0.251
+  2    3 lqr             85_4    9.00  8.69  0.95    9.00  8.94  0.97     0.95    3.30   3.30    2.70   2.70    2.83   2.83    2.68   2.69 0.996     84.2    99.4    0.00    0.00  0.250  0.255
+  2    4 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.4    64.5    0.00    0.00  0.250  0.251
+static 3500: cap set once for the whole run on A vnet1 (cfg map id 24) 3500 Mbit/s, B vnet2 (cfg map id 27) 3500 Mbit/s, C vnet3 (cfg map id 30) 3500 Mbit/s, D vnet5 (cfg map id 33) 3500 Mbit/s
+  2    5 static          3500    9.00  7.78  0.90    9.00  5.88  0.85     0.85    2.29   2.29    2.66   2.67    2.61   2.61    2.67   2.68 1.000     85.8    99.5    0.00    0.00  0.250  0.257
+  2    6 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    65.8    0.00    0.00  0.250  0.262
+  2    7 vfrot   0.8_1_2_0.94    9.00  8.71  0.95    9.00  8.91  0.95     0.95    3.93   3.94    2.39   2.39    6.32   6.33    5.99   6.00 0.500     87.4    94.6    0.00    0.00  0.250  0.258
+  2    8 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     63.0    82.8    0.00    0.00  0.250  0.367
+  2    9 lqr             90_4    9.00  8.58  0.97    9.00  7.67  0.90     0.90    4.56   4.56    3.77   3.77    3.04   3.04    3.09   3.10 0.999     88.8    98.4    0.00    0.00  0.250  0.258
+  2   10 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.5    67.6    0.00    0.00  0.250  0.255
+static 2500: cap set once for the whole run on A vnet1 (cfg map id 24) 2500 Mbit/s, B vnet2 (cfg map id 27) 2500 Mbit/s, C vnet3 (cfg map id 30) 2500 Mbit/s, D vnet5 (cfg map id 33) 2500 Mbit/s
+  2   11 static          2500    9.00  8.63  0.97    9.00  8.99  1.00     0.97    0.84   0.85    1.05   1.05    1.11   1.11    1.10   1.10 0.997     77.7    97.7    0.00    0.00  0.250  0.255
+  2   12 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    65.0    0.00    0.00  0.250  0.256
+session rest 600 s
+rep 3 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.9%, steal 0.0%
+rep 3 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.3%, steal 0.0%
+REFERENCE rep 3: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 10 s, both together, eBPF), base_cpu 59.6%, saved to /home/priyanka/testbed/ref_victim39.txt
+LQR TARGETS rep 3: base_cpu 59.6% on 6 CPUs; target -> headroom: lqr 79_4 79 -> +19.4, lqr 85_4 85 -> +25.4, lqr 90_4 90 -> +30.4
+rep slot mode           param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x
+  3    0 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    66.0    0.00    0.00  0.250  0.252
+  3    1 lqr             79_4    9.00  8.85  0.97    9.00  8.95  0.97     0.97    2.25   2.26    1.95   1.96    2.20   2.20    2.25   2.25 0.991     78.8    97.7    0.00    0.00  0.250  0.258
+  3    2 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.3    64.6    0.00    0.00  0.250  0.253
+  3    3 vfrot   0.8_1_2_0.94    9.00  8.75  0.95    9.00  8.65  0.95     0.95    4.72   4.73    4.18   4.18    4.57   4.58    4.72   4.73 0.868     87.7    94.3    0.00    0.00  0.250  0.255
+  3    4 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.4    64.8    0.00    0.00  0.250  0.253
+  3    5 lqr             85_4    9.00  9.00  0.97    9.00  8.98  0.97     0.97    3.20   3.20    2.73   2.73    2.52   2.53    2.55   2.56 0.996     84.0    97.4    0.00    0.00  0.250  0.257
+  3    6 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.9    64.0    0.00    0.00  0.250  0.255
+static 2500: cap set once for the whole run on A vnet1 (cfg map id 24) 2500 Mbit/s, B vnet2 (cfg map id 27) 2500 Mbit/s, C vnet3 (cfg map id 30) 2500 Mbit/s, D vnet5 (cfg map id 33) 2500 Mbit/s
+  3    7 static          2500    9.00  8.97  1.00    9.00  9.00  1.00     1.00    0.86   0.86    1.03   1.03    0.96   0.96    0.98   0.99 0.996     76.8    97.3    0.00    0.00  0.250  0.260
+  3    8 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    64.5    0.00    0.00  0.250  0.251
+static 3500: cap set once for the whole run on A vnet1 (cfg map id 24) 3500 Mbit/s, B vnet2 (cfg map id 27) 3500 Mbit/s, C vnet3 (cfg map id 30) 3500 Mbit/s, D vnet5 (cfg map id 33) 3500 Mbit/s
+  3    9 static          3500    9.00  8.03  0.90    9.00  8.17  0.90     0.90    2.42   2.42    2.75   2.76    2.71   2.72    2.76   2.76 1.000     86.7    99.5    0.00    0.00  0.250  0.258
+  3   10 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.6    65.6    0.00    0.00  0.250  0.253
+  3   11 lqr             90_4    9.00  8.61  0.95    9.00  8.89  0.95     0.95    4.56   4.57    3.52   3.52    2.92   2.92    3.03   3.03 1.000     88.9    99.0    0.00    0.00  0.250  0.259
+  3   12 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.2    65.6    0.00    0.00  0.250  0.255
+session rest 600 s
+rep 4 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.2%, steal 0.0%
+rep 4 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.8%, steal 0.0%
+REFERENCE rep 4: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 10 s, both together, eBPF), base_cpu 58.5%, saved to /home/priyanka/testbed/ref_victim39.txt
+LQR TARGETS rep 4: base_cpu 58.5% on 6 CPUs; target -> headroom: lqr 79_4 79 -> +20.5, lqr 85_4 85 -> +26.5, lqr 90_4 90 -> +31.5
+rep slot mode           param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x
+  4    0 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.7    65.2    0.00    0.00  0.250  0.252
+  4    1 lqr             79_4    9.00  8.93  0.97    9.00  8.99  1.00     0.97    2.47   2.48    2.10   2.10    2.33   2.33    2.21   2.22 0.995     79.0    97.4    0.00    0.00  0.250  0.261
+  4    2 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    63.7    0.00    0.00  0.250  0.253
+  4    3 vfrot   0.8_1_2_0.94    9.00  8.93  1.00    9.00  8.96  0.97     0.97    4.92   4.93    4.49   4.50    5.92   5.92    3.46   3.46 0.553     87.8    94.6    0.00    0.00  0.250  0.255
+  4    4 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.3    64.0    0.00    0.00  0.250  0.252
+  4    5 lqr             90_4    9.00  8.44  0.92    9.00  8.57  0.95     0.92    4.71   4.72    3.86   3.87    3.21   3.21    3.23   3.23 1.000     88.8    97.4    0.00    0.00  0.250  0.255
+  4    6 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.7    64.2    0.00    0.00  0.250  0.252
+static 3500: cap set once for the whole run on A vnet1 (cfg map id 24) 3500 Mbit/s, B vnet2 (cfg map id 27) 3500 Mbit/s, C vnet3 (cfg map id 30) 3500 Mbit/s, D vnet5 (cfg map id 33) 3500 Mbit/s
+  4    7 static          3500    9.00  8.47  0.92    9.00  7.94  0.90     0.90    2.26   2.26    2.70   2.71    2.67   2.68    2.82   2.82 0.999     86.8    98.4    0.00    0.00  0.250  0.258
+  4    8 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.0    64.6    0.00    0.00  0.250  0.261
+static 2500: cap set once for the whole run on A vnet1 (cfg map id 24) 2500 Mbit/s, B vnet2 (cfg map id 27) 2500 Mbit/s, C vnet3 (cfg map id 30) 2500 Mbit/s, D vnet5 (cfg map id 33) 2500 Mbit/s
+  4    9 static          2500    9.00  9.00  1.00    9.00  8.96  0.97     0.97    0.96   0.96    1.07   1.08    0.98   0.98    1.05   1.05 0.997     76.9    95.7    0.00    0.00  0.250  0.256
+  4   10 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.5    64.4    0.00    0.00  0.250  0.253
+  4   11 lqr             85_4    9.00  8.75  0.97    9.00  8.97  1.00     0.97    2.96   2.97    2.84   2.84    2.74   2.75    2.63   2.64 0.999     83.9    97.9    0.00    0.00  0.250  0.259
+  4   12 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.5    64.5    0.00    0.00  0.250  0.252
+session rest 600 s
+rep 5 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.0%, steal 0.0%
+rep 5 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.3%, steal 0.0%
+REFERENCE rep 5: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 10 s, both together, eBPF), base_cpu 59.2%, saved to /home/priyanka/testbed/ref_victim39.txt
+LQR TARGETS rep 5: base_cpu 59.2% on 6 CPUs; target -> headroom: lqr 79_4 79 -> +19.8, lqr 85_4 85 -> +25.8, lqr 90_4 90 -> +30.8
+rep slot mode           param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x
+  5    0 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.5    63.4    0.00    0.00  0.250  0.257
+static 3500: cap set once for the whole run on A vnet1 (cfg map id 24) 3500 Mbit/s, B vnet2 (cfg map id 27) 3500 Mbit/s, C vnet3 (cfg map id 30) 3500 Mbit/s, D vnet5 (cfg map id 33) 3500 Mbit/s
+  5    1 static          3500    9.00  7.03  0.90    9.00  8.41  0.92     0.90    2.25   2.25    2.44   2.44    2.48   2.49    2.49   2.49 1.000     85.2    98.9    0.00    0.00  0.250  0.254
+  5    2 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    63.7    0.00    0.00  0.250  0.262
+  5    3 lqr             79_4    9.00  8.94  0.95    9.00  8.95  0.97     0.95    2.60   2.61    2.32   2.32    2.19   2.20    2.15   2.15 0.999     78.8    98.2    0.00    0.00  0.250  0.257
+  5    4 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    63.7    0.00    0.00  0.250  0.253
+  5    5 lqr             85_4    9.00  8.59  0.95    9.00  8.98  1.00     0.95    3.06   3.07    2.71   2.71    2.84   2.85    3.01   3.01 0.999     84.1    98.4    0.00    0.00  0.250  0.256
+  5    6 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.0    64.2    0.00    0.00  0.250  0.252
+  5    7 vfrot   0.8_1_2_0.94    9.00  8.89  0.97    9.00  8.79  0.97     0.97    5.44   5.45    5.85   5.86    1.75   1.75    5.92   5.93 0.911     87.9    93.8    0.00    0.00  0.250  0.255
+  5    8 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.0    64.6    0.00    0.00  0.250  0.261
+  5    9 lqr             90_4    9.00  8.42  0.90    9.00  8.86  0.95     0.90    4.69   4.70    3.83   3.83    3.13   3.14    2.96   2.97 1.000     88.9    97.9    0.00    0.00  0.250  0.256
+  5   10 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.5    66.0    0.00    0.00  0.250  0.253
+static 2500: cap set once for the whole run on A vnet1 (cfg map id 24) 2500 Mbit/s, B vnet2 (cfg map id 27) 2500 Mbit/s, C vnet3 (cfg map id 30) 2500 Mbit/s, D vnet5 (cfg map id 33) 2500 Mbit/s
+  5   11 static          2500    9.00  8.96  0.97    9.00  9.00  1.00     0.97    0.90   0.90    1.10   1.10    1.12   1.12    1.12   1.12 0.995     77.4    98.2    0.00    0.00  0.250  0.254
+  5   12 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     62.1    67.3    0.00    0.00  0.250  0.252
+session rest 600 s
+rep 6 ref run 1: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 59.0%, steal 0.0%
+rep 6 ref run 2: both victims together, V1 9.01 Gbit/s (eBPF) 9.00 (iperf3), V2 9.01 Gbit/s (eBPF) 9.00 (iperf3), host CPU 58.9%, steal 0.0%
+REFERENCE rep 6: V1 (tenant1) 9.012 Gbit/s (slo_ok threshold 8.561), V2 (tenant5) 9.012 Gbit/s (slo_ok threshold 8.561) (median of 2 x 10 s, both together, eBPF), base_cpu 59.0%, saved to /home/priyanka/testbed/ref_victim39.txt
+LQR TARGETS rep 6: base_cpu 59.0% on 6 CPUs; target -> headroom: lqr 79_4 79 -> +20.0, lqr 85_4 85 -> +26.0, lqr 90_4 90 -> +31.0
+rep slot mode           param V1_mean V1_p5 V1_ok V2_mean V2_p5 V2_ok ok_worst A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf D_iperf D_ebpf  jain cpu_mean cpu_max steal_m steal_x tick_m tick_x
+  6    0 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.0    63.6    0.00    0.00  0.250  0.253
+static 3500: cap set once for the whole run on A vnet1 (cfg map id 24) 3500 Mbit/s, B vnet2 (cfg map id 27) 3500 Mbit/s, C vnet3 (cfg map id 30) 3500 Mbit/s, D vnet5 (cfg map id 33) 3500 Mbit/s
+  6    1 static          3500    9.00  8.31  0.92    9.00  8.40  0.92     0.92    2.39   2.39    2.52   2.53    2.67   2.68    2.68   2.68 0.999     86.0    98.4    0.00    0.00  0.250  0.255
+  6    2 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.7    64.7    0.00    0.00  0.250  0.251
+  6    3 lqr             79_4    9.00  8.99  0.97    9.00  8.73  1.00     0.97    2.04   2.04    1.95   1.96    2.21   2.22    2.25   2.25 0.996     79.2    97.7    0.00    0.00  0.250  0.257
+  6    4 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.9    63.6    0.00    0.00  0.250  0.255
+static 2500: cap set once for the whole run on A vnet1 (cfg map id 24) 2500 Mbit/s, B vnet2 (cfg map id 27) 2500 Mbit/s, C vnet3 (cfg map id 30) 2500 Mbit/s, D vnet5 (cfg map id 33) 2500 Mbit/s
+  6    5 static          2500    9.00  9.00  1.00    9.00  9.00  0.97     0.97    0.97   0.97    1.02   1.02    0.96   0.96    1.05   1.06 0.997     77.0    97.1    0.00    0.00  0.250  0.255
+  6    6 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    68.6    0.00    0.00  0.250  0.259
+  6    7 lqr             85_4    9.00  8.82  0.95    9.00  8.61  0.97     0.95    3.15   3.15    2.88   2.88    2.77   2.77    2.69   2.69 0.995     84.1    97.8    0.00    0.00  0.250  0.256
+  6    8 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     61.1    64.2    0.00    0.00  0.250  0.251
+  6    9 vfrot   0.8_1_2_0.94    9.00  8.96  1.00    9.00  8.96  1.00     1.00    5.07   5.08    7.30   7.31    4.41   4.42    2.77   2.77 0.489     88.4    94.8    0.00    0.00  0.250  0.255
+  6   10 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.6    63.9    0.00    0.00  0.250  0.254
+  6   11 lqr             90_4    9.00  8.27  0.87    9.00  7.90  0.90     0.87    4.55   4.55    3.84   3.85    3.33   3.33    3.17   3.18 0.999     88.9    97.8    0.00    0.00  0.250  0.257
+  6   12 alone             na    9.00  9.01  1.00    9.00  9.01  1.00     1.00    0.00   0.00    0.00   0.00    0.00   0.00    0.00   0.00   nan     60.1    64.2    0.00    0.00  0.250  0.256
+
+REFERENCES per repeat (Gbit/s): rep 1 = V1 9.012/V2 9.012 (base_cpu 58.9%; lqr 79_4 79 -> +20.1, lqr 85_4 85 -> +26.1, lqr 90_4 90 -> +31.1), rep 2 = V1 9.012/V2 9.012 (base_cpu 58.8%; lqr 79_4 79 -> +20.2, lqr 85_4 85 -> +26.2, lqr 90_4 90 -> +31.2), rep 3 = V1 9.012/V2 9.012 (base_cpu 59.6%; lqr 79_4 79 -> +19.4, lqr 85_4 85 -> +25.4, lqr 90_4 90 -> +30.4), rep 4 = V1 9.012/V2 9.012 (base_cpu 58.5%; lqr 79_4 79 -> +20.5, lqr 85_4 85 -> +26.5, lqr 90_4 90 -> +31.5), rep 5 = V1 9.012/V2 9.012 (base_cpu 59.2%; lqr 79_4 79 -> +19.8, lqr 85_4 85 -> +25.8, lqr 90_4 90 -> +30.8), rep 6 = V1 9.012/V2 9.012 (base_cpu 59.0%; lqr 79_4 79 -> +20.0, lqr 85_4 85 -> +26.0, lqr 90_4 90 -> +31.0)
+TICK WARNINGS (mean tick > 0.3 s): 0
+
+SUMMARY (mean +- sd over 6 repeats; alone pooled over all 7 slots per repeat)
+mode           param    n         V1_mean           V1_p5           V1_ok         V2_mean           V2_p5           V2_ok        ok_worst         A_iperf          A_ebpf         B_iperf          B_ebpf         C_iperf          C_ebpf         D_iperf          D_ebpf            jain        cpu_mean         cpu_max      steal_mean       steal_max       tick_mean        tick_max
+static          2500    6   9.00 +-  0.00   8.93 +-  0.14   0.99 +-  0.01   9.00 +-  0.00   8.98 +-  0.03   0.99 +-  0.01   0.98 +-  0.01   0.90 +-  0.05   0.90 +-  0.05   1.04 +-  0.05   1.04 +-  0.05   1.03 +-  0.07   1.03 +-  0.07   1.05 +-  0.05   1.05 +-  0.05   1.00 +-  0.00  77.00 +-  0.52  97.11 +-  0.86   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.00
+static          3500    6   9.00 +-  0.00   7.84 +-  0.54   0.91 +-  0.01   9.00 +-  0.00   7.59 +-  1.04   0.89 +-  0.04   0.88 +-  0.03   2.31 +-  0.07   2.32 +-  0.07   2.61 +-  0.12   2.62 +-  0.12   2.64 +-  0.09   2.65 +-  0.09   2.68 +-  0.11   2.68 +-  0.11   1.00 +-  0.00  86.10 +-  0.60  98.95 +-  0.47   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.00
+lqr             79_4    6   9.00 +-  0.00   8.87 +-  0.11   0.97 +-  0.01   9.00 +-  0.00   8.89 +-  0.10   0.99 +-  0.01   0.97 +-  0.01   2.32 +-  0.21   2.32 +-  0.21   2.10 +-  0.20   2.10 +-  0.20   2.17 +-  0.11   2.18 +-  0.11   2.16 +-  0.12   2.17 +-  0.12   0.99 +-  0.00  78.98 +-  0.18  97.85 +-  0.39   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.00
+lqr             85_4    6   9.00 +-  0.00   8.72 +-  0.19   0.95 +-  0.02   9.00 +-  0.00   8.86 +-  0.16   0.98 +-  0.02   0.95 +-  0.02   3.16 +-  0.13   3.16 +-  0.13   2.76 +-  0.08   2.77 +-  0.08   2.76 +-  0.13   2.77 +-  0.13   2.75 +-  0.17   2.75 +-  0.17   1.00 +-  0.00  84.07 +-  0.10  98.23 +-  0.69   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.00
+lqr             90_4    6   9.00 +-  0.00   8.44 +-  0.14   0.91 +-  0.04   9.00 +-  0.00   8.20 +-  0.66   0.91 +-  0.04   0.90 +-  0.04   4.64 +-  0.09   4.64 +-  0.09   3.74 +-  0.14   3.74 +-  0.14   3.18 +-  0.19   3.18 +-  0.19   3.15 +-  0.15   3.15 +-  0.15   1.00 +-  0.00  88.85 +-  0.03  98.16 +-  0.57   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.00
+vfrot   0.8_1_2_0.94    6   9.00 +-  0.00   8.72 +-  0.34   0.97 +-  0.03   9.00 +-  0.00   8.81 +-  0.16   0.97 +-  0.02   0.96 +-  0.03   4.57 +-  0.78   4.58 +-  0.78   5.15 +-  1.82   5.16 +-  1.82   4.44 +-  1.65   4.44 +-  1.65   4.64 +-  1.30   4.65 +-  1.31   0.67 +-  0.19  87.83 +-  0.32  94.61 +-  0.59   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.00
+alone             na   42   9.00 +-  0.00   9.01 +-  0.00   1.00 +-  0.00   9.00 +-  0.00   9.01 +-  0.00   1.00 +-  0.00   1.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00    nan +-   nan  61.30 +-  0.50  65.36 +-  3.08   0.00 +-  0.00   0.00 +-  0.00   0.25 +-  0.00   0.26 +-  0.02

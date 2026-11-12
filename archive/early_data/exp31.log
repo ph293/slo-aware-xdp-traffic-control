@@ -1,0 +1,171 @@
+iperf3 servers listening on ports 5201, 5202, 5203, 5204
+SCENARIO steady3: flooder A (tenant2) t=0-28 s (4 streams), flooder B (tenant3) t=6-34 s (2 streams), flooder C (tenant4) t=12-40 s (2 streams), all active 12-28 s, no bursts
+CONFIGS: lqr 76_4, lqr 79_4, lqr 85_4, lqr 91_4, lqr 94_4, vfrot 0.8_1_3_0.94 (thresh 0.94), pidrotf 85_3
+LQR 76_4: target 76% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 76_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 76_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 76_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 76_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 76_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 79_4: target 79% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 79_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 79_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 79_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 79_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 79_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 85_4: target 85% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 85_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 85_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 85_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 85_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 85_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 91_4: target 91% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 91_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 91_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 91_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 91_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 91_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+LQR 94_4: target 94% host CPU, RWT 4, budget clamp [200, 70000] Mbit/s (as pid), start 2000 Mbit/s (equal split)
+LQR 94_4: a=0.606531 b=0.365926 (%/Gbit per tick) Q=diag(1.0, 1.0) R=2 K=[0.547101, 0.665262] eig(A-BK)=[0.5814+0.1582j, 0.5814-0.1582j] |eig|max=0.6026
+LQR 94_4: plant gain x0.33: eig=[0.8125, 0.6476] |eig|max=0.8125 stable yes
+LQR 94_4: plant gain x0.5: eig=[0.6924+0.0739j, 0.6924-0.0739j] |eig|max=0.6963 stable yes
+LQR 94_4: plant gain x2: eig=[0.4580, 0.2613] |eig|max=0.4580 stable yes
+LQR 94_4: plant gain x3: eig=[0.5157, -0.2400] |eig|max=0.5157 stable yes
+EXPECTED DURATION: 15 slots/repeat, ~13.4 min/repeat, 6 repeats + 5 x 600 s rest ~ 2.17 h
+vnet0: reusing already attached xdp_limit prog id 44, cfg map id 15, cnt map id 17
+vnet1: reusing already attached xdp_limit prog id 50, cfg map id 18, cnt map id 20
+vnet2: reusing already attached xdp_limit prog id 56, cfg map id 21, cnt map id 23
+vnet3: reusing already attached xdp_limit prog id 68, cfg map id 25, cnt map id 27
+6 repeats x (7 configs + 8 interleaved alone runs), writing /home/priyanka/testbed/results_dyn31.csv and /home/priyanka/testbed/ts_dyn31.csv; reference re-measured at the start of every repeat, victim offered 25.0 Gbit/s, 600 s rest after every repeat except the last (the 45 s cool-down applies only to a repeat not preceded by a rest)
+rep 1 ref run 1: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 52.6%
+rep 1 ref run 2: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 52.5%
+REFERENCE rep 1: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 52.5% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim31.txt
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf  jain cpu_mean cpu_max
+  1    0 alone             na  27.08 19.92   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     54.2    61.5
+  1    1 vfrot   0.8_1_3_0.94  27.08 10.74   0.82    5.84   5.85    2.70   2.71    7.98   7.99 0.930     86.3    95.2
+  1    2 alone             na  27.08 20.13   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     54.1    58.3
+  1    3 pidrotf         85_3  26.99 16.11   0.87    5.86   5.87    2.43   2.43    3.73   3.74 0.675     84.9    96.7
+  1    4 alone             na  27.08 20.08   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.9    57.1
+  1    5 lqr             94_4  18.46  5.23   0.28    9.45   9.47    8.24   8.25   10.91  10.93 0.999     92.1   100.0
+  1    6 alone             na  27.08 20.03   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.5    57.3
+  1    7 lqr             76_4  27.06 18.90   0.87    3.14   3.15    2.61   2.61    5.01   5.02 0.994     76.5    98.2
+  1    8 alone             na  27.08 20.10   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.5    67.3
+  1    9 lqr             91_4  24.76  6.02   0.46    6.38   6.39    5.31   5.32    7.05   7.06 1.000     89.9   100.0
+  1   10 alone             na  27.08 19.88   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.9    61.6
+  1   11 lqr             79_4  27.08 19.42   0.92    3.50   3.51    3.00   3.00    4.56   4.57 0.993     79.0    98.4
+  1   12 alone             na  27.08 20.06   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    65.4
+  1   13 lqr             85_4  27.08 10.35   0.77    3.88   3.89    2.91   2.91    5.40   5.40 0.999     84.3    98.3
+  1   14 alone             na  27.08 19.92   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.5    58.3
+session rest 600 s
+rep 2 ref run 1: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 51.6%
+rep 2 ref run 2: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 52.8%
+REFERENCE rep 2: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 52.2% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim31.txt
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf  jain cpu_mean cpu_max
+  2    0 alone             na  27.08 19.98   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.9    57.1
+  2    1 lqr             91_4  22.39  6.39   0.49    8.79   8.80    6.86   6.87    8.77   8.78 1.000     89.6   100.0
+  2    2 alone             na  27.08 20.14   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.4    56.2
+  2    3 pidrotf         85_3  27.08 19.17   0.90    3.88   3.89    2.95   2.96    4.52   4.53 0.987     84.9    96.8
+  2    4 alone             na  27.08 20.02   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.8    56.1
+  2    5 vfrot   0.8_1_3_0.94  27.08 19.16   0.79    8.55   8.56    2.51   2.52    6.60   6.61 0.805     85.9    94.8
+  2    6 alone             na  27.08 20.12   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.7    68.0
+  2    7 lqr             79_4  27.08 19.24   0.92    3.37   3.37    2.82   2.82    4.31   4.32 0.998     79.2    99.2
+  2    8 alone             na  27.08 20.03   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.2    68.4
+  2    9 lqr             76_4  27.08 19.41   0.90    2.99   2.99    2.60   2.61    4.73   4.73 0.992     76.7    98.3
+  2   10 alone             na  27.08 19.79   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.2    56.8
+  2   11 lqr             94_4  17.05  4.89   0.26    9.98   9.99    9.43   9.44   11.09  11.11 1.000     91.7   100.0
+  2   12 alone             na  27.08 19.97   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.8    68.3
+  2   13 lqr             85_4  26.99 14.97   0.85    4.05   4.06    2.99   2.99    6.06   6.06 0.998     84.2    99.1
+  2   14 alone             na  27.08 20.05   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.8    57.4
+session rest 600 s
+rep 3 ref run 1: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 53.3%
+rep 3 ref run 2: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 52.0%
+REFERENCE rep 3: victim rate 25.032 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 52.7% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim31.txt
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf  jain cpu_mean cpu_max
+  3    0 alone             na  27.08 20.16   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.6    57.5
+  3    1 lqr             85_4  26.93 14.90   0.90    3.92   3.93    3.30   3.30    4.98   4.99 0.996     84.5    99.1
+  3    2 alone             na  27.08 19.94   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.8    59.1
+  3    3 vfrot   0.8_1_3_0.94  27.08 14.25   0.77    6.76   6.77    3.74   3.74    6.72   6.72 0.954     86.7    96.3
+  3    4 alone             na  27.08 19.93   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.8    55.8
+  3    5 lqr             94_4  17.26  5.57   0.26   10.02  10.03   10.04  10.05   11.58  11.59 0.993     91.5   100.0
+  3    6 alone             na  27.08 20.16   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.2    57.3
+  3    7 lqr             79_4  27.07 19.29   0.92    3.40   3.41    2.74   2.74    5.10   5.11 0.996     79.1    99.1
+  3    8 alone             na  27.08 19.90   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.8    60.4
+  3    9 lqr             76_4  27.08 19.62   0.90    2.90   2.91    2.60   2.60    4.69   4.69 0.990     76.8    98.4
+  3   10 alone             na  27.08 19.82   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.6    57.1
+  3   11 pidrotf         85_3  27.08 18.22   0.85    3.24   3.25    2.28   2.28    5.89   5.90 0.854     85.0    95.6
+  3   12 alone             na  27.08 20.03   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.7    57.8
+  3   13 lqr             91_4  24.21  5.58   0.54    6.91   6.92    5.41   5.42    6.53   6.54 0.999     89.9   100.0
+  3   14 alone             na  27.08 20.16   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    56.4
+session rest 600 s
+rep 4 ref run 1: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 51.1%
+rep 4 ref run 2: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 50.8%
+REFERENCE rep 4: victim rate 25.032 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 51.0% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim31.txt
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf  jain cpu_mean cpu_max
+  4    0 alone             na  27.08 20.31   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.9    56.9
+  4    1 lqr             91_4  25.13 10.26   0.51    8.02   8.03    6.37   6.37    8.30   8.31 0.999     89.5   100.0
+  4    2 alone             na  27.08 20.07   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    56.1
+  4    3 vfrot   0.8_1_3_0.94  27.08 15.93   0.87    8.92   8.94    0.04   0.04    9.41   9.42 0.671     86.7    95.2
+  4    4 alone             na  27.08 20.06   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.3    56.8
+  4    5 lqr             85_4  27.08 17.87   0.74    3.94   3.95    3.42   3.42    5.55   5.56 0.998     84.2    99.2
+  4    6 alone             na  27.08 20.18   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    57.1
+  4    7 lqr             79_4  27.08 19.85   0.90    3.45   3.46    2.87   2.88    4.73   4.73 0.994     79.0    99.2
+  4    8 alone             na  27.08 20.17   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    57.4
+  4    9 pidrotf         85_3  27.08 17.01   0.90    3.01   3.02    2.17   2.18    5.93   5.94 0.876     84.7    95.0
+  4   10 alone             na  27.08 20.17   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    59.5
+  4   11 lqr             94_4  16.60  6.13   0.15    9.97   9.98    8.78   8.79   10.86  10.87 0.997     91.5   100.0
+  4   12 alone             na  27.08 19.93   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    56.8
+  4   13 lqr             76_4  27.08 19.56   0.87    3.08   3.08    2.79   2.79    3.89   3.90 0.960     76.8    98.3
+  4   14 alone             na  27.08 20.10   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    61.0
+session rest 600 s
+rep 5 ref run 1: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 51.6%
+rep 5 ref run 2: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 50.5%
+REFERENCE rep 5: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 51.1% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim31.txt
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf  jain cpu_mean cpu_max
+  5    0 alone             na  27.08 19.80   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    56.7
+  5    1 lqr             79_4  27.07 18.92   0.90    3.37   3.37    2.90   2.90    5.32   5.32 1.000     78.8    99.1
+  5    2 alone             na  27.08 20.11   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    56.8
+  5    3 lqr             85_4  27.08 17.33   0.87    3.74   3.75    3.00   3.00    5.83   5.83 1.000     84.4    98.2
+  5    4 alone             na  27.08 20.04   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    57.0
+  5    5 vfrot   0.8_1_3_0.94  27.06 17.83   0.85    5.77   5.78    4.68   4.69    6.37   6.38 0.909     83.9    93.2
+  5    6 alone             na  27.08 20.11   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    57.1
+  5    7 lqr             76_4  27.08 18.46   0.87    3.03   3.04    2.90   2.90    4.12   4.12 0.981     76.8    98.3
+  5    8 alone             na  27.08 20.05   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.1    58.1
+  5    9 lqr             91_4  23.01  7.28   0.44    8.32   8.33    6.26   6.27    8.82   8.83 1.000     89.4   100.0
+  5   10 alone             na  27.08 20.19   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.9    60.7
+  5   11 pidrotf         85_3  27.08 19.00   0.90    4.70   4.71    1.93   1.93    4.49   4.50 0.984     84.9    94.4
+  5   12 alone             na  27.08 20.26   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.9    57.0
+  5   13 lqr             94_4  20.03  6.13   0.28    9.27   9.29    7.45   7.46   10.45  10.46 0.999     92.0   100.0
+  5   14 alone             na  27.08 20.10   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.3    56.8
+session rest 600 s
+rep 6 ref run 1: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 50.6%
+rep 6 ref run 2: victim alone 25.03 Gbit/s (eBPF), 27.08 Gbit/s (iperf3), host CPU 50.8%
+REFERENCE rep 6: victim rate 25.033 Gbit/s (median of 2 x 10 s, eBPF), base_cpu 50.7% (mean host CPU, victim alone), slo_ok threshold 23.781 Gbit/s, dfs victim floor 95% = 23.781 Gbit/s, saved to /home/priyanka/testbed/ref_victim31.txt
+rep slot mode           param v_mean  v_p5  slo_ok A_iperf A_ebpf B_iperf B_ebpf C_iperf C_ebpf  jain cpu_mean cpu_max
+  6    0 alone             na  27.08 20.09   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.2    54.8
+  6    1 vfrot   0.8_1_3_0.94  26.92 16.53   0.74    8.49   8.50    3.11   3.12    6.49   6.50 0.892     86.4    95.5
+  6    2 alone             na  27.08 20.09   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.4    57.1
+  6    3 pidrotf         85_3  27.08 18.23   0.82    5.00   5.01    2.13   2.14    4.56   4.57 0.974     83.6    97.1
+  6    4 alone             na  27.08 19.87   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.6    57.5
+  6    5 lqr             76_4  27.08 19.76   0.92    3.08   3.08    2.86   2.87    5.03   5.03 0.997     76.4   100.0
+  6    6 alone             na  27.08 20.42   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.4    56.0
+  6    7 lqr             91_4  23.92  5.43   0.54    8.26   8.27    6.82   6.83    7.40   7.41 0.998     89.9   100.0
+  6    8 alone             na  27.08 20.05   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.6    58.3
+  6    9 lqr             85_4  27.08 12.46   0.79    4.20   4.21    3.16   3.16    5.97   5.98 1.000     84.2    98.4
+  6   10 alone             na  27.08 20.11   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.6    58.3
+  6   11 lqr             79_4  27.08 19.06   0.87    3.35   3.36    2.87   2.87    5.00   5.01 0.992     79.2    98.3
+  6   12 alone             na  27.08 20.17   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     52.8    59.5
+  6   13 lqr             94_4  17.54  5.97   0.13    9.88   9.90    8.93   8.94   11.29  11.31 0.995     91.3   100.0
+  6   14 alone             na  27.08 20.36   0.92    0.00   0.00    0.00   0.00    0.00   0.00   nan     53.0    58.7
+
+REFERENCES per repeat (Gbit/s): rep 1 = 25.033 (base_cpu 52.5%), rep 2 = 25.033 (base_cpu 52.2%), rep 3 = 25.032 (base_cpu 52.7%), rep 4 = 25.032 (base_cpu 51.0%), rep 5 = 25.033 (base_cpu 51.1%), rep 6 = 25.033 (base_cpu 50.7%)
+
+SUMMARY (mean +- sd over 6 repeats; alone pooled over all 8 slots per repeat)
+mode           param    n          v_mean            v_p5          slo_ok         A_iperf          A_ebpf         B_iperf          B_ebpf         C_iperf          C_ebpf            jain        cpu_mean         cpu_max
+lqr             76_4    6  27.08 +-  0.01  19.28 +-  0.50   0.89 +-  0.02   3.04 +-  0.08   3.04 +-  0.08   2.73 +-  0.14   2.73 +-  0.14   4.58 +-  0.47   4.58 +-  0.47   0.99 +-  0.01  76.67 +-  0.17  98.58 +-  0.70
+lqr             79_4    6  27.08 +-  0.01  19.30 +-  0.32   0.91 +-  0.02   3.41 +-  0.06   3.41 +-  0.06   2.87 +-  0.09   2.87 +-  0.09   4.84 +-  0.37   4.84 +-  0.37   1.00 +-  0.00  79.07 +-  0.15  98.88 +-  0.41
+lqr             85_4    6  27.04 +-  0.07  14.64 +-  2.86   0.82 +-  0.06   3.96 +-  0.16   3.96 +-  0.16   3.13 +-  0.20   3.13 +-  0.20   5.63 +-  0.40   5.64 +-  0.40   1.00 +-  0.00  84.30 +-  0.11  98.72 +-  0.47
+lqr             91_4    6  23.90 +-  1.04   6.83 +-  1.81   0.50 +-  0.04   7.78 +-  0.93   7.79 +-  0.93   6.17 +-  0.67   6.18 +-  0.67   7.81 +-  0.96   7.82 +-  0.96   1.00 +-  0.00  89.71 +-  0.24 100.00 +-  0.00
+lqr             94_4    6  17.82 +-  1.24   5.65 +-  0.52   0.23 +-  0.07   9.76 +-  0.32   9.78 +-  0.32   8.81 +-  0.90   8.82 +-  0.91  11.03 +-  0.39  11.04 +-  0.39   1.00 +-  0.00  91.67 +-  0.31 100.00 +-  0.00
+vfrot   0.8_1_3_0.94    6  27.05 +-  0.06  15.74 +-  2.96   0.81 +-  0.05   7.39 +-  1.44   7.40 +-  1.44   2.80 +-  1.56   2.80 +-  1.57   7.26 +-  1.21   7.27 +-  1.21   0.86 +-  0.11  85.98 +-  1.05  95.02 +-  1.03
+pidrotf         85_3    6  27.07 +-  0.04  17.96 +-  1.19   0.87 +-  0.03   4.28 +-  1.10   4.29 +-  1.10   2.31 +-  0.35   2.32 +-  0.35   4.85 +-  0.87   4.86 +-  0.88   0.89 +-  0.12  84.66 +-  0.56  95.93 +-  1.11
+alone             na   48  27.08 +-  0.00  20.06 +-  0.14   0.92 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00   0.00 +-  0.00    nan +-   nan  53.11 +-  0.46  58.72 +-  3.38

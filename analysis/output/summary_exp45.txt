@@ -1,0 +1,205 @@
+SUMMARY45 from results_dyn45.csv (mean +- sd over repeats; alone excluded; ok_w_rtt = slo_ok_worst x slo_ok_v2_rtt; rtt_p99 ms over received replies; fl_X = flooder X's eBPF Gbit/s over its own window (nan: not in the scenario); jain over the active flooders (nan in S1); v1_gbps / v2_gbps = victim eBPF Gbit/s over T; host_cpu = mean host CPU %; dipXX_ovl / dipXX_all = fraction of 1 s windows with min(V1, V2) / ref < 0.XX inside the all-flooders-active window / over the whole run; trk_err = mean |e| of lqr_orig / hyb over the controlled flooders, nan for other modes)
+scen mode              param   n        ok_worst           ok_v1           ok_v2        ok_w_rtt         rtt_p99        fl_total            fl_A            fl_B            fl_C            fl_D         min_own            jain         v1_gbps         v2_gbps        host_cpu       dip95_ovl       dip90_ovl       dip80_ovl       dip95_all       dip90_all       dip80_all         trk_err
+S1   vfrot      0.8_1_2_0.94   6  0.919 +- 0.020  0.919 +- 0.020  0.949 +- 0.023  0.312 +- 0.483  3.155 +- 1.514 12.585 +- 0.494 12.585 +- 0.494    nan +-   nan    nan +-   nan    nan +-   nan 12.585 +- 0.494    nan +-   nan  9.011 +- 0.001  9.012 +- 0.000 87.775 +- 0.220  0.128 +- 0.023  0.073 +- 0.030  0.026 +- 0.028  0.128 +- 0.023  0.073 +- 0.030  0.026 +- 0.028    nan +-   nan
+S1   lqr_orig     T40_paperK   6  1.000 +- 0.000  1.000 +- 0.000  1.000 +- 0.000  0.167 +- 0.408  2.604 +- 1.124 11.556 +- 1.238 11.556 +- 1.238    nan +-   nan    nan +-   nan    nan +-   nan 11.556 +- 1.238    nan +-   nan  9.012 +- 0.000  9.012 +- 0.000 73.613 +- 0.802  0.000 +- 0.000  0.000 +- 0.000  0.000 +- 0.000  0.000 +- 0.000  0.000 +- 0.000  0.000 +- 0.000 29.170 +- 1.396
+S1   lqr_orig     T60_paperK   6  0.978 +- 0.019  0.978 +- 0.019  0.987 +- 0.021  0.167 +- 0.408  3.295 +- 1.029 11.504 +- 1.614 11.504 +- 1.614    nan +-   nan    nan +-   nan    nan +-   nan 11.504 +- 1.614    nan +-   nan  9.012 +- 0.000  9.012 +- 0.000 73.822 +- 0.994  0.034 +- 0.039  0.030 +- 0.030  0.000 +- 0.000  0.034 +- 0.039  0.030 +- 0.030  0.000 +- 0.000 27.669 +- 1.484
+S1   hyb          T60_paperK   6  0.996 +- 0.011  1.000 +- 0.000  0.996 +- 0.011  0.167 +- 0.408  3.322 +- 1.396 11.345 +- 1.190 11.345 +- 1.190    nan +-   nan    nan +-   nan    nan +-   nan 11.345 +- 1.190    nan +-   nan  9.012 +- 0.000  9.012 +- 0.000 73.578 +- 0.887  0.004 +- 0.010  0.004 +- 0.010  0.000 +- 0.000  0.004 +- 0.010  0.004 +- 0.010  0.000 +- 0.000 28.453 +- 1.095
+S2   vfrot      0.8_1_2_0.94   6  0.906 +- 0.031  0.923 +- 0.036  0.940 +- 0.038  0.000 +- 0.000  4.012 +- 0.262 12.867 +- 0.654  5.464 +- 0.449  7.403 +- 0.809    nan +-   nan    nan +-   nan  5.464 +- 0.449  0.945 +- 0.039  9.011 +- 0.001  9.011 +- 0.001 87.703 +- 0.179  0.151 +- 0.038  0.101 +- 0.037  0.045 +- 0.017  0.137 +- 0.026  0.085 +- 0.031  0.038 +- 0.014    nan +-   nan
+S2   lqr_orig     T40_paperK   6  0.966 +- 0.021  0.970 +- 0.025  0.987 +- 0.014  0.162 +- 0.398  2.777 +- 0.861 17.538 +- 2.256  9.305 +- 1.224  8.233 +- 1.341    nan +-   nan    nan +-   nan  8.104 +- 1.325  0.994 +- 0.009  9.011 +- 0.000  9.011 +- 0.001 77.870 +- 2.575  0.025 +- 0.023  0.015 +- 0.017  0.000 +- 0.000  0.043 +- 0.021  0.030 +- 0.019  0.000 +- 0.000 22.740 +- 1.113
+S2   lqr_orig     T60_paperK   6  0.970 +- 0.025  0.987 +- 0.014  0.979 +- 0.030  0.167 +- 0.408  3.330 +- 1.192 19.828 +- 2.583 10.183 +- 2.088  9.645 +- 0.756    nan +-   nan    nan +-   nan  9.305 +- 0.887  0.988 +- 0.012  9.011 +- 0.001  9.011 +- 0.001 80.570 +- 2.430  0.030 +- 0.047  0.025 +- 0.035  0.015 +- 0.025  0.034 +- 0.035  0.030 +- 0.025  0.017 +- 0.021 24.436 +- 2.616
+S2   hyb          T60_paperK   6  0.961 +- 0.021  0.974 +- 0.028  0.974 +- 0.023  0.000 +- 0.000  3.873 +- 0.673 19.185 +- 0.979  9.568 +- 0.495  9.617 +- 0.685    nan +-   nan    nan +-   nan  9.344 +- 0.631  0.991 +- 0.009  9.012 +- 0.001  9.011 +- 0.001 80.065 +- 1.468  0.040 +- 0.031  0.030 +- 0.033  0.000 +- 0.000  0.047 +- 0.030  0.034 +- 0.035  0.000 +- 0.000 23.125 +- 1.198
+S3   vfrot      0.8_1_2_0.94   6  0.910 +- 0.058  0.974 +- 0.032  0.910 +- 0.058  0.137 +- 0.335  3.699 +- 0.894 17.958 +- 0.587  4.389 +- 1.100  5.091 +- 1.164  4.498 +- 2.196  3.979 +- 1.889  2.518 +- 0.825  0.747 +- 0.155  9.011 +- 0.001 10.012 +- 0.001 88.478 +- 0.474  0.037 +- 0.091  0.037 +- 0.091  0.000 +- 0.000  0.115 +- 0.079  0.051 +- 0.032  0.013 +- 0.014    nan +-   nan
+S3   lqr_orig     T40_paperK   6  0.308 +- 0.125  0.338 +- 0.139  0.325 +- 0.099  0.000 +- 0.000  3.109 +- 0.943 56.547 +- 4.537 16.770 +- 2.715 13.945 +- 2.766 12.298 +- 2.795 13.534 +- 1.240 11.222 +- 1.541  0.927 +- 0.065  7.797 +- 0.999  8.378 +- 1.103 64.480 +- 3.023  0.833 +- 0.153  0.833 +- 0.153  0.796 +- 0.164  0.765 +- 0.094  0.735 +- 0.119  0.671 +- 0.143 24.897 +- 1.815
+S3   lqr_orig     T60_paperK   6  0.380 +- 0.079  0.440 +- 0.127  0.444 +- 0.098  0.000 +- 0.000  3.230 +- 1.198 53.710 +- 6.127 14.786 +- 3.197 11.570 +- 2.034 13.638 +- 1.008 13.716 +- 2.475 11.176 +- 1.642  0.925 +- 0.065  8.247 +- 0.532  9.412 +- 0.535 66.525 +- 1.644  0.926 +- 0.091  0.926 +- 0.091  0.907 +- 0.130  0.726 +- 0.074  0.709 +- 0.072  0.641 +- 0.046 26.100 +- 2.668
+S3   hyb          T60_paperK   6  0.727 +- 0.064  0.769 +- 0.083  0.735 +- 0.077  0.000 +- 0.000  5.052 +- 0.519 40.651 +- 4.382 13.861 +- 1.701 10.248 +- 1.336  8.829 +- 1.806  7.713 +- 1.368  7.366 +- 1.282  0.985 +- 0.010  9.011 +- 0.000 10.012 +- 0.000 79.148 +- 1.762  0.278 +- 0.168  0.204 +- 0.130  0.037 +- 0.091  0.368 +- 0.100  0.308 +- 0.054  0.209 +- 0.030 21.930 +- 1.410
+PAIRED S1 vs vfrot 0.8_1_2_0.94 (per repeat: config - reference, mean +- sd, W/T/L = better/equal/worse than the reference in the same repeat (rtt_p99, host_cpu, dips and trk_err: lower is better, all others higher), p = two-sided paired t-test; nan where a value is missing)
+   ok_worst lqr_orig     T40_paperK n=6   +0.081 +-  0.020 W/T/L 6/0/0 p=0.000
+   ok_worst lqr_orig     T60_paperK n=6   +0.060 +-  0.031 W/T/L 6/0/0 p=0.005
+   ok_worst hyb          T60_paperK n=6   +0.077 +-  0.023 W/T/L 6/0/0 p=0.000
+      ok_v1 lqr_orig     T40_paperK n=6   +0.081 +-  0.020 W/T/L 6/0/0 p=0.000
+      ok_v1 lqr_orig     T60_paperK n=6   +0.060 +-  0.031 W/T/L 6/0/0 p=0.005
+      ok_v1 hyb          T60_paperK n=6   +0.081 +-  0.020 W/T/L 6/0/0 p=0.000
+      ok_v2 lqr_orig     T40_paperK n=6   +0.051 +-  0.023 W/T/L 6/0/0 p=0.003
+      ok_v2 lqr_orig     T60_paperK n=6   +0.038 +-  0.027 W/T/L 5/1/0 p=0.017
+      ok_v2 hyb          T60_paperK n=6   +0.047 +-  0.019 W/T/L 6/0/0 p=0.002
+   ok_w_rtt lqr_orig     T40_paperK n=6   -0.145 +-  0.725 W/T/L 1/3/2 p=0.644
+   ok_w_rtt lqr_orig     T60_paperK n=6   -0.145 +-  0.725 W/T/L 1/3/2 p=0.644
+   ok_w_rtt hyb          T60_paperK n=6   -0.145 +-  0.395 W/T/L 1/4/1 p=0.409
+    rtt_p99 lqr_orig     T40_paperK n=6   -0.551 +-  1.491 W/T/L 4/0/2 p=0.407
+    rtt_p99 lqr_orig     T60_paperK n=6   +0.141 +-  2.253 W/T/L 3/0/3 p=0.884
+    rtt_p99 hyb          T60_paperK n=6   +0.167 +-  1.151 W/T/L 3/0/3 p=0.736
+   fl_total lqr_orig     T40_paperK n=6   -1.029 +-  0.954 W/T/L 1/0/5 p=0.046
+   fl_total lqr_orig     T60_paperK n=6   -1.081 +-  1.181 W/T/L 1/0/5 p=0.075
+   fl_total hyb          T60_paperK n=6   -1.239 +-  0.821 W/T/L 0/0/6 p=0.014
+       fl_A lqr_orig     T40_paperK n=6   -1.029 +-  0.954 W/T/L 1/0/5 p=0.046
+       fl_A lqr_orig     T60_paperK n=6   -1.081 +-  1.181 W/T/L 1/0/5 p=0.075
+       fl_A hyb          T60_paperK n=6   -1.239 +-  0.821 W/T/L 0/0/6 p=0.014
+    min_own lqr_orig     T40_paperK n=6   -1.029 +-  0.954 W/T/L 1/0/5 p=0.046
+    min_own lqr_orig     T60_paperK n=6   -1.081 +-  1.181 W/T/L 1/0/5 p=0.075
+    min_own hyb          T60_paperK n=6   -1.239 +-  0.821 W/T/L 0/0/6 p=0.014
+    v1_gbps lqr_orig     T40_paperK n=6   +0.001 +-  0.001 W/T/L 4/2/0 p=0.025
+    v1_gbps lqr_orig     T60_paperK n=6   +0.001 +-  0.001 W/T/L 4/1/1 p=0.203
+    v1_gbps hyb          T60_paperK n=6   +0.001 +-  0.001 W/T/L 4/2/0 p=0.025
+    v2_gbps lqr_orig     T40_paperK n=6   +0.000 +-  0.000 W/T/L 1/5/0 p=0.363
+    v2_gbps lqr_orig     T60_paperK n=6   +0.000 +-  0.000 W/T/L 1/5/0 p=0.363
+    v2_gbps hyb          T60_paperK n=6   +0.000 +-  0.000 W/T/L 1/5/0 p=0.363
+   host_cpu lqr_orig     T40_paperK n=6  -14.162 +-  0.598 W/T/L 6/0/0 p=0.000
+   host_cpu lqr_orig     T60_paperK n=6  -13.953 +-  0.798 W/T/L 6/0/0 p=0.000
+   host_cpu hyb          T60_paperK n=6  -14.197 +-  0.690 W/T/L 6/0/0 p=0.000
+  dip95_ovl lqr_orig     T40_paperK n=6   -0.128 +-  0.023 W/T/L 6/0/0 p=0.000
+  dip95_ovl lqr_orig     T60_paperK n=6   -0.094 +-  0.039 W/T/L 6/0/0 p=0.002
+  dip95_ovl hyb          T60_paperK n=6   -0.124 +-  0.019 W/T/L 6/0/0 p=0.000
+  dip90_ovl lqr_orig     T40_paperK n=6   -0.073 +-  0.030 W/T/L 6/0/0 p=0.002
+  dip90_ovl lqr_orig     T60_paperK n=6   -0.043 +-  0.050 W/T/L 4/2/0 p=0.092
+  dip90_ovl hyb          T60_paperK n=6   -0.068 +-  0.031 W/T/L 6/0/0 p=0.003
+  dip80_ovl lqr_orig     T40_paperK n=6   -0.026 +-  0.028 W/T/L 4/2/0 p=0.076
+  dip80_ovl lqr_orig     T60_paperK n=6   -0.026 +-  0.028 W/T/L 4/2/0 p=0.076
+  dip80_ovl hyb          T60_paperK n=6   -0.026 +-  0.028 W/T/L 4/2/0 p=0.076
+  dip95_all lqr_orig     T40_paperK n=6   -0.128 +-  0.023 W/T/L 6/0/0 p=0.000
+  dip95_all lqr_orig     T60_paperK n=6   -0.094 +-  0.039 W/T/L 6/0/0 p=0.002
+  dip95_all hyb          T60_paperK n=6   -0.124 +-  0.019 W/T/L 6/0/0 p=0.000
+  dip90_all lqr_orig     T40_paperK n=6   -0.073 +-  0.030 W/T/L 6/0/0 p=0.002
+  dip90_all lqr_orig     T60_paperK n=6   -0.043 +-  0.050 W/T/L 4/2/0 p=0.092
+  dip90_all hyb          T60_paperK n=6   -0.068 +-  0.031 W/T/L 6/0/0 p=0.003
+  dip80_all lqr_orig     T40_paperK n=6   -0.026 +-  0.028 W/T/L 4/2/0 p=0.076
+  dip80_all lqr_orig     T60_paperK n=6   -0.026 +-  0.028 W/T/L 4/2/0 p=0.076
+  dip80_all hyb          T60_paperK n=6   -0.026 +-  0.028 W/T/L 4/2/0 p=0.076
+PAIRED S2 vs vfrot 0.8_1_2_0.94 (per repeat: config - reference, mean +- sd, W/T/L = better/equal/worse than the reference in the same repeat (rtt_p99, host_cpu, dips and trk_err: lower is better, all others higher), p = two-sided paired t-test; nan where a value is missing)
+   ok_worst lqr_orig     T40_paperK n=6   +0.059 +-  0.035 W/T/L 6/0/0 p=0.009
+   ok_worst lqr_orig     T60_paperK n=6   +0.064 +-  0.031 W/T/L 6/0/0 p=0.004
+   ok_worst hyb          T60_paperK n=6   +0.055 +-  0.047 W/T/L 4/2/0 p=0.034
+      ok_v1 lqr_orig     T40_paperK n=6   +0.047 +-  0.038 W/T/L 5/1/0 p=0.028
+      ok_v1 lqr_orig     T60_paperK n=6   +0.064 +-  0.042 W/T/L 5/1/0 p=0.014
+      ok_v1 hyb          T60_paperK n=6   +0.051 +-  0.043 W/T/L 4/2/0 p=0.033
+      ok_v2 lqr_orig     T40_paperK n=6   +0.047 +-  0.034 W/T/L 5/1/0 p=0.019
+      ok_v2 lqr_orig     T60_paperK n=6   +0.038 +-  0.053 W/T/L 4/1/1 p=0.138
+      ok_v2 hyb          T60_paperK n=6   +0.034 +-  0.055 W/T/L 3/2/1 p=0.190
+   ok_w_rtt lqr_orig     T40_paperK n=6   +0.162 +-  0.398 W/T/L 1/5/0 p=0.363
+   ok_w_rtt lqr_orig     T60_paperK n=6   +0.167 +-  0.408 W/T/L 1/5/0 p=0.363
+   ok_w_rtt hyb          T60_paperK n=6   +0.000 +-  0.000 W/T/L 0/6/0 p=1.000
+    rtt_p99 lqr_orig     T40_paperK n=6   -1.235 +-  0.658 W/T/L 6/0/0 p=0.006
+    rtt_p99 lqr_orig     T60_paperK n=6   -0.682 +-  1.009 W/T/L 4/0/2 p=0.159
+    rtt_p99 hyb          T60_paperK n=6   -0.139 +-  0.666 W/T/L 3/0/3 p=0.632
+   fl_total lqr_orig     T40_paperK n=6   +4.671 +-  2.247 W/T/L 6/0/0 p=0.004
+   fl_total lqr_orig     T60_paperK n=6   +6.962 +-  2.650 W/T/L 6/0/0 p=0.001
+   fl_total hyb          T60_paperK n=6   +6.318 +-  1.227 W/T/L 6/0/0 p=0.000
+       fl_A lqr_orig     T40_paperK n=6   +3.842 +-  1.117 W/T/L 6/0/0 p=0.000
+       fl_A lqr_orig     T60_paperK n=6   +4.720 +-  1.685 W/T/L 6/0/0 p=0.001
+       fl_A hyb          T60_paperK n=6   +4.104 +-  0.315 W/T/L 6/0/0 p=0.000
+       fl_B lqr_orig     T40_paperK n=6   +0.830 +-  1.208 W/T/L 3/0/3 p=0.153
+       fl_B lqr_orig     T60_paperK n=6   +2.242 +-  1.058 W/T/L 6/0/0 p=0.003
+       fl_B hyb          T60_paperK n=6   +2.214 +-  1.038 W/T/L 6/0/0 p=0.003
+    min_own lqr_orig     T40_paperK n=6   +2.641 +-  1.365 W/T/L 6/0/0 p=0.005
+    min_own lqr_orig     T60_paperK n=6   +3.841 +-  0.695 W/T/L 6/0/0 p=0.000
+    min_own hyb          T60_paperK n=6   +3.880 +-  0.486 W/T/L 6/0/0 p=0.000
+       jain lqr_orig     T40_paperK n=6   +0.049 +-  0.032 W/T/L 6/0/0 p=0.013
+       jain lqr_orig     T60_paperK n=6   +0.043 +-  0.030 W/T/L 6/0/0 p=0.016
+       jain hyb          T60_paperK n=6   +0.046 +-  0.034 W/T/L 6/0/0 p=0.022
+    v1_gbps lqr_orig     T40_paperK n=6   -0.000 +-  0.001 W/T/L 0/4/2 p=0.175
+    v1_gbps lqr_orig     T60_paperK n=6   +0.000 +-  0.001 W/T/L 1/4/1 p=1.000
+    v1_gbps hyb          T60_paperK n=6   +0.000 +-  0.001 W/T/L 2/4/0 p=0.175
+    v2_gbps lqr_orig     T40_paperK n=6   +0.000 +-  0.001 W/T/L 2/3/1 p=0.611
+    v2_gbps lqr_orig     T60_paperK n=6   +0.000 +-  0.001 W/T/L 2/2/2 p=1.000
+    v2_gbps hyb          T60_paperK n=6   +0.000 +-  0.001 W/T/L 1/4/1 p=1.000
+   host_cpu lqr_orig     T40_paperK n=6   -9.833 +-  2.534 W/T/L 6/0/0 p=0.000
+   host_cpu lqr_orig     T60_paperK n=6   -7.133 +-  2.495 W/T/L 6/0/0 p=0.001
+   host_cpu hyb          T60_paperK n=6   -7.638 +-  1.575 W/T/L 6/0/0 p=0.000
+  dip95_ovl lqr_orig     T40_paperK n=6   -0.126 +-  0.040 W/T/L 6/0/0 p=0.001
+  dip95_ovl lqr_orig     T60_paperK n=6   -0.121 +-  0.064 W/T/L 6/0/0 p=0.005
+  dip95_ovl hyb          T60_paperK n=6   -0.111 +-  0.063 W/T/L 5/1/0 p=0.007
+  dip90_ovl lqr_orig     T40_paperK n=6   -0.086 +-  0.049 W/T/L 6/0/0 p=0.007
+  dip90_ovl lqr_orig     T60_paperK n=6   -0.076 +-  0.042 W/T/L 6/0/0 p=0.007
+  dip90_ovl hyb          T60_paperK n=6   -0.071 +-  0.049 W/T/L 5/1/0 p=0.017
+  dip80_ovl lqr_orig     T40_paperK n=6   -0.045 +-  0.017 W/T/L 6/0/0 p=0.001
+  dip80_ovl lqr_orig     T60_paperK n=6   -0.030 +-  0.038 W/T/L 4/1/1 p=0.111
+  dip80_ovl hyb          T60_paperK n=6   -0.045 +-  0.017 W/T/L 6/0/0 p=0.001
+  dip95_all lqr_orig     T40_paperK n=6   -0.094 +-  0.021 W/T/L 6/0/0 p=0.000
+  dip95_all lqr_orig     T60_paperK n=6   -0.103 +-  0.032 W/T/L 6/0/0 p=0.001
+  dip95_all hyb          T60_paperK n=6   -0.090 +-  0.053 W/T/L 5/1/0 p=0.009
+  dip90_all lqr_orig     T40_paperK n=6   -0.056 +-  0.038 W/T/L 5/1/0 p=0.015
+  dip90_all lqr_orig     T60_paperK n=6   -0.056 +-  0.030 W/T/L 6/0/0 p=0.006
+  dip90_all hyb          T60_paperK n=6   -0.051 +-  0.051 W/T/L 5/0/1 p=0.058
+  dip80_all lqr_orig     T40_paperK n=6   -0.038 +-  0.014 W/T/L 6/0/0 p=0.001
+  dip80_all lqr_orig     T60_paperK n=6   -0.021 +-  0.030 W/T/L 4/1/1 p=0.142
+  dip80_all hyb          T60_paperK n=6   -0.038 +-  0.014 W/T/L 6/0/0 p=0.001
+PAIRED S3 vs vfrot 0.8_1_2_0.94 (per repeat: config - reference, mean +- sd, W/T/L = better/equal/worse than the reference in the same repeat (rtt_p99, host_cpu, dips and trk_err: lower is better, all others higher), p = two-sided paired t-test; nan where a value is missing)
+   ok_worst lqr_orig     T40_paperK n=6   -0.603 +-  0.130 W/T/L 0/0/6 p=0.000
+   ok_worst lqr_orig     T60_paperK n=6   -0.530 +-  0.060 W/T/L 0/0/6 p=0.000
+   ok_worst hyb          T60_paperK n=6   -0.184 +-  0.089 W/T/L 0/0/6 p=0.004
+      ok_v1 lqr_orig     T40_paperK n=6   -0.637 +-  0.121 W/T/L 0/0/6 p=0.000
+      ok_v1 lqr_orig     T60_paperK n=6   -0.534 +-  0.117 W/T/L 0/0/6 p=0.000
+      ok_v1 hyb          T60_paperK n=6   -0.205 +-  0.059 W/T/L 0/0/6 p=0.000
+      ok_v2 lqr_orig     T40_paperK n=6   -0.586 +-  0.109 W/T/L 0/0/6 p=0.000
+      ok_v2 lqr_orig     T60_paperK n=6   -0.466 +-  0.128 W/T/L 0/0/6 p=0.000
+      ok_v2 hyb          T60_paperK n=6   -0.175 +-  0.103 W/T/L 0/0/6 p=0.009
+   ok_w_rtt lqr_orig     T40_paperK n=6   -0.137 +-  0.335 W/T/L 0/5/1 p=0.363
+   ok_w_rtt lqr_orig     T60_paperK n=6   -0.137 +-  0.335 W/T/L 0/5/1 p=0.363
+   ok_w_rtt hyb          T60_paperK n=6   -0.137 +-  0.335 W/T/L 0/5/1 p=0.363
+    rtt_p99 lqr_orig     T40_paperK n=6   -0.590 +-  1.514 W/T/L 5/0/1 p=0.384
+    rtt_p99 lqr_orig     T60_paperK n=6   -0.469 +-  1.872 W/T/L 3/0/3 p=0.566
+    rtt_p99 hyb          T60_paperK n=6   +1.353 +-  1.058 W/T/L 0/0/6 p=0.026
+   fl_total lqr_orig     T40_paperK n=6  +38.589 +-  4.359 W/T/L 6/0/0 p=0.000
+   fl_total lqr_orig     T60_paperK n=6  +35.751 +-  5.831 W/T/L 6/0/0 p=0.000
+   fl_total hyb          T60_paperK n=6  +22.692 +-  4.443 W/T/L 6/0/0 p=0.000
+       fl_A lqr_orig     T40_paperK n=6  +12.380 +-  3.290 W/T/L 6/0/0 p=0.000
+       fl_A lqr_orig     T60_paperK n=6  +10.396 +-  3.891 W/T/L 6/0/0 p=0.001
+       fl_A hyb          T60_paperK n=6   +9.472 +-  1.292 W/T/L 6/0/0 p=0.000
+       fl_B lqr_orig     T40_paperK n=6   +8.854 +-  3.190 W/T/L 6/0/0 p=0.001
+       fl_B lqr_orig     T60_paperK n=6   +6.479 +-  2.384 W/T/L 6/0/0 p=0.001
+       fl_B hyb          T60_paperK n=6   +5.157 +-  2.102 W/T/L 6/0/0 p=0.002
+       fl_C lqr_orig     T40_paperK n=6   +7.800 +-  3.011 W/T/L 6/0/0 p=0.001
+       fl_C lqr_orig     T60_paperK n=6   +9.140 +-  2.219 W/T/L 6/0/0 p=0.000
+       fl_C hyb          T60_paperK n=6   +4.331 +-  0.875 W/T/L 6/0/0 p=0.000
+       fl_D lqr_orig     T40_paperK n=6   +9.555 +-  2.804 W/T/L 6/0/0 p=0.000
+       fl_D lqr_orig     T60_paperK n=6   +9.736 +-  2.439 W/T/L 6/0/0 p=0.000
+       fl_D hyb          T60_paperK n=6   +3.733 +-  3.084 W/T/L 6/0/0 p=0.031
+    min_own lqr_orig     T40_paperK n=6   +8.704 +-  2.197 W/T/L 6/0/0 p=0.000
+    min_own lqr_orig     T60_paperK n=6   +8.659 +-  1.730 W/T/L 6/0/0 p=0.000
+    min_own hyb          T60_paperK n=6   +4.848 +-  1.882 W/T/L 6/0/0 p=0.001
+       jain lqr_orig     T40_paperK n=6   +0.180 +-  0.165 W/T/L 6/0/0 p=0.044
+       jain lqr_orig     T60_paperK n=6   +0.178 +-  0.184 W/T/L 6/0/0 p=0.064
+       jain hyb          T60_paperK n=6   +0.237 +-  0.150 W/T/L 6/0/0 p=0.012
+    v1_gbps lqr_orig     T40_paperK n=6   -1.215 +-  0.999 W/T/L 0/0/6 p=0.031
+    v1_gbps lqr_orig     T60_paperK n=6   -0.764 +-  0.532 W/T/L 0/0/6 p=0.017
+    v1_gbps hyb          T60_paperK n=6   -0.001 +-  0.001 W/T/L 0/3/3 p=0.076
+    v2_gbps lqr_orig     T40_paperK n=6   -1.635 +-  1.104 W/T/L 0/0/6 p=0.015
+    v2_gbps lqr_orig     T60_paperK n=6   -0.601 +-  0.535 W/T/L 0/0/6 p=0.040
+    v2_gbps hyb          T60_paperK n=6   -0.000 +-  0.001 W/T/L 0/3/3 p=0.076
+   host_cpu lqr_orig     T40_paperK n=6  -23.998 +-  2.647 W/T/L 6/0/0 p=0.000
+   host_cpu lqr_orig     T60_paperK n=6  -21.953 +-  1.772 W/T/L 6/0/0 p=0.000
+   host_cpu hyb          T60_paperK n=6   -9.330 +-  1.947 W/T/L 6/0/0 p=0.000
+  dip95_ovl lqr_orig     T40_paperK n=6   +0.796 +-  0.164 W/T/L 0/0/6 p=0.000
+  dip95_ovl lqr_orig     T60_paperK n=6   +0.889 +-  0.099 W/T/L 0/0/6 p=0.000
+  dip95_ovl hyb          T60_paperK n=6   +0.241 +-  0.204 W/T/L 0/2/4 p=0.034
+  dip90_ovl lqr_orig     T40_paperK n=6   +0.796 +-  0.164 W/T/L 0/0/6 p=0.000
+  dip90_ovl lqr_orig     T60_paperK n=6   +0.889 +-  0.099 W/T/L 0/0/6 p=0.000
+  dip90_ovl hyb          T60_paperK n=6   +0.167 +-  0.183 W/T/L 1/1/4 p=0.076
+  dip80_ovl lqr_orig     T40_paperK n=6   +0.796 +-  0.164 W/T/L 0/0/6 p=0.000
+  dip80_ovl lqr_orig     T60_paperK n=6   +0.907 +-  0.130 W/T/L 0/0/6 p=0.000
+  dip80_ovl hyb          T60_paperK n=6   +0.037 +-  0.091 W/T/L 0/5/1 p=0.363
+  dip95_all lqr_orig     T40_paperK n=6   +0.650 +-  0.101 W/T/L 0/0/6 p=0.000
+  dip95_all lqr_orig     T60_paperK n=6   +0.611 +-  0.066 W/T/L 0/0/6 p=0.000
+  dip95_all hyb          T60_paperK n=6   +0.252 +-  0.119 W/T/L 0/0/6 p=0.003
+  dip90_all lqr_orig     T40_paperK n=6   +0.684 +-  0.110 W/T/L 0/0/6 p=0.000
+  dip90_all lqr_orig     T60_paperK n=6   +0.658 +-  0.060 W/T/L 0/0/6 p=0.000
+  dip90_all hyb          T60_paperK n=6   +0.256 +-  0.054 W/T/L 0/0/6 p=0.000
+  dip80_all lqr_orig     T40_paperK n=6   +0.658 +-  0.144 W/T/L 0/0/6 p=0.000
+  dip80_all lqr_orig     T60_paperK n=6   +0.628 +-  0.056 W/T/L 0/0/6 p=0.000
+  dip80_all hyb          T60_paperK n=6   +0.197 +-  0.031 W/T/L 0/0/6 p=0.000
+TABLE scenario x controller (means over repeats; fl_total = sum over the active flooders, Gbit/s; per-flooder A/B/C/D Gbit/s; SLO = slo_ok_worst, SLO+RTT = slo_ok_worst_with_rtt; V1 / V2 = victim eBPF Gbit/s; host CPU %)
+scen mode              param fl_total                 A/B/C/D    SLO SLO+RTT     V1     V2   jain rtt_p99   cpu
+S1   vfrot      0.8_1_2_0.94    12.58             12.58/-/-/-  0.919   0.312   9.01   9.01    nan   3.155  87.8
+S1   lqr_orig     T40_paperK    11.56             11.56/-/-/-  1.000   0.167   9.01   9.01    nan   2.604  73.6
+S1   lqr_orig     T60_paperK    11.50             11.50/-/-/-  0.978   0.167   9.01   9.01    nan   3.295  73.8
+S1   hyb          T60_paperK    11.35             11.35/-/-/-  0.996   0.167   9.01   9.01    nan   3.322  73.6
+S2   vfrot      0.8_1_2_0.94    12.87           5.46/7.40/-/-  0.906   0.000   9.01   9.01  0.945   4.012  87.7
+S2   lqr_orig     T40_paperK    17.54           9.31/8.23/-/-  0.966   0.162   9.01   9.01  0.994   2.777  77.9
+S2   lqr_orig     T60_paperK    19.83          10.18/9.65/-/-  0.970   0.167   9.01   9.01  0.988   3.330  80.6
+S2   hyb          T60_paperK    19.19           9.57/9.62/-/-  0.961   0.000   9.01   9.01  0.991   3.873  80.1
+S3   vfrot      0.8_1_2_0.94    17.96     4.39/5.09/4.50/3.98  0.910   0.137   9.01  10.01  0.747   3.699  88.5
+S3   lqr_orig     T40_paperK    56.55 16.77/13.95/12.30/13.53  0.308   0.000   7.80   8.38  0.927   3.109  64.5
+S3   lqr_orig     T60_paperK    53.71 14.79/11.57/13.64/13.72  0.380   0.000   8.25   9.41  0.925   3.230  66.5
+S3   hyb          T60_paperK    40.65   13.86/10.25/8.83/7.71  0.727   0.000   9.01  10.01  0.985   5.052  79.1
+ALONE S3: 6 slots, slo_ok_worst 1.000 +- 0.000, RTT SLO passed in 6/6 (false-alarm rate of the RTT SLO with no flooders 0.000), rtt_p50 0.170 +- 0.008 ms, rtt_p99 0.504 +- 0.102 ms, loss 0.00 +- 0.00 %, host CPU 63.1 +- 1.3 %
+ALONE S1: 6 slots, slo_ok_worst 1.000 +- 0.000, RTT SLO passed in 6/6 (false-alarm rate of the RTT SLO with no flooders 0.000), rtt_p50 0.175 +- 0.014 ms, rtt_p99 0.549 +- 0.114 ms, loss 0.00 +- 0.00 %, host CPU 62.4 +- 1.5 %
+ALONE S2: 6 slots, slo_ok_worst 1.000 +- 0.000, RTT SLO passed in 6/6 (false-alarm rate of the RTT SLO with no flooders 0.000), rtt_p50 0.164 +- 0.009 ms, rtt_p99 0.482 +- 0.059 ms, loss 0.00 +- 0.00 %, host CPU 61.9 +- 0.6 %
