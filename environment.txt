@@ -1,0 +1,712 @@
+Testbed environment record
+Generated: 2026-11-12 09:37:18 UTC on host testbed by user priyanka
+Collected with read-only commands only (no sudo, no experiments run).
+
+==================================================================
+## Kernel
+==================================================================
+$ uname -a
+Linux testbed 6.12.111+deb13-arm64 #1 SMP Debian 6.12.111-1 (2026-09-28) aarch64 GNU/Linux
+
+==================================================================
+## Operating system
+==================================================================
+$ cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.7
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
+==================================================================
+## CPU
+==================================================================
+$ lscpu | grep -E '^(Architecture|CPU\(s\)|On-line CPU|Vendor ID|Model name|Model|Thread\(s\) per core|Core\(s\) per (socket|cluster)|Socket\(s\)|Cluster\(s\)|NUMA node\(s\)|CPU max MHz|CPU min MHz|BogoMIPS)'
+Architecture:                            aarch64
+CPU(s):                                  6
+On-line CPU(s) list:                     0-5
+Vendor ID:                               Apple
+Model name:                              -
+Model:                                   0
+Thread(s) per core:                      1
+Core(s) per cluster:                     6
+Socket(s):                               -
+Cluster(s):                              1
+BogoMIPS:                                48.00
+NUMA node(s):                            1
+
+==================================================================
+## Memory
+==================================================================
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       3.5Gi       532Mi        26Mi       4.0Gi       4.3Gi
+Swap:          3.3Gi          0B       3.3Gi
+
+==================================================================
+## Python and scientific packages
+==================================================================
+$ python3 --version
+Python 3.13.5
+
+$ python3 -I -c 'import numpy; print(numpy.__version__)'
+2.2.4
+
+$ python3 -I -c 'import scipy; print(scipy.__version__)'
+1.15.3
+
+$ python3 -I -c 'import pandas; print(pandas.__version__)'
+2.2.3
+
+$ python3 -I -c 'import matplotlib; print(matplotlib.__version__)'
+3.10.1+dfsg1
+
+==================================================================
+## Open vSwitch
+==================================================================
+$ ovs-vsctl --version
+ovs-vsctl (Open vSwitch) 3.5.0
+DB Schema 8.8.0
+
+==================================================================
+## QEMU
+==================================================================
+$ qemu-system-x86_64 --version
+not installed
+
+$ qemu-system-aarch64 --version
+QEMU emulator version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)
+Copyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers
+
+$ ps -eo pid,comm,args | grep -E '[q]emu-system'   # QEMU processes currently running
+   1128 qemu-system-aar /usr/bin/qemu-system-aarch64 -name guest=tenant1,debug-threads=on -S -object {"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain-1-tenant1/master-key.aes"} -blockdev {"driver":"file","filename":"/usr/share/AAVMF/AAVMF_CODE.no-secboot.fd"
+   1187 qemu-system-aar /usr/bin/qemu-system-aarch64 -name guest=tenant2,debug-threads=on -S -object {"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain-2-tenant2/master-key.aes"} -blockdev {"driver":"file","filename":"/usr/share/AAVMF/AAVMF_CODE.no-secboot.fd"
+   1246 qemu-system-aar /usr/bin/qemu-system-aarch64 -name guest=tenant3,debug-threads=on -S -object {"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain-3-tenant3/master-key.aes"} -blockdev {"driver":"file","filename":"/usr/share/AAVMF/AAVMF_CODE.no-secboot.fd"
+   1304 qemu-system-aar /usr/bin/qemu-system-aarch64 -name guest=tenant4,debug-threads=on -S -object {"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain-4-tenant4/master-key.aes"} -blockdev {"driver":"file","filename":"/usr/share/AAVMF/AAVMF_CODE.no-secboot.fd"
+   1363 qemu-system-aar /usr/bin/qemu-system-aarch64 -name guest=tenant5,debug-threads=on -S -object {"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain-5-tenant5/master-key.aes"} -blockdev {"driver":"file","filename":"/usr/share/AAVMF/AAVMF_CODE.no-secboot.fd"
+   1421 qemu-system-aar /usr/bin/qemu-system-aarch64 -name guest=tenant6,debug-threads=on -S -object {"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain-6-tenant6/master-key.aes"} -blockdev {"driver":"file","filename":"/usr/share/AAVMF/AAVMF_CODE.no-secboot.fd"
+
+$ dpkg-query -W -f='${Package} ${Version}\n' 'qemu-system*' 'qemu-utils' 'qemu-kvm' 2>/dev/null | grep -v ' $' || echo 'no qemu packages recorded by dpkg'
+qemu-system-arm 1:10.0.13+ds-0+deb13u1
+qemu-system-common 1:10.0.13+ds-0+deb13u1
+qemu-system-data 1:10.0.13+ds-0+deb13u1
+qemu-system-gui 1:10.0.13+ds-0+deb13u1
+qemu-system-modules-opengl 1:10.0.13+ds-0+deb13u1
+qemu-system-modules-spice 1:10.0.13+ds-0+deb13u1
+qemu-utils 1:10.0.13+ds-0+deb13u1
+
+==================================================================
+## libvirt
+==================================================================
+$ virsh --version
+11.3.0
+
+$ /usr/sbin/libvirtd --version
+/usr/sbin/libvirtd (libvirt) 11.3.0
+(installed in /usr/sbin, which is not on the normal user's PATH; the first collection pass wrongly reported it as not installed)
+
+$ dpkg-query -W -f='${Package} ${Version}\n' 'libvirt*' 2>/dev/null | grep -v ' $' || echo 'no libvirt packages recorded by dpkg'
+libvirt-clients 11.3.0-3+deb13u3
+libvirt-common 11.3.0-3+deb13u3
+libvirt-daemon 11.3.0-3+deb13u3
+libvirt-daemon-common 11.3.0-3+deb13u3
+libvirt-daemon-config-network 11.3.0-3+deb13u3
+libvirt-daemon-config-nwfilter 11.3.0-3+deb13u3
+libvirt-daemon-driver-interface 11.3.0-3+deb13u3
+libvirt-daemon-driver-network 11.3.0-3+deb13u3
+libvirt-daemon-driver-nodedev 11.3.0-3+deb13u3
+libvirt-daemon-driver-nwfilter 11.3.0-3+deb13u3
+libvirt-daemon-driver-qemu 11.3.0-3+deb13u3
+libvirt-daemon-driver-secret 11.3.0-3+deb13u3
+libvirt-daemon-driver-storage 11.3.0-3+deb13u3
+libvirt-daemon-driver-storage-disk 11.3.0-3+deb13u3
+libvirt-daemon-driver-storage-iscsi 11.3.0-3+deb13u3
+libvirt-daemon-driver-storage-logical 11.3.0-3+deb13u3
+libvirt-daemon-driver-storage-mpath 11.3.0-3+deb13u3
+libvirt-daemon-driver-storage-scsi 11.3.0-3+deb13u3
+libvirt-daemon-lock 11.3.0-3+deb13u3
+libvirt-daemon-log 11.3.0-3+deb13u3
+libvirt-daemon-plugin-lockd 11.3.0-3+deb13u3
+libvirt-daemon-system 11.3.0-3+deb13u3
+libvirt-l10n 11.3.0-3+deb13u3
+libvirt0 11.3.0-3+deb13u3
+
+==================================================================
+## Compilers
+==================================================================
+$ clang --version
+Debian clang version 19.1.7 (3+b1)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/lib/llvm-19/bin
+
+$ gcc --version
+gcc (Debian 14.2.0-19) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+==================================================================
+## bpftool
+==================================================================
+$ /usr/sbin/bpftool version
+bpftool v7.5.0
+using libbpf v1.5
+features:
+(installed in /usr/sbin, which is not on the normal user's PATH; the first collection pass wrongly reported it as not installed)
+
+==================================================================
+## iproute2
+==================================================================
+$ ip -V
+ip utility, iproute2-6.15.0, libbpf 1.5.0
+
+==================================================================
+## iperf3
+==================================================================
+$ iperf3 --version
+iperf 3.18 (cJSON 1.7.15)
+Linux testbed 6.12.111+deb13-arm64 #1 SMP Debian 6.12.111-1 (2026-09-28) aarch64
+Optional features available: CPU affinity setting, IPv6 flow label, SCTP, TCP congestion algorithm setting, sendfile / zerocopy, socket pacing, authentication, bind to device, support IPv4 don't fragment, POSIX threads
+
+==================================================================
+## Kernel XDP / BPF settings readable without root
+==================================================================
+$ cat /proc/sys/net/core/bpf_jit_enable
+1
+
+$ cat /proc/sys/net/core/bpf_jit_harden
+(not readable without root)
+
+$ cat /proc/sys/net/core/bpf_jit_kallsyms
+(not readable without root)
+
+$ cat /proc/sys/net/core/bpf_jit_limit
+(not readable without root)
+
+$ cat /proc/sys/kernel/unprivileged_bpf_disabled
+2
+
+$ cat /proc/sys/kernel/bpf_stats_enabled
+0
+
+$ cat /proc/sys/net/core/netdev_max_backlog
+1000
+
+$ cat /proc/sys/net/core/busy_poll
+0
+
+$ cat /proc/sys/net/core/busy_read
+0
+
+$ grep XDP/BPF options in kernel config (/boot/config-6.12.111+deb13-arm64)
+CONFIG_BPF=y
+CONFIG_BPF_SYSCALL=y
+CONFIG_BPF_JIT=y
+# CONFIG_BPF_JIT_ALWAYS_ON is not set
+CONFIG_BPF_JIT_DEFAULT_ON=y
+CONFIG_BPF_LSM=y
+CONFIG_XDP_SOCKETS=y
+CONFIG_XDP_SOCKETS_DIAG=m
+CONFIG_NET_CLS_BPF=m
+CONFIG_NET_ACT_BPF=m
+CONFIG_OPENVSWITCH=m
+CONFIG_OPENVSWITCH_GRE=m
+CONFIG_OPENVSWITCH_VXLAN=m
+CONFIG_OPENVSWITCH_GENEVE=m
+CONFIG_NET_RX_BUSY_POLL=y
+CONFIG_BPF_STREAM_PARSER=y
+CONFIG_PAGE_POOL=y
+CONFIG_TUN=m
+CONFIG_VETH=m
+CONFIG_VIRTIO_NET=m
+CONFIG_VHOST_NET=m
+CONFIG_DEBUG_INFO_BTF=y
+CONFIG_DEBUG_INFO_BTF_MODULES=y
+CONFIG_BPF_EVENTS=y
+
+$ ls -l /sys/kernel/btf/vmlinux
+-r--r--r-- 1 root root 5650140 Oct 28 11:42 /sys/kernel/btf/vmlinux
+
+$ mount | grep -E 'bpf|tracefs'
+bpf on /sys/fs/bpf type bpf (rw,nosuid,nodev,noexec,relatime,mode=700)
+tracefs on /sys/kernel/tracing type tracefs (rw,nosuid,nodev,noexec,relatime)
+
+$ ip -d link show | grep -E '^[0-9]+:|xdp|prog/xdp' 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+2: enp0s1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+3: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+4: br-slice: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+5: vnet0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    prog/xdp id 5630 
+6: vnet1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    prog/xdp id 5696 
+7: vnet2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    prog/xdp id 5648 
+8: vnet3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    prog/xdp id 5654 
+9: vnet4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    prog/xdp id 5636 
+10: vnet5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    prog/xdp id 5660 
+
+(no 'xdp' line under an interface means no XDP program is attached to it)
+
+==================================================================
+## Guest VMs (tenant1 to tenant6)
+==================================================================
+Collected with the read-only libvirt connection: virsh -r -c qemu:///system
+
+$ virsh -r -c qemu:///system list --all
+ Id   Name      State
+-------------------------
+ 1    tenant1   running
+ 2    tenant2   running
+ 3    tenant3   running
+ 4    tenant4   running
+ 5    tenant5   running
+ 6    tenant6   running
+
+------------------------------------------------------------------
+### tenant1
+------------------------------------------------------------------
+$ virsh -r -c qemu:///system dominfo tenant1
+Id:             1
+Name:           tenant1
+UUID:           a1ff5a05-ad44-4a09-ace2-be7be2b8bc4b
+OS Type:        hvm
+State:          running
+CPU(s):         1
+CPU time:       38961.3s
+Max memory:     524288 KiB
+Used memory:    524288 KiB
+Persistent:     yes
+Autostart:      disable
+Autostart Once: disable
+Managed save:   no
+Security model: apparmor
+Security DOI:   0
+Security label: libvirt-a1ff5a05-ad44-4a09-ace2-be7be2b8bc4b (enforcing)
+
+$ virsh -r -c qemu:///system dumpxml tenant1 | grep -E 'machine=|<cpu |<vcpu|<memory|<emulator|<virtualport'
+<memory unit='KiB'>524288</memory>
+<vcpu placement='static'>1</vcpu>
+<type arch='aarch64' machine='virt-10.0'>hvm</type>
+<cpu mode='host-passthrough' check='none'/>
+<emulator>/usr/bin/qemu-system-aarch64</emulator>
+<virtualport type='openvswitch'>
+
+$ virsh -r -c qemu:///system vcpupin tenant1
+ VCPU   CPU Affinity
+----------------------
+ 0      0-5
+
+$ virsh -r -c qemu:///system domiflist tenant1
+ Interface   Type     Source     Model    MAC
+-------------------------------------------------------------
+ vnet0       bridge   br-slice   virtio   52:54:00:5f:dd:81
+
+$ virsh -r -c qemu:///system domblklist tenant1
+ Target   Source
+-------------------------------------------------
+ vda      /var/lib/libvirt/images/tenant1.qcow2
+ sda      /var/lib/libvirt/images/seed1.iso
+
+------------------------------------------------------------------
+### tenant2
+------------------------------------------------------------------
+$ virsh -r -c qemu:///system dominfo tenant2
+Id:             2
+Name:           tenant2
+UUID:           9e1040d4-6f9f-4d69-bad0-3a8c9dfdeb74
+OS Type:        hvm
+State:          running
+CPU(s):         1
+CPU time:       10710.4s
+Max memory:     524288 KiB
+Used memory:    524288 KiB
+Persistent:     yes
+Autostart:      disable
+Autostart Once: disable
+Managed save:   no
+Security model: apparmor
+Security DOI:   0
+Security label: libvirt-9e1040d4-6f9f-4d69-bad0-3a8c9dfdeb74 (enforcing)
+
+$ virsh -r -c qemu:///system dumpxml tenant2 | grep -E 'machine=|<cpu |<vcpu|<memory|<emulator|<virtualport'
+<memory unit='KiB'>524288</memory>
+<vcpu placement='static'>1</vcpu>
+<type arch='aarch64' machine='virt-10.0'>hvm</type>
+<cpu mode='host-passthrough' check='none'/>
+<emulator>/usr/bin/qemu-system-aarch64</emulator>
+<virtualport type='openvswitch'>
+
+$ virsh -r -c qemu:///system vcpupin tenant2
+ VCPU   CPU Affinity
+----------------------
+ 0      0-5
+
+$ virsh -r -c qemu:///system domiflist tenant2
+ Interface   Type     Source     Model    MAC
+-------------------------------------------------------------
+ vnet1       bridge   br-slice   virtio   52:54:00:db:94:50
+
+$ virsh -r -c qemu:///system domblklist tenant2
+ Target   Source
+-------------------------------------------------
+ vda      /var/lib/libvirt/images/tenant2.qcow2
+ sda      /var/lib/libvirt/images/seed2.iso
+
+------------------------------------------------------------------
+### tenant3
+------------------------------------------------------------------
+$ virsh -r -c qemu:///system dominfo tenant3
+Id:             3
+Name:           tenant3
+UUID:           ea370985-1000-437c-91fa-0a31d3a08da2
+OS Type:        hvm
+State:          running
+CPU(s):         1
+CPU time:       9601.6s
+Max memory:     524288 KiB
+Used memory:    524288 KiB
+Persistent:     yes
+Autostart:      disable
+Autostart Once: disable
+Managed save:   no
+Security model: apparmor
+Security DOI:   0
+Security label: libvirt-ea370985-1000-437c-91fa-0a31d3a08da2 (enforcing)
+
+$ virsh -r -c qemu:///system dumpxml tenant3 | grep -E 'machine=|<cpu |<vcpu|<memory|<emulator|<virtualport'
+<memory unit='KiB'>524288</memory>
+<vcpu placement='static'>1</vcpu>
+<type arch='aarch64' machine='virt-10.0'>hvm</type>
+<cpu mode='host-passthrough' check='none'/>
+<emulator>/usr/bin/qemu-system-aarch64</emulator>
+<virtualport type='openvswitch'>
+
+$ virsh -r -c qemu:///system vcpupin tenant3
+ VCPU   CPU Affinity
+----------------------
+ 0      0-5
+
+$ virsh -r -c qemu:///system domiflist tenant3
+ Interface   Type     Source     Model    MAC
+-------------------------------------------------------------
+ vnet2       bridge   br-slice   virtio   52:54:00:10:00:13
+
+$ virsh -r -c qemu:///system domblklist tenant3
+ Target   Source
+-------------------------------------------------
+ vda      /var/lib/libvirt/images/tenant3.qcow2
+ sda      /var/lib/libvirt/images/seed3.iso
+
+------------------------------------------------------------------
+### tenant4
+------------------------------------------------------------------
+$ virsh -r -c qemu:///system dominfo tenant4
+Id:             4
+Name:           tenant4
+UUID:           b48a18d3-7e6d-4032-b078-e9a371396182
+OS Type:        hvm
+State:          running
+CPU(s):         1
+CPU time:       7364.0s
+Max memory:     524288 KiB
+Used memory:    524288 KiB
+Persistent:     yes
+Autostart:      disable
+Autostart Once: disable
+Managed save:   no
+Security model: apparmor
+Security DOI:   0
+Security label: libvirt-b48a18d3-7e6d-4032-b078-e9a371396182 (enforcing)
+
+$ virsh -r -c qemu:///system dumpxml tenant4 | grep -E 'machine=|<cpu |<vcpu|<memory|<emulator|<virtualport'
+<memory unit='KiB'>524288</memory>
+<vcpu placement='static'>1</vcpu>
+<type arch='aarch64' machine='virt-10.0'>hvm</type>
+<cpu mode='host-passthrough' check='none'/>
+<emulator>/usr/bin/qemu-system-aarch64</emulator>
+<virtualport type='openvswitch'>
+
+$ virsh -r -c qemu:///system vcpupin tenant4
+ VCPU   CPU Affinity
+----------------------
+ 0      0-5
+
+$ virsh -r -c qemu:///system domiflist tenant4
+ Interface   Type     Source     Model    MAC
+-------------------------------------------------------------
+ vnet3       bridge   br-slice   virtio   52:54:00:10:00:14
+
+$ virsh -r -c qemu:///system domblklist tenant4
+ Target   Source
+-------------------------------------------------
+ vda      /var/lib/libvirt/images/tenant4.qcow2
+ sda      /var/lib/libvirt/images/seed4.iso
+
+------------------------------------------------------------------
+### tenant5
+------------------------------------------------------------------
+$ virsh -r -c qemu:///system dominfo tenant5
+Id:             5
+Name:           tenant5
+UUID:           03234628-cba0-431b-9597-4929fae3f120
+OS Type:        hvm
+State:          running
+CPU(s):         1
+CPU time:       38301.8s
+Max memory:     524288 KiB
+Used memory:    524288 KiB
+Persistent:     yes
+Autostart:      disable
+Autostart Once: disable
+Managed save:   no
+Security model: apparmor
+Security DOI:   0
+Security label: libvirt-03234628-cba0-431b-9597-4929fae3f120 (enforcing)
+
+$ virsh -r -c qemu:///system dumpxml tenant5 | grep -E 'machine=|<cpu |<vcpu|<memory|<emulator|<virtualport'
+<memory unit='KiB'>524288</memory>
+<vcpu placement='static'>1</vcpu>
+<type arch='aarch64' machine='virt-10.0'>hvm</type>
+<cpu mode='host-passthrough' check='none'/>
+<emulator>/usr/bin/qemu-system-aarch64</emulator>
+<virtualport type='openvswitch'>
+
+$ virsh -r -c qemu:///system vcpupin tenant5
+ VCPU   CPU Affinity
+----------------------
+ 0      0-5
+
+$ virsh -r -c qemu:///system domiflist tenant5
+ Interface   Type     Source     Model    MAC
+-------------------------------------------------------------
+ vnet4       bridge   br-slice   virtio   52:54:00:10:00:15
+
+$ virsh -r -c qemu:///system domblklist tenant5
+ Target   Source
+-------------------------------------------------
+ vda      /var/lib/libvirt/images/tenant5.qcow2
+ sda      /var/lib/libvirt/images/seed5.iso
+
+------------------------------------------------------------------
+### tenant6
+------------------------------------------------------------------
+$ virsh -r -c qemu:///system dominfo tenant6
+Id:             6
+Name:           tenant6
+UUID:           b0d85122-1fe3-49c6-b4a0-d899d2cf6f86
+OS Type:        hvm
+State:          running
+CPU(s):         1
+CPU time:       7096.9s
+Max memory:     524288 KiB
+Used memory:    524288 KiB
+Persistent:     yes
+Autostart:      disable
+Autostart Once: disable
+Managed save:   no
+Security model: apparmor
+Security DOI:   0
+Security label: libvirt-b0d85122-1fe3-49c6-b4a0-d899d2cf6f86 (enforcing)
+
+$ virsh -r -c qemu:///system dumpxml tenant6 | grep -E 'machine=|<cpu |<vcpu|<memory|<emulator|<virtualport'
+<memory unit='KiB'>524288</memory>
+<vcpu placement='static'>1</vcpu>
+<type arch='aarch64' machine='virt-10.0'>hvm</type>
+<cpu mode='host-passthrough' check='none'/>
+<emulator>/usr/bin/qemu-system-aarch64</emulator>
+<virtualport type='openvswitch'>
+
+$ virsh -r -c qemu:///system vcpupin tenant6
+ VCPU   CPU Affinity
+----------------------
+ 0      0-5
+
+$ virsh -r -c qemu:///system domiflist tenant6
+ Interface   Type     Source     Model    MAC
+-------------------------------------------------------------
+ vnet5       bridge   br-slice   virtio   52:54:00:10:00:16
+
+$ virsh -r -c qemu:///system domblklist tenant6
+ Target   Source
+-------------------------------------------------
+ vda      /var/lib/libvirt/images/tenant6.qcow2
+ sda      /var/lib/libvirt/images/seed6.iso
+
+==================================================================
+## Open vSwitch bridge and port configuration
+==================================================================
+NOTE: the OVS database and control sockets are root-only on this host
+(/var/run/openvswitch/*.sock and /var/lib/openvswitch/conf.db are root:root, mode 0640/0750),
+so these commands could not be run without sudo:
+$ ovs-vsctl show
+ovs-vsctl: unix:/var/run/openvswitch/db.sock: database connection failed (Permission denied)
+
+$ ovs-ofctl show br-slice
+ovs-ofctl: /var/run/openvswitch/br-slice.mgmt: failed to open socket (Permission denied)
+
+To complete this section, a root user can run: ovs-vsctl show; ovs-vsctl list bridge;
+ovs-vsctl list port; ovs-vsctl list interface; ovs-ofctl -O OpenFlow13 dump-flows br-slice;
+ovs-vsctl list qos; ovs-vsctl list queue; ovs-appctl dpif/show
+
+The information below comes from the kernel datapath, libvirt and process table (no root needed).
+
+$ ps -o pid,user,args -C ovsdb-server,ovs-vswitchd | cut -c1-300
+    PID USER     COMMAND
+    644 root     ovsdb-server /etc/openvswitch/conf.db -vconsole:emer -vsyslog:err -vfile:info --remote=punix:/var/run/openvswitch/db.sock --private-key=db:Open_vSwitch,SSL,private_key --certificate=db:Open_vSwitch,SSL,certificate --bootstrap-ca-cert=db:Open_vSwitch,SSL,ca_cert --no-chdir --log-file
+    739 root     ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err -vfile:info --mlockall --no-chdir --log-file=/var/log/openvswitch/ovs-vswitchd.log --pidfile=/var/run/openvswitch/ovs-vswitchd.pid --detach
+
+$ cat /etc/openvswitch/system-id.conf
+6d9949dd-0acc-40e8-9f1f-3646834322ef
+
+$ ip -d link show br-slice
+4: br-slice: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether 5e:88:64:6b:9d:4d brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65535 
+    openvswitch addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+
+$ ip -d link show ovs-system
+3: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether fa:5b:7f:4e:c5:0f brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65535 
+    openvswitch addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+
+$ for i in /sys/class/net/*; do n=${i##*/}; m=$(readlink $i/master); echo "$n master=${m##*/}"; done | grep 'master=ovs-system'
+vnet0 master=ovs-system
+vnet1 master=ovs-system
+vnet2 master=ovs-system
+vnet3 master=ovs-system
+vnet4 master=ovs-system
+vnet5 master=ovs-system
+
+### Bridge ports (guest tap interfaces)
+
+$ ip -d link show vnet0
+5: vnet0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:54:00:5f:dd:81 brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65521 
+    tun type tap pi off vnet_hdr on persist off 
+    openvswitch_slave addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+    prog/xdp id 5630 
+
+$ ip -d link show vnet1
+6: vnet1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:54:00:db:94:50 brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65521 
+    tun type tap pi off vnet_hdr on persist off 
+    openvswitch_slave addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+    prog/xdp id 5696 
+
+$ ip -d link show vnet2
+7: vnet2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:54:00:10:00:13 brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65521 
+    tun type tap pi off vnet_hdr on persist off 
+    openvswitch_slave addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+    prog/xdp id 5648 
+
+$ ip -d link show vnet3
+8: vnet3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:54:00:10:00:14 brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65521 
+    tun type tap pi off vnet_hdr on persist off 
+    openvswitch_slave addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+    prog/xdp id 5654 
+
+$ ip -d link show vnet4
+9: vnet4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:54:00:10:00:15 brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65521 
+    tun type tap pi off vnet_hdr on persist off 
+    openvswitch_slave addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+    prog/xdp id 5636 
+
+$ ip -d link show vnet5
+10: vnet5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc fq_codel master ovs-system state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether fe:54:00:10:00:16 brd ff:ff:ff:ff:ff:ff promiscuity 1 allmulti 0 minmtu 68 maxmtu 65521 
+    tun type tap pi off vnet_hdr on persist off 
+    openvswitch_slave addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 
+    prog/xdp id 5660 
+
+### libvirt <-> OVS port binding (iface-id stored in each OVS Interface's external_ids)
+
+Guest    Port   Bridge     Guest MAC           OVS interfaceid
+tenant1  vnet0  br-slice   52:54:00:5f:dd:81   86a9190f-19c2-4aaf-a386-357dcab6a42b
+tenant2  vnet1  br-slice   52:54:00:db:94:50   8b6c91c1-6488-4908-af50-09abc9204286
+tenant3  vnet2  br-slice   52:54:00:10:00:13   2bc28c78-14b5-48a5-a0fa-786bdcc00bbd
+tenant4  vnet3  br-slice   52:54:00:10:00:14   8ed9d23f-2162-4b08-9b32-6dc99da4b69a
+tenant5  vnet4  br-slice   52:54:00:10:00:15   7b6ad597-ee7c-4295-9e55-24e33fb8ea90
+tenant6  vnet5  br-slice   52:54:00:10:00:16   d106cafc-acc1-47c7-9606-0eaf9e70ccc5
+
+### Queueing disciplines on the bridge and its ports
+(tc is installed at /usr/sbin/tc, which is not on the normal user's PATH)
+
+$ /usr/sbin/tc qdisc show dev br-slice
+qdisc noqueue 0: root refcnt 2 
+
+$ /usr/sbin/tc -s qdisc show dev vnet0
+qdisc fq_codel 0: root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+ Sent 23785243279 bytes 360281644 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0
+  maxpacket 226 drop_overlimit 0 new_flow_count 527 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+$ /usr/sbin/tc -s qdisc show dev vnet1
+qdisc fq_codel 0: root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+ Sent 8523886002 bytes 128223636 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0
+  maxpacket 1700 drop_overlimit 0 new_flow_count 183811 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+$ /usr/sbin/tc -s qdisc show dev vnet2
+qdisc fq_codel 0: root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+ Sent 4994407433 bytes 75201553 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0
+  maxpacket 1700 drop_overlimit 0 new_flow_count 99284 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+$ /usr/sbin/tc -s qdisc show dev vnet3
+qdisc fq_codel 0: root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+ Sent 3949024220 bytes 59418465 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0
+  maxpacket 1298 drop_overlimit 0 new_flow_count 78126 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+$ /usr/sbin/tc -s qdisc show dev vnet4
+qdisc fq_codel 0: root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+ Sent 21942922627 bytes 332296698 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0
+  maxpacket 1700 drop_overlimit 0 new_flow_count 3942 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+$ /usr/sbin/tc -s qdisc show dev vnet5
+qdisc fq_codel 0: root refcnt 2 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64 
+ Sent 3636817353 bytes 54673689 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0
+  maxpacket 1700 drop_overlimit 0 new_flow_count 69261 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+### Host uplink (not attached to OVS)
+
+$ ip -br addr show
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp0s1           UP             192.168.65.3/24 fd65:3adb:cb30:428f:c02:e5ff:fe47:cbba/64 fd65:3adb:cb30:428f:ad46:3b40:e936:5cd8/64 fe80::fe78:bad:f83b:e26f/64 
+ovs-system       DOWN           
+br-slice         UNKNOWN        10.10.0.1/24 fe80::5c88:64ff:fe6b:9d4d/64 
+vnet0            UNKNOWN        fe80::fc54:ff:fe5f:dd81/64 
+vnet1            UNKNOWN        fe80::fc54:ff:fedb:9450/64 
+vnet2            UNKNOWN        fe80::fc54:ff:fe10:13/64 
+vnet3            UNKNOWN        fe80::fc54:ff:fe10:14/64 
+vnet4            UNKNOWN        fe80::fc54:ff:fe10:15/64 
+vnet5            UNKNOWN        fe80::fc54:ff:fe10:16/64 
+
+$ ip -d link show enp0s1 | head -3
+2: enp0s1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 0e:02:e5:47:cb:ba brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 1500 addrgenmode none numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 parentbus virtio parentdev virtio0 
+    altname enx0e02e547cbba
+
+==================================================================
+End of record.
